@@ -1,0 +1,17 @@
+﻿<div class="container-2xl-w mx-auto lg:px-4 2xl:px-0 px-5">
+    @if (ContainerTemplate != null)
+    {
+        @ContainerTemplate
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ContainerTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<SellableItem> ItemTemplate { get; set; }
+
+    [Parameter]
+    public List<SellableItem> Items { get; set; }
+}

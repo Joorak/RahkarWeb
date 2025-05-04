@@ -1,0 +1,33 @@
+﻿@page "/signin"
+
+<AppHeader />
+
+<main class="container">
+    <div class="login-container">
+        <h5 class="text-center mb-4">ورود به حساب کاربری</h5>
+        <form>
+            <div class="mb-3 position-relative">
+                <input type="email" class="form-control" placeholder="نام کاربری یا ایمیل" required>
+                <i class="bi bi-envelope position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+            </div>
+            <div class="mb-3 position-relative">
+                <input type="password" class="form-control" placeholder="رمز عبور" required>
+                <i class="bi bi-eye position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe" class="text-muted small">مرا به خاطر بسپار</label>
+                </div>
+                <a href="#" class="text-pink small">رمز عبور خود را فراموش کرده‌ام</a>
+            </div>
+            <button type="submit" class="btn login-btn text-white mb-3">ورود</button>
+        </form>
+        <button class="btn google-btn mb-3">
+            <img src="https://www.google.com/favicon.ico" alt="Google Icon">
+            ورود با حساب گوگل
+        </button>
+    </div>
+</main>
+
+<AppFooter />

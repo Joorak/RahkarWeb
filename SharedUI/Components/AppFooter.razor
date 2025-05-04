@@ -1,0 +1,56 @@
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <p class="footer-title">@CompanyName</p>
+                <p>@CompanyDescription</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="footer-title">لینک‌های مرتبط</p>
+                @foreach (var link in RelatedLinks)
+                {
+                    <a href="@link.Link" class="d-block mb-2">@link.Title</a>
+                }
+            </div>
+            <div class="col-md-4 mb-3">
+                <p class="footer-title">ارتباط با ما</p>
+                <p>تلفن: @ContactPhone</p>
+                <p>ایمیل: @ContactEmail</p>
+                <p>آدرس: @ContactAddress</p>
+            </div>
+        </div>
+        <p class="copyright">کلیه حقوق این وبسایت برای @CompanyName محفوظ می‌باشد.</p>
+    </div>
+</footer>
+
+@code {
+    [Parameter]
+    public string CompanyName { get; set; } = "لیزینگ آلفا";
+
+    [Parameter]
+    public string CompanyDescription { get; set; } = "شرکت لیزینگ آلفا در تاریخ ۱۴ مهرماه ۱۳۸۲ به صورت شرکت سهامی خاص تاسیس شده و جزء واحدهای تجاری گروه صنعتی آلفا می‌باشد. فعالیت شرکت در چارچوب دستورالعمل اجرایی تاسیس و نظارت بر شرکت‌های لیزینگ مصوب بانک مرکزی جمهوری اسلامی می‌باشد.";
+
+    [Parameter]
+    public List<RelatedLink> RelatedLinks { get; set; } = new List<RelatedLink>
+    {
+        new RelatedLink { Title = "بانک مرکزی جمهوری اسلامی ایران", Link = "#" },
+        new RelatedLink { Title = "وزارت صمت جمهوری اسلامی ایران", Link = "#" },
+        new RelatedLink { Title = "وزارت اقتصاد جمهوری اسلامی ایران", Link = "#" },
+        new RelatedLink { Title = "سازمان برنامه و بودجه جمهوری اسلامی ایران", Link = "#" }
+    };
+
+    [Parameter]
+    public string ContactPhone { get; set; } = "+982188891008";
+
+    [Parameter]
+    public string ContactEmail { get; set; } = "info@joorak.com";
+
+    [Parameter]
+    public string ContactAddress { get; set; } = "بلوار کشاورز، خیابان فلسطین شمالی، پلاک 475، طبقه 5، واحد 64";
+
+    public class RelatedLink
+    {
+        public string Title { get; set; }
+        public string Link { get; set; }
+    }
+}

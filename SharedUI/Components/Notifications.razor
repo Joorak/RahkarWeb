@@ -1,0 +1,46 @@
+@inject AppDbContext DbContext
+
+<div class="content-container">
+    @foreach (var notification in NotificationsList)
+    {
+        <div class="message-item">
+            <i class="bi bi-trash text-danger" @onclick="() => DeleteNotification(notification.Id)"></i>
+            <div>
+                <div class="date">@notification.Date.ToString("yyyy/MM/dd")</div>
+                <div class="title">@notification.Title</div>
+                <div class="text">@notification.Text</div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Notification> NotificationsList { get; set; } = new List<Notification>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // بارگذاری اعلان‌ها از دیتابیس
+        NotificationsList = await DbContext.Notifications.ToListAsync();
+        if (!NotificationsList.Any())
+        {
+            // داده‌های پیش‌فرض در صورت خالی بودن دیتابیس
+            NotificationsList = new List<Notification>
+            {
+                new Notification { Id = 1, Date = DateTime.Now.AddDays(-2), Title = "وضعیت درخواست شماره 1403/07/01-001", Text = "در انتظار انتخاب کالا" },
+                new Notification { Id = 2, Date = DateTime.Now.AddDays(-1), Title = "درخواست شماره 1403/07/01-002 مرجع شما", Text = "درخواست مرجع شما" }
+            };
+        }
+    }
+
+    private async Task DeleteNotification(int id)
+    {
+        var notification = NotificationsList.FirstOrDefault(n => n.Id == id);
+        if (notification != null)
+        {
+            NotificationsList.Remove(notification);
+            DbContext.Notifications.Remove(notification);
+            await DbContext.SaveChangesAsync();
+        }
+    }
+}

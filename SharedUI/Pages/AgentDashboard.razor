@@ -1,0 +1,67 @@
+@page "/agents/dashboard"
+@inject NavigationManager _nav
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <Sidebar MenuItemClicked="HandleMenuItemClicked" CurrentPage="@CurrentPage" />
+    </div>
+    <div class="col-md-9">
+
+        @if (CurrentPage == "Requests")
+        {
+            <Requests />
+        }
+        else if (CurrentPage == "Notifications")
+        {
+            <Notifications />
+        }
+        else if (CurrentPage == "Settings")
+        {
+            <Settings />
+        }
+    </div>
+</div>
+
+@code {
+    // [Parameter]
+    // public string UserName { get; set; } = "علی اکبر رضاپور";
+
+    // [Parameter]
+    // public List<ActionButton> Actions { get; set; } = new List<ActionButton>
+    // {
+    //     new ActionButton { Title = "جستجو", Icon = "bi bi-plus-circle", Page = "", IsActive = false },
+    //     new ActionButton { Title = "دروساعت", Icon = "bi bi-calendar", Page = "", IsActive = false },
+    //     new ActionButton { Title = "پیام‌ها", Icon = "bi bi-chat-left-text", Page = "Notifications", IsActive = false },
+    //     new ActionButton { Title = "تنظیمات", Icon = "bi bi-lock", Page = "Settings", IsActive = false },
+    //     new ActionButton { Title = "خروج", Icon = "bi bi-arrow-right", Page = "Logout", IsActive = false }
+    // };
+
+    private string CurrentPage { get; set; } = "Requests";
+
+    private void HandleMenuItemClicked(string page)
+    {
+        if (page == "NewRequest")
+        {
+            _nav.NavigateTo("/agents/addtocard");
+        }
+        else if (page == "Logout")
+        {
+            _nav.NavigateTo("/login");
+        }
+        else
+        {
+            CurrentPage = page;
+            
+        }
+    }
+
+    // [Inject]
+    // private NavigationManager NavigationManager { get; set; }
+
+    // public class ActionButton
+    // {
+    //     public string Title { get; set; }
+    //     public string Icon { get; set; }
+    //     public string Page { get; set; }
+    //     public bool IsActive { get; set; }
+    // }
+}

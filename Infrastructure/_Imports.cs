@@ -1,0 +1,27 @@
+﻿global using System.IdentityModel.Tokens.Jwt;
+global using System.Net;
+global using System.Net.Mail;
+global using System.Net.Mime;
+global using System.Reflection;
+global using System.Security.Claims;
+global using System.Text;
+
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
+global using Application.Models;
+global using Application.Common.Interfaces;
+global using Application.Utils;
+global using Domain.Entities;
+global using Domain.Entities.Identity;
+global using Infrastructure.Persistence;
+global using Infrastructure.Persistence.Configurations;
+global using Infrastructure.Persistence.Configurations.Identity;
+global using Infrastructure.Services;
+global using Infrastructure.Utils;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.IdentityModel.Tokens;

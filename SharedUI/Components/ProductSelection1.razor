@@ -1,0 +1,270 @@
+﻿<div class="product-selection-container">
+    <!-- شماره درخواست و سبد خرید -->
+    <div class="request-info">
+        <span>شماره درخواست: @RequestNumber</span>
+        <button class="btn btn-link p-0 ms-2" @onclick="ShowCartModal">
+            <i class="bi bi-cart"></i>
+            @if (CartItems.Any())
+            {
+                <span class="badge bg-danger rounded-circle position-absolute">@CartItems.Count</span>
+            }
+        </button>
+    </div>
+
+    <!-- ویزارد -->
+    <div class="wizard">
+        <div class="wizard-step @(CurrentStep >= 1 ? "active" : "")" @onclick="() => SetStep(1)">
+            <span class="step-number">1</span>
+            <span class="step-label">انتخاب کالا</span>
+        </div>
+        <div class="wizard-line"></div>
+        <div class="wizard-step @(CurrentStep >= 2 ? "active" : "")" @onclick="() => SetStep(1)">
+            <span class="step-number">2</span>
+            <span class="step-label">اعتبارسنجی</span>
+        </div>
+        <div class="wizard-line"></div>
+        <div class="wizard-step @(CurrentStep >= 3 ? "active" : "")" @onclick="() => SetStep(1)">
+            <span class="step-number">3</span>
+            <span class="step-label">طرح تسهیلات</span>
+        </div>
+        <div class="wizard-line"></div>
+        <div class="wizard-step @(CurrentStep >= 4 ? "active" : "")" @onclick="() => SetStep(1)">
+            <span class="step-number">4</span>
+            <span class="step-label">تضامین/وثائق</span>
+        </div>
+        <div class="wizard-line"></div>
+        <div class="wizard-step @(CurrentStep >= 5 ? "active" : "")" @onclick="() => SetStep(1)">
+            <span class="step-number">5</span>
+            <span class="step-label">آپلود مدارک و ثبت نهایی</span>
+        </div>
+    </div>
+
+    <!-- محتوای اصلی -->
+    @if (ShowCategories)
+    {
+        <!-- دسته‌بندی‌ها -->
+        <div class="categories-section">
+            <h5>گروه‌های کالایی</h5>
+            <div class="category-list">
+                @foreach (var category in ProductCategories)
+                {
+                    <div class="category-item" @onclick="() => SelectCategory(category)">
+                        <img src="@category.ImageUrl" alt="@category.Name" class="category-image" />
+                        <p>@category.Name</p>
+                    </div>
+                }
+            </div>
+            <nav aria-label="Category pagination" class="d-none d-md-block">
+                <ul class="pagination">
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                </ul>
+            </nav>
+
+            <h5>دسته‌بندی‌های بیزینسی</h5>
+            <div class="category-list">
+                @foreach (var category in BusinessCategories)
+                {
+                    <div class="category-item" @onclick="() => SelectCategory(category)">
+                        <img src="@category.ImageUrl" alt="@category.Name" class="category-image" />
+                        <p>@category.Name</p>
+                    </div>
+                }
+            </div>
+            <nav aria-label="Business category pagination" class="d-none d-md-block">
+                <ul class="pagination">
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                </ul>
+            </nav>
+        </div>
+    }
+    else
+    {
+        <!-- لیست کالاها -->
+        <div class="products-section">
+            <button class="btn btn-outline-secondary mb-3" @onclick="() => ShowCategories = true">بازگشت</button>
+            <div class="filters mb-3">
+                <input type="text" class="form-control d-inline-block w-auto me-2" placeholder="جستجو..." @bind="SearchTerm" @bind:event="oninput" />
+                <select class="form-select d-inline-block w-auto" @bind="SortOption">
+                    <option value="name">مرتب‌سازی بر اساس نام</option>
+                    <option value="price">مرتب‌سازی بر اساس قیمت</option>
+                </select>
+            </div>
+            <div class="product-list">
+                @foreach (var product in FilteredProducts)
+                {
+                    <div class="product-item">
+                        <input type="checkbox" checked="@product.IsSelected" @onchange="e => ToggleProductSelection(product, (bool)e.Value)" />
+                        <span>@product.Name - @product.Price تومان</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- مودال سبد خرید -->
+    @if (IsCartModalOpen)
+    {
+        <div class="modal fade show d-block" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">سبد خرید</h5>
+                        <button type="button" class="btn-close" @onclick="CloseCartModal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if (CartItems.Any())
+                        {
+                            <ul class="list-group">
+                                @foreach (var item in CartItems)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        @item.Name - @item.Price تومان
+                                        <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromCart(item)">حذف</button>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>سبد خرید خالی است.</p>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseCartModal">بستن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+    <!-- دکمه‌ها -->
+    <div class="action-buttons">
+        <button class="btn btn-danger" @onclick="Continue" disabled="@(!CartItems.Any())">ادامه</button>
+        <button class="btn btn-outline-secondary" @onclick="Save">ذخیره</button>
+        <button class="btn btn-outline-secondary" @onclick="AddNewProduct">ثبت کالا</button>
+    </div>
+</div>
+
+@code {
+    private string RequestNumber { get; set; } = "REQ-005"; // شبیه‌سازی فراخوانی API
+    private int CurrentStep { get; set; } = 1;
+    private bool ShowCategories { get; set; } = true;
+    private string SearchTerm { get; set; } = "";
+    private string SortOption { get; set; } = "name";
+    private bool IsCartModalOpen { get; set; } = false;
+    private List<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>
+    {
+        new ProductCategory { Name = "خودرو", ImageUrl = "https://via.placeholder.com/150" },
+        new ProductCategory { Name = "طلا و جواهر", ImageUrl = "https://via.placeholder.com/150" },
+        new ProductCategory { Name = "کالاهای الکترونیکی", ImageUrl = "https://via.placeholder.com/150" },
+        new ProductCategory { Name = "لوازم خانگی", ImageUrl = "https://via.placeholder.com/150" }
+    };
+    private List<ProductCategory> BusinessCategories { get; set; } = new List<ProductCategory>
+    {
+        new ProductCategory { Name = "بیشترین تخفیف‌ها", ImageUrl = "https://via.placeholder.com/150" },
+        new ProductCategory { Name = "پرطرفدارترین کالاها", ImageUrl = "https://via.placeholder.com/150" },
+        new ProductCategory { Name = "جدیدترین کالاها", ImageUrl = "https://via.placeholder.com/150" }
+    };
+    private List<Product> Products { get; set; } = new List<Product>
+    {
+        new Product { Name = "خودروی پراید", Price = 200_000_000 },
+        new Product { Name = "گوشی سامسونگ", Price = 15_000_000 },
+        new Product { Name = "لپ‌تاپ لنوو", Price = 25_000_000 },
+        new Product { Name = "یخچال سامسونگ", Price = 30_000_000 }
+    };
+    private List<Product> FilteredProducts => Products
+        .Where(p => string.IsNullOrEmpty(SearchTerm) || p.Name.Contains(SearchTerm))
+        .OrderBy(p => SortOption == "name" ? p.Name : p.Price.ToString())
+        .ToList();
+    private List<Product> CartItems { get; set; } = new List<Product>();
+
+    private void SetStep(int step)
+    {
+        if (step <= CurrentStep)
+        {
+            CurrentStep = step;
+        }
+    }
+
+    private void SelectCategory(ProductCategory category)
+    {
+        ShowCategories = false;
+        // در اینجا می‌توانید محصولات مربوط به دسته‌بندی را بارگذاری کنید
+    }
+
+    private void ToggleProductSelection(Product product, bool isSelected)
+    {
+        product.IsSelected = isSelected;
+        if (isSelected && !CartItems.Contains(product))
+        {
+            CartItems.Add(product);
+        }
+        else if (!isSelected && CartItems.Contains(product))
+        {
+            CartItems.Remove(product);
+        }
+    }
+
+    private void RemoveFromCart(Product product)
+    {
+        product.IsSelected = false;
+        CartItems.Remove(product);
+    }
+
+    private void ShowCartModal()
+    {
+        IsCartModalOpen = true;
+    }
+
+    private void CloseCartModal()
+    {
+        IsCartModalOpen = false;
+    }
+
+    private void Continue()
+    {
+        if (CartItems.Any())
+        {
+            CurrentStep = 2;
+            // انتقال به مرحله بعدی
+        }
+    }
+
+    private void Save()
+    {
+        // ذخیره در دیتابیس (شبیه‌سازی)
+        System.Console.WriteLine("درخواست ذخیره شد.");
+    }
+
+    private void AddNewProduct()
+    {
+        // منطق افزودن کالای جدید (شبیه‌سازی)
+        var newProduct = new Product { Name = "کالای جدید", Price = 10_000_000 };
+        Products.Add(newProduct);
+        CartItems.Add(newProduct);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // شبیه‌سازی فراخوانی API برای شماره درخواست
+        RequestNumber = await Task.FromResult("REQ-005");
+    }
+
+    private class ProductCategory
+    {
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+    }
+
+    private class Product
+    {
+        public string Name { get; set; }
+        public long Price { get; set; }
+        public bool IsSelected { get; set; }
+    }
+}

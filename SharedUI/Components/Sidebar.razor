@@ -1,0 +1,41 @@
+<div class="sidebar">
+    @foreach (var item in MenuItems)
+    {
+        <a class="@(CurrentPage == item.Page ? "active" : "")" @onclick="() => MenuItemClicked.InvokeAsync(item.Page)">
+            <div class="position-relative">
+            <span class="p-2">@item.Title</span>
+            @if (!string.IsNullOrEmpty(item.Badge))
+            {
+                <span class="badge bg-danger rounded-circle position-absolute top-0 start-0 translate-middle">@item.Badge</span>
+            }
+            </div>
+            <i class="@item.Icon"></i>
+        </a>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string CurrentPage { get; set; } = "Requests";
+
+    [Parameter]
+    public EventCallback<string> MenuItemClicked { get; set; }
+
+    [Parameter]
+    public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>
+    {
+        new MenuItem { Title = "درخواست جدید", Page = "NewRequest", Icon = "bi bi-plus-circle" },
+        new MenuItem { Title = "لیست درخواست‌ها", Page = "Requests", Icon = "bi bi-list-ul" },
+        new MenuItem { Title = "پیام‌ها", Page = "Notifications", Icon = "bi bi-chat-left-text", Badge = "3" },
+        new MenuItem { Title = "تنظیمات", Page = "Settings", Icon = "bi bi-gear" },
+        new MenuItem { Title = "خروج", Page = "Logout", Icon = "bi bi-box-arrow-right" }
+    };
+
+    public class MenuItem
+    {
+        public string? Title { get; set; }
+        public string? Page { get; set; }
+        public string? Icon { get; set; }
+        public string? Badge { get; set; }
+    }
+}

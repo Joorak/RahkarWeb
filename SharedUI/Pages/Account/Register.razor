@@ -1,0 +1,101 @@
+﻿@*
+  <copyright file="Register.razor" company="Joorak Rezapour">
+   Copyright (c) Joorak Rezapour. All rights reserved.
+  </copyright>
+*@
+
+@page "/register"
+
+@inject NavigationManager NavManager
+@inject IAuthenticationService AuthenticationService
+@inject IRoleService RoleService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="auth-page">
+    <div class="container page">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-xs-12">
+                <h1 class="mb-3 text-xs-center">Sign up</h1>
+
+                <EditForm Model="@registerRequest" OnValidSubmit="ExecuteRegister">
+                    <FluentValidationValidator />
+
+                    <fieldset class="mt-3 form-group">
+                        <div>
+                            <MudTextField class="form-control form-control-lg" InputType="InputType.Text"
+                                @bind-Value="registerRequest.FirstName" Label="FirstName"
+                                For="@(() => registerRequest.FirstName)"
+                                Variant="Variant.Outlined"></MudTextField>
+                        </div>
+                    </fieldset>
+                    <fieldset class="mt-3 form-group">
+                        <div>
+                            <MudTextField class="form-control form-control-lg" InputType="InputType.Text"
+                                @bind-Value="registerRequest.LastName" Label="LastName"
+                                For="@(() => registerRequest.LastName)"
+                                Variant="Variant.Outlined"></MudTextField>
+                        </div>
+                    </fieldset>
+                    <fieldset class="mt-3 form-group">
+                        <div>
+                            <MudTextField class="form-control form-control-lg" InputType="InputType.Email"
+                                @bind-Value="registerRequest.Email" Label="Email"
+                                For="@(() => registerRequest.Email)"
+                                Variant="Variant.Outlined"></MudTextField>
+                        </div>
+                    </fieldset>
+                    <fieldset class="mt-3 form-group">
+                        <div>
+                            <MudTextField class="form-control form-control-lg" InputType="InputType.Password"
+                                @bind-Value="registerRequest.Password" Label="Password"
+                                For="@(() => registerRequest.Password)"
+                                Variant="Variant.Outlined"></MudTextField>
+                        </div>
+                    </fieldset>
+                    <fieldset class="mt-3 form-group">
+                        <div>
+                            <MudTextField class="form-control form-control-lg" InputType="InputType.Password"
+                                @bind-Value="registerRequest.ConfirmPassword" Label="ConfirmPassword"
+                                For="@(() => registerRequest.ConfirmPassword)"
+                                Variant="Variant.Outlined"></MudTextField>
+                        </div>
+                    </fieldset>
+                    <MudButton class="mt-3 btn btn-lg btn-primary pull-xs-right"
+                        Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AppRegistration"
+                               Color="MudBlazor.Color.Primary" ButtonType="MudBlazor.ButtonType.Submit">
+                            Register
+                    </MudButton>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest registerRequest = new();
+
+    /// <summary>
+    /// Initialize the component on load.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            NavManager.NavigateTo("/");
+        }
+    }
+
+    /// <summary>
+    /// Register the user.
+    /// </summary>
+    private async Task ExecuteRegister()
+    {
+        var result = await AuthenticationService.Register(registerRequest);
+        if (result is not null)
+        {
+            NavManager.NavigateTo("/");
+        }
+    }
+}

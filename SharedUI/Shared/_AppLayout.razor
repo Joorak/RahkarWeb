@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject HttpClient httpClient
+
+<article class="content px-4">
+    @Body
+</article>
+
+@code {
+    [CascadingParameter] AppState AppState { get; set; }
+    private int counts { get; set; }
+
+    private string username { get; set; }
+    private int userId { get; set; }
+    private string userRole { get; set; }
+
+    /// <summary>
+    /// .
+    /// </summary>
+    protected async override Task OnInitializedAsync()
+    {
+        await httpClient.GetAsync("Home/test");
+
+        var authstate = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authstate.User;
+
+        if (!user.Identity.IsAuthenticated) return;
+        username = user.Claims.FirstOrDefault(
+            x => x.Type == StringRoleResources.NameClaim || x.Type == StringRoleResources.NameClaimSecond
+        ).Value.Replace("@", " ");
+        userId = int.Parse(user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.UserIdClaim).Value);
+        userRole = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim).Value;
+
+        var isAdmin = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim).Value;
+        
+        // if (!isAdmin.Equals(StringRoleResources.Admin))
+        // {
+        //     counts = await GetCartCount(userId);            
+        // }
+    }
+
+
+}

@@ -1,0 +1,40 @@
+﻿<div class="sidebar">
+    <a class="@(CurrentPage == "NewRequest" ? "active" : "")" @onclick='() => OnMenuItemClicked("NewRequest")'>
+        <span>درخواست جدید</span>
+        <i class="bi bi-plus-circle"></i>
+    </a>
+    <a class="@(CurrentPage == "Requests" ? "active" : "")" @onclick='() => OnMenuItemClicked("Requests" )'>
+        <span>لیست درخواست‌ها</span>
+        <i class="bi bi-list-ul"></i>
+    </a>
+    <a class="@(CurrentPage == "Messages" ? "active" : "")" @onclick='() => OnMenuItemClicked("Messages" )'>
+        <div class="position-relative">
+            <span class="p-2">پیام‌ها</span>
+            <span class="badge bg-danger rounded-circle position-absolute top-0 start-0 translate-middle">2</span>
+        </div>
+        <i class="bi bi-chat-left-text"></i>
+        
+    </a>
+    <a class="@(CurrentPage == "Settings" ? "active" : "")" @onclick='() => OnMenuItemClicked("Settings" )'>
+        <span>تنظیمات</span>
+        <i class="bi bi-gear"></i>
+    </a>
+    <a class="@(CurrentPage == "Logout" ? "active" : "")" @onclick='() => OnMenuItemClicked("Logout" )'>
+        <span>خروج</span>
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+</div>
+
+@code {
+    [Parameter]
+    public string CurrentPage { get; set; } = "Requests";
+
+    [Parameter]
+    public  EventCallback<string> MenuItemClicked { get; set; }
+
+
+    protected async Task OnMenuItemClicked(string value)
+    {
+        await MenuItemClicked.InvokeAsync(value);
+    }
+}

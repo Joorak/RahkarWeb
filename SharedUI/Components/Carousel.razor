@@ -1,0 +1,127 @@
+<div class="carousel-container @(bsClass)" style="width: @Width; height: @Height; direction: @(IsRTL ? "rtl" : "ltr");">
+    <div class="carousel-inner">
+        @foreach (var item in Items)
+        {
+            <div class="carousel-item @(item == CurrentItem ? "active" : "")">
+                <a href="@item.ClickTarget">
+                    <img src="@item.ImageUrl" class="d-block w-100" alt="Carousel Image">
+                </a>
+                <div class="carousel-caption @(IsRTL ? "text-start" : "text-end")">
+                    <div class="caption-content">
+                        @((MarkupString)item.Title)
+                        @((MarkupString)item.Text)
+                        @if (!string.IsNullOrEmpty(item.ButtonText))
+                        {
+                            <a href="@item.ButtonTarget" class="btn btn-danger mt-2">@((MarkupString)item.ButtonText)</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (ShowNavigationButtons)
+    {
+        <button class="carousel-control-prev" @onclick="PreviousItem">
+            <span class="carousel-control-prev-icon">&lt;</span>
+        </button>
+        <button class="carousel-control-next" @onclick="NextItem">
+            <span class="carousel-control-next-icon">&gt;</span>
+        </button>
+    }
+
+    @if (IsIndicators)
+    {
+        <div class="carousel-indicators">
+            @for (int i = 0; i < Items.Count; i++)
+            {
+                <button class="@(i == CurrentIndex ? "active" : "")" @onclick="() => GoToItem(i)"></button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool IsRTL { get; set; } = true;
+
+    [Parameter]
+    public List<CarouselPage> Items { get; set; } = new List<CarouselPage>();
+
+    [Parameter]
+    public bool ShowNavigationButtons { get; set; } = true;
+
+    [Parameter]
+    public bool AutoPlay { get; set; } = true;
+
+    [Parameter]
+    public bool IsIndicators { get; set; } = true;
+
+    [Parameter]
+    public string bsClass { get; set; } = "";
+
+    [Parameter]
+    public string Width { get; set; } = "100%";
+
+    [Parameter]
+    public string Height { get; set; } = "400px";
+
+    [Parameter]
+    public EventCallback<CarouselPage> ItemChangeCall { get; set; }
+
+    private CarouselPage CurrentItem => Items.Any() ? Items[CurrentIndex] : null;
+    private int CurrentIndex { get; set; } = 0;
+    private System.Timers.Timer AutoPlayTimer;
+
+    protected override void OnInitialized()
+    {
+        if (AutoPlay && Items.Any())
+        {
+            AutoPlayTimer = new System.Timers.Timer(CurrentItem.DisplayDuration);
+            AutoPlayTimer.Elapsed += (sender, e) => NextItem();
+            AutoPlayTimer.AutoReset = true;
+            AutoPlayTimer.Start();
+        }
+    }
+
+    private async Task NextItem()
+    {
+        CurrentIndex = (CurrentIndex + 1) % Items.Count;
+        await ItemChangeCall.InvokeAsync(CurrentItem);
+        if (AutoPlay)
+        {
+            AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
+            AutoPlayTimer.Start();
+        }
+        StateHasChanged();
+    }
+
+    private async Task PreviousItem()
+    {
+        CurrentIndex = (CurrentIndex - 1 + Items.Count) % Items.Count;
+        await ItemChangeCall.InvokeAsync(CurrentItem);
+        if (AutoPlay)
+        {
+            AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
+            AutoPlayTimer.Start();
+        }
+        StateHasChanged();
+    }
+
+    private async Task GoToItem(int index)
+    {
+        CurrentIndex = index;
+        await ItemChangeCall.InvokeAsync(CurrentItem);
+        if (AutoPlay)
+        {
+            AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
+            AutoPlayTimer.Start();
+        }
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        AutoPlayTimer?.Dispose();
+    }
+}

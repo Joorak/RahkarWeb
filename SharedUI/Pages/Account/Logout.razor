@@ -1,0 +1,23 @@
+﻿@*
+  <copyright file="Logout.razor" company="Joorak Rezapour">
+   Copyright (c) Joorak Rezapour. All rights reserved.
+  </copyright>
+*@
+
+@page "/logout"
+
+@attribute [Authorize]
+
+@inject NavigationManager NavManager
+@inject IAuthenticationService AuthService
+
+@code {
+    /// <summary>
+    /// Initialize the component on load.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.Logout();
+        NavManager.NavigateTo("/");
+    }
+}

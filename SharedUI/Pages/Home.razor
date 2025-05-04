@@ -1,0 +1,163 @@
+﻿@page "/"
+@* @inject AppDbContext DbContext *@
+
+<div class="home-container">
+    <!-- Carousel -->
+    <Carousel 
+        IsRTL="true" 
+        Items="CarouselPages" 
+        ShowNavigationButtons="true" 
+        AutoPlay="true" 
+        IsIndicators="true" 
+        bsClass="mb-4" 
+        Width="100%" 
+        Height="400px" 
+        ItemChangeCall="OnCarouselPageChange" />
+
+    <!-- کانتینرهای تکرارشونده -->
+    <div class="flex flex-col gap-y-4">
+        @foreach (var container in Containers)
+        {
+            
+                var containerTemplate = container.ContainerTemplate;
+                var itemTemplate = container.ItemTemplate;
+            
+            <ContainerWrapper Items="@container.Items">
+                <ContainerTemplate>
+                    @containerTemplate(new ContainerContext
+                    {
+                        Items = container.Items,
+                        RenderItems = @<div>
+                            @foreach (var item in container.Items)
+                            {
+                                @itemTemplate(item)
+                            }
+                        </div>
+                    })
+                </ContainerTemplate>
+                <ItemTemplate>
+                    @itemTemplate
+                </ItemTemplate>
+            </ContainerWrapper>
+        }
+    </div>
+</div>
+
+@code {
+    private List<CarouselPage> CarouselPages { get; set; } = new List<CarouselPage>();
+    private List<SellableContainer> Containers { get; set; } = new List<SellableContainer>();
+    private List<SellableItem> sellableItems { get; set; } = new List<SellableItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // بارگذاری داده‌های Carousel از دیتابیس
+        //CarouselPages = await DbContext.CarouselPages.ToListAsync();
+        if (!CarouselPages.Any())
+        {
+            CarouselPages = new List<CarouselPage>
+            {
+                new CarouselPage
+                {
+                    ImageUrl = "https://via.placeholder.com/1200x400",
+                    ClickTarget = "#",
+                    Title = "<h2>بهترین قیمت‌ها</h2>",
+                    Text = "<p>محصولات با تخفیف ویژه</p>",
+                    ButtonText = "خرید کنید",
+                    ButtonTarget = "#",
+                    DisplayDuration = 5000
+                },
+                new CarouselPage
+                {
+                    ImageUrl = "https://via.placeholder.com/1200x400",
+                    ClickTarget = "#",
+                    Title = "<h2>جدیدترین محصولات</h2>",
+                    Text = "<p>کالاهای تازه‌وارد</p>",
+                    ButtonText = "مشاهده",
+                    ButtonTarget = "#",
+                    DisplayDuration = 5000
+                }
+            };
+            //await DbContext.CarouselPages.AddRangeAsync(CarouselPages);
+            //await DbContext.SaveChangesAsync();
+        }
+
+        // بارگذاری کانتینرها و آیتم‌ها
+        //var sellableItems = await DbContext.SellableItems.ToListAsync();
+        if (!sellableItems.Any())
+        {
+            sellableItems = new List<SellableItem>
+            {
+                // دسته‌بندی‌ها (فقط تصویر و لینک)
+                new SellableItem { ImageUrl = "https://via.placeholder.com/100", ClickTarget = "#", TemplateType = "ImageOnly", Title = "لپ‌تاپ" },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/100", ClickTarget = "#", TemplateType = "ImageOnly", Title = "موبایل" },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/100", ClickTarget = "#", TemplateType = "ImageOnly", Title = "ساعت" },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/100", ClickTarget = "#", TemplateType = "ImageOnly", Title = "جواهرات" },
+
+                // بنرهای تبلیغاتی (تصویر، عنوان، متن)
+                new SellableItem { ImageUrl = "https://via.placeholder.com/300x200", ClickTarget = "#", TemplateType = "ImageWithText", Title = "کنسول بازی", Text = "تخفیف ویژه 20%" },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/300x200", ClickTarget = "#", TemplateType = "ImageWithText", Title = "ماشین ظرفشویی", Text = "ارسال رایگان" },
+
+                // محصولات (کالاها با جزئیات)
+                new SellableItem { ImageUrl = "https://via.placeholder.com/150", ClickTarget = "#", TemplateType = "Product", Title = "گوشی سامسونگ", SubTitle = "مدل A52", OriginalPrice = 15000000, DiscountedPrice = 12000000, DiscountPercentage = 20 },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/150", ClickTarget = "#", TemplateType = "Product", Title = "لپ‌تاپ لنوو", SubTitle = "مدل Ideapad", OriginalPrice = 25000000, DiscountedPrice = 22000000, DiscountPercentage = 12 },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/150", ClickTarget = "#", TemplateType = "Product", Title = "ساعت کاسیو", SubTitle = "مدل کلاسیک", OriginalPrice = 5000000, DiscountedPrice = 4500000, DiscountPercentage = 10 },
+                new SellableItem { ImageUrl = "https://via.placeholder.com/150", ClickTarget = "#", TemplateType = "Product", Title = "یخچال سامسونگ", SubTitle = "مدل دوقلو", OriginalPrice = 30000000, DiscountedPrice = 27000000, DiscountPercentage = 10 }
+            };
+            //await DbContext.SellableItems.AddRangeAsync(sellableItems);
+            //await DbContext.SaveChangesAsync();
+        }
+
+        // تنظیم کانتینرها
+        Containers = new List<SellableContainer>
+        {
+            // کانتینر دسته‌بندی‌ها (Swipeable)
+            new SellableContainer
+            {
+                ContainerTemplate = context => @<div class="w-full flex flex-nowrap pb-5 lg:py-5 lg:pr-0 justify-stretch overflow-hidden relative lg:rounded-large pr-5 lg:pr-0">
+                    @context.RenderItems
+                </div>,
+                ItemTemplate = context => @<a href="@context.ClickTarget" class="category-item">
+                    <img src="@context.ImageUrl" alt="@context.Title" class="category-image" />
+                    <p>@context.Title</p>
+                </a>,
+                Items = sellableItems.Where(s => s.TemplateType == "ImageOnly").ToList()
+            },
+            // کانتینر بنرهای تبلیغاتی (Wrap)
+            new SellableContainer
+            {
+                ContainerTemplate = context => @<div class="flex flex-wrap">
+                    @context.RenderItems
+                </div>,
+                ItemTemplate = context => @<a href="@context.ClickTarget" class="banner-item">
+                    <img src="@context.ImageUrl" alt="@context.Title" class="banner-image" />
+                    <h5>@context.Title</h5>
+                    <p>@context.Text</p>
+                </a>,
+                Items = sellableItems.Where(s => s.TemplateType == "ImageWithText").ToList()
+            },
+            // کانتینر محصولات (Wrap + Swipeable)
+            new SellableContainer
+            {
+                ContainerTemplate = context => @<div class="w-full py-3 lg:pt-4 lg:pb-10 flex flex-col items-center">
+                    <div class="flex flex-wrap w-full">
+                        @context.RenderItems
+                    </div>
+                </div>,
+                ItemTemplate = context => @<a href="@context.ClickTarget" class="product-item">
+                    <img src="@context.ImageUrl" alt="@context.Title" class="product-image" />
+                    <h6>@context.Title</h6>
+                    <p>@context.SubTitle</p>
+                    <p class="original-price">@context.OriginalPrice.ToString("N0") تومان</p>
+                    <p class="discounted-price">@context.DiscountedPrice.ToString("N0") تومان</p>
+                    <span class="discount-badge">@context.DiscountPercentage% تخفیف</span>
+                </a>,
+                Items = sellableItems.Where(s => s.TemplateType == "Product").ToList()
+            }
+        };
+    }
+
+    private void OnCarouselPageChange(CarouselPage item)
+    {
+        System.Console.WriteLine($"Carousel item changed to: {item.Title}");
+    }
+}

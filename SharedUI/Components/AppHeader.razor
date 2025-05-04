@@ -1,0 +1,53 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light container">
+        <div class="container-fluid navbar-container">
+            <a class="navbar-brand" href="#">
+                <img src="https://via.placeholder.com/40" alt="User Avatar">
+                <div class="user-info">
+                    <span>@UserName</span>
+                    <small>(@UserRole)</small>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    @foreach (var menuItem in MenuItems)
+                    {
+                        <li class="nav-item">
+
+                            <a class="nav-link @(menuItem.IsActive ? "active" : "")" href="@menuItem.Link">@menuItem.Title <i class="@menuItem.Icon"></i></a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; } = "علی اکبر رضاپور";
+
+    [Parameter]
+    public string UserRole { get; set; } = "نماینده";
+
+    [Parameter]
+    public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>
+    {
+        new MenuItem { Title = "خانه", Link = "/", Icon = "bi bi-house", IsActive = true },
+        new MenuItem { Title = "مشتریان", Link = "#", Icon = "bi bi-people", IsActive = false },
+        new MenuItem { Title = "نمایندگان", Link = "/agents/dashboard", Icon = "bi bi-person-badge", IsActive = false },
+        new MenuItem { Title = "تامین‌کنندگان", Link = "#", Icon = "bi bi-truck", IsActive = false },
+        new MenuItem { Title = "تماس با ما", Link = "#", Icon = "bi bi-telephone", IsActive = false }
+    };
+
+    public class MenuItem
+    {
+        public string Title { get; set; }
+        public string Link { get; set; }
+        public string Icon { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

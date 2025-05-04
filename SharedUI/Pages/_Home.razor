@@ -1,0 +1,41 @@
+﻿@page "/_Home"
+
+<AppHeader />
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <Sidebar MenuItemClicked="HandleMenuItemClicked" CurrentPage="@CurrentPage" />
+        </div>
+        <div class="col-md-9">
+
+            @if (CurrentPage == "Requests")
+            {
+                <Requests />
+            }
+            else if (CurrentPage == "Messages")
+            {
+                <Messages />
+            }
+            else if (CurrentPage == "Settings")
+            {
+                <Settings />
+            }
+            else if (CurrentPage == "NewRequest")
+            {
+                <ProductSelection />
+            }
+        </div>
+    </div>
+</main>
+
+<AppFooter />
+
+@code {
+    private string CurrentPage { get; set; } = "Requests";
+
+    private void HandleMenuItemClicked(string page)
+    {
+        CurrentPage = page;
+    }
+}

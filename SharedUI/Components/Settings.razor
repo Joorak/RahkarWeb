@@ -1,0 +1,41 @@
+﻿<div class="content-container">
+    <h5 class="mb-4">@PageTitle</h5>
+    <div class="mb-3">
+        <label for="username" class="form-label">@UsernameLabel</label>
+        <input type="text" class="form-control" id="username" placeholder="@UsernamePlaceholder" value="@Username" @onchange="e => Username = e.Value.ToString()" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">@PasswordLabel</label>
+        <input type="password" class="form-control" id="password" placeholder="@PasswordPlaceholder" value="@Password" @onchange="e => Password = e.Value.ToString()" />
+    </div>
+    <button class="btn btn-danger" @onclick="SaveSettings">@SaveButtonText</button>
+</div>
+
+@code {
+    [Parameter]
+    public string PageTitle { get; set; } = "تنظیمات";
+
+    [Parameter]
+    public string UsernameLabel { get; set; } = "نام کاربر";
+
+    [Parameter]
+    public string UsernamePlaceholder { get; set; } = "نام کاربر";
+
+    [Parameter]
+    public string PasswordLabel { get; set; } = "کلمه عبور";
+
+    [Parameter]
+    public string PasswordPlaceholder { get; set; } = "کلمه عبور";
+
+    [Parameter]
+    public string SaveButtonText { get; set; } = "ثبت";
+
+    private string Username { get; set; } = "علی اکبر رضاپور";
+    private string Password { get; set; } = "";
+
+    private void SaveSettings()
+    {
+        // منطق ذخیره تنظیمات (شبیه‌سازی)
+        System.Console.WriteLine($"نام کاربر: {Username}, کلمه عبور: {Password}");
+    }
+}
