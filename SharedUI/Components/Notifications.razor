@@ -1,4 +1,4 @@
-@inject AppDbContext DbContext
+﻿@* @inject AppDbContext DbContext *@
 
 <div class="content-container">
     @foreach (var notification in NotificationsList)
@@ -21,7 +21,7 @@
     protected override async Task OnInitializedAsync()
     {
         // بارگذاری اعلان‌ها از دیتابیس
-        NotificationsList = await DbContext.Notifications.ToListAsync();
+        //NotificationsList = await DbContext.Notifications.ToListAsync();
         if (!NotificationsList.Any())
         {
             // داده‌های پیش‌فرض در صورت خالی بودن دیتابیس
@@ -39,8 +39,8 @@
         if (notification != null)
         {
             NotificationsList.Remove(notification);
-            DbContext.Notifications.Remove(notification);
-            await DbContext.SaveChangesAsync();
+            //DbContext.Notifications.Remove(notification);
+            //await DbContext.SaveChangesAsync();
         }
     }
 }

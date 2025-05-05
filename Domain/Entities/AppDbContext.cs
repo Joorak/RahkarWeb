@@ -13,7 +13,7 @@ namespace Domain.Entities
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
-        public DbSet<CarouselPage> CarouselPages { get; set; }
+        public DbSet<CarouselItem> CarouselItems { get; set; }
         public DbSet<SellableItem> SellableItems { get; set; }
     }
 }

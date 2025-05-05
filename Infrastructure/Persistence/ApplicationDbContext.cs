@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
-        public DbSet<CarouselPage> CarouselItems { get; set; }
+        public DbSet<CarouselItem> CarouselItems { get; set; }
         public DbSet<SellableItem> SellableItems { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

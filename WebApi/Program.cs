@@ -40,7 +40,11 @@ try
     builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<ApiExceptionFilterAttribute>();
 
-    builder.Services.AddControllers(options => { options.Filters.Add<ApiExceptionFilterAttribute>(); options.Filters.Add<LogActionFilter>(); });
+    builder.Services.AddControllers(options => 
+            { 
+                options.Filters.Add<ApiExceptionFilterAttribute>(); 
+                options.Filters.Add<LogActionFilter>(); 
+            });
             //.AddFluentValidation((x => x.AutomaticValidationEnabled = false));
     
     // Add JWT TOKEN Settings

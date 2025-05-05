@@ -5,14 +5,14 @@
     <!-- Carousel -->
     <Carousel 
         IsRTL="true" 
-        Items="CarouselPages" 
+        Items="CarouselItems" 
         ShowNavigationButtons="true" 
         AutoPlay="true" 
         IsIndicators="true" 
         bsClass="mb-4" 
         Width="100%" 
         Height="400px" 
-        ItemChangeCall="OnCarouselPageChange" />
+        ItemChangeCall="OnCarouselItemChange" />
 
     <!-- کانتینرهای تکرارشونده -->
     <div class="flex flex-col gap-y-4">
@@ -44,19 +44,19 @@
 </div>
 
 @code {
-    private List<CarouselPage> CarouselPages { get; set; } = new List<CarouselPage>();
+    private List<CarouselItem> CarouselItems { get; set; } = new List<CarouselItem>();
     private List<SellableContainer> Containers { get; set; } = new List<SellableContainer>();
     private List<SellableItem> sellableItems { get; set; } = new List<SellableItem>();
 
     protected override async Task OnInitializedAsync()
     {
         // بارگذاری داده‌های Carousel از دیتابیس
-        //CarouselPages = await DbContext.CarouselPages.ToListAsync();
-        if (!CarouselPages.Any())
+        //CarouselItems = await DbContext.CarouselItems.ToListAsync();
+        if (!CarouselItems.Any())
         {
-            CarouselPages = new List<CarouselPage>
+            CarouselItems = new List<CarouselItem>
             {
-                new CarouselPage
+                new CarouselItem
                 {
                     ImageUrl = "https://via.placeholder.com/1200x400",
                     ClickTarget = "#",
@@ -66,7 +66,27 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselPage
+                new CarouselItem
+                {
+                    ImageUrl = "https://via.placeholder.com/1200x400",
+                    ClickTarget = "#",
+                    Title = "<h2>جدیدترین محصولات</h2>",
+                    Text = "<p>کالاهای تازه‌وارد</p>",
+                    ButtonText = "مشاهده",
+                    ButtonTarget = "#",
+                    DisplayDuration = 5000
+                },
+                new CarouselItem
+                {
+                    ImageUrl = "https://via.placeholder.com/1200x400",
+                    ClickTarget = "#",
+                    Title = "<h2>بهترین قیمت‌ها</h2>",
+                    Text = "<p>محصولات با تخفیف ویژه</p>",
+                    ButtonText = "خرید کنید",
+                    ButtonTarget = "#",
+                    DisplayDuration = 5000
+                },
+                new CarouselItem
                 {
                     ImageUrl = "https://via.placeholder.com/1200x400",
                     ClickTarget = "#",
@@ -77,7 +97,7 @@
                     DisplayDuration = 5000
                 }
             };
-            //await DbContext.CarouselPages.AddRangeAsync(CarouselPages);
+            //await DbContext.CarouselItems.AddRangeAsync(CarouselItems);
             //await DbContext.SaveChangesAsync();
         }
 
@@ -156,7 +176,7 @@
         };
     }
 
-    private void OnCarouselPageChange(CarouselPage item)
+    private void OnCarouselItemChange(CarouselItem item)
     {
         System.Console.WriteLine($"Carousel item changed to: {item.Title}");
     }

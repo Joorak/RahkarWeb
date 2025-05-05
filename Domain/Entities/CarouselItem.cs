@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class CarouselPage : BaseEntity
+    public class CarouselItem : BaseEntity
     {
         public string ImageUrl { get; set; }
         public string ClickTarget { get; set; }

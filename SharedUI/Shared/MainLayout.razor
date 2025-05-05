@@ -11,7 +11,7 @@
 
 <PageTitle>Blazor Shop</PageTitle>
 
-<MudLayout>
+
     <div class="page">
         <div class="sidebar">
             <NavMenu />
@@ -52,9 +52,9 @@
             </article>
         </main>
     </div>
-</MudLayout>
 
-<MudThemeProvider/>
+
+@* <MudThemeProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
@@ -64,15 +64,15 @@
                 SuccessClass="success-toast-override"
                 SuccessIcon="fa fa-thumbs-up"
                 ErrorClass="error-toast-override"
-                ErrorIcon="fa fa-bug" />
+                ErrorIcon="fa fa-bug" /> *@
 
 @code {
-    [CascadingParameter] AppState AppState { get; set; }
+    [CascadingParameter] AppState? AppState { get; set; }
     private int counts { get; set; }
 
-    private string username { get; set; }
+    private string? username { get; set; }
     private int userId { get; set; }
-    private string userRole { get; set; }
+    private string? userRole { get; set; }
 
     /// <summary>
     /// .
@@ -84,14 +84,14 @@
         var authstate = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authstate.User;
 
-        if (!user.Identity.IsAuthenticated) return;
+        if (!user.Identity!.IsAuthenticated) return;
         username = user.Claims.FirstOrDefault(
             x => x.Type == StringRoleResources.NameClaim || x.Type == StringRoleResources.NameClaimSecond
-        ).Value.Replace("@", " ");
-        userId = int.Parse(user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.UserIdClaim).Value);
-        userRole = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim).Value;
+        )!.Value.Replace("@", " ");
+        userId = int.Parse(user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.UserIdClaim)!.Value);
+        userRole = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim)!.Value;
 
-        var isAdmin = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim).Value;
+        var isAdmin = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim)!.Value;
         
         // if (!isAdmin.Equals(StringRoleResources.Admin))
         // {

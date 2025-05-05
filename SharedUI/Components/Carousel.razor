@@ -1,4 +1,4 @@
-<div class="carousel-container @(bsClass)" style="width: @Width; height: @Height; direction: @(IsRTL ? "rtl" : "ltr");">
+﻿<div class="carousel-container @(bsClass)" style="width: @Width; height: @Height; direction: @(IsRTL ? "rtl" : "ltr");">
     <div class="carousel-inner">
         @foreach (var item in Items)
         {
@@ -46,7 +46,7 @@
     public bool IsRTL { get; set; } = true;
 
     [Parameter]
-    public List<CarouselPage> Items { get; set; } = new List<CarouselPage>();
+    public List<CarouselItem> Items { get; set; } = new List<CarouselItem>();
 
     [Parameter]
     public bool ShowNavigationButtons { get; set; } = true;
@@ -67,9 +67,9 @@
     public string Height { get; set; } = "400px";
 
     [Parameter]
-    public EventCallback<CarouselPage> ItemChangeCall { get; set; }
+    public EventCallback<CarouselItem> ItemChangeCall { get; set; }
 
-    private CarouselPage CurrentItem => Items.Any() ? Items[CurrentIndex] : null;
+    private CarouselItem CurrentItem => Items.Any() ? Items[CurrentIndex] : null;
     private int CurrentIndex { get; set; } = 0;
     private System.Timers.Timer AutoPlayTimer;
 

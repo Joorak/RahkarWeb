@@ -2,7 +2,12 @@
 
 <Router AppAssembly="typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Shared.AppLayout)" />
+        <RouteView RouteData="routeData" DefaultLayout="typeof(AppLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(AppLayout)">
+            <NotFound />
+        </LayoutView>
+    </NotFound>
 </Router>

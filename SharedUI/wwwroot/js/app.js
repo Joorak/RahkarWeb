@@ -39,12 +39,12 @@ async function stopSlider() {
 let carouselInterval;
 async function startCarousel() {
     const carouselTracker = document.querySelector(".multi-carousel-tracker");
-    const CarouselPages = document.querySelectorAll(".multi-carousel-item");
+    const CarouselItems = document.querySelectorAll(".multi-carousel-item");
     let index = 0;
 
     carouselInterval = setInterval(() => {
         index++;
-        if (index > (CarouselPages.length - 4)) index = 0; // Reset if end reached
+        if (index > (CarouselItems.length - 4)) index = 0; // Reset if end reached
         if (document.querySelector("#page-container").getAttribute('dir') === 'rtl')
             carouselTracker.style.transform = `translateX(${index * 25}%)`;
         else

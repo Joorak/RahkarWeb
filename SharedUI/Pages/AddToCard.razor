@@ -1,7 +1,7 @@
 ﻿@page "/agents/addtocard"
 
 
-@inject AppDbContext DbContext
+@* @inject AppDbContext DbContext *@
 
 <div class="product-selection-container">
     <!-- شماره درخواست و سبد خرید -->
@@ -181,7 +181,7 @@
     {
         ShowCategories = false;
         // بارگذاری محصولات مربوط به دسته‌بندی (شبیه‌سازی)
-        Products = DbContext.Products.Where(p => p.CategoryId == category.Id).ToList();
+        //Products = DbContext.Products.Where(p => p.CategoryId == category.Id).ToList();
     }
 
     private void ToggleProductSelection(Product product, bool isSelected)
@@ -191,15 +191,15 @@
         {
             var cartItem = new CartItem { RequestNumber = RequestNumber, ProductId = product.Id, Product = product };
             CartItems.Add(cartItem);
-            DbContext.CartItems.Add(cartItem);
-            DbContext.SaveChanges();
+            //DbContext.CartItems.Add(cartItem);
+            //DbContext.SaveChanges();
         }
         else if (!isSelected && CartItems.Any(ci => ci.ProductId == product.Id))
         {
             var cartItem = CartItems.First(ci => ci.ProductId == product.Id);
             CartItems.Remove(cartItem);
-            DbContext.CartItems.Remove(cartItem);
-            DbContext.SaveChanges();
+            //DbContext.CartItems.Remove(cartItem);
+            //DbContext.SaveChanges();
         }
     }
 
@@ -208,8 +208,8 @@
         var product = Products.FirstOrDefault(p => p.Id == cartItem.ProductId);
         if (product != null) product.IsSelected = false;
         CartItems.Remove(cartItem);
-        DbContext.CartItems.Remove(cartItem);
-        DbContext.SaveChanges();
+        //DbContext.CartItems.Remove(cartItem);
+        //DbContext.SaveChanges();
     }
 
     private void ShowCartModal()
@@ -241,13 +241,13 @@
     {
         // منطق افزودن کالای جدید (شبیه‌سازی)
         var newProduct = new Product { Name = "کالای جدید", Price = 10_000_000, CategoryId = ProductCategories.First().Id };
-        DbContext.Products.Add(newProduct);
-        DbContext.SaveChanges();
+        //DbContext.Products.Add(newProduct);
+        //DbContext.SaveChanges();
         Products.Add(newProduct);
         var cartItem = new CartItem { RequestNumber = RequestNumber, ProductId = newProduct.Id, Product = newProduct };
         CartItems.Add(cartItem);
-        DbContext.CartItems.Add(cartItem);
-        DbContext.SaveChanges();
+        //DbContext.CartItems.Add(cartItem);
+        //DbContext.SaveChanges();
     }
 
     protected override async Task OnInitializedAsync()
@@ -256,10 +256,10 @@
         RequestNumber = await Task.FromResult($"REQ-{DateTime.Now:yyyyMMdd}-{new Random().Next(100, 999)}");
 
         // بارگذاری دسته‌بندی‌ها و محصولات از دیتابیس
-        ProductCategories = await DbContext.ProductCategories.Where(c => c.IsBusinessCategory == false).ToListAsync();
-        BusinessCategories = await DbContext.ProductCategories.Where(c => c.IsBusinessCategory == true).ToListAsync();
-        Products = await DbContext.Products.ToListAsync();
-        CartItems = await DbContext.CartItems.Include(ci => ci.Product).Where(ci => ci.RequestNumber == RequestNumber).ToListAsync();
+        //ProductCategories = await DbContext.ProductCategories.Where(c => c.IsBusinessCategory == false).ToListAsync();
+        //BusinessCategories = await DbContext.ProductCategories.Where(c => c.IsBusinessCategory == true).ToListAsync();
+        //Products = await DbContext.Products.ToListAsync();
+        //CartItems = await DbContext.CartItems.Include(ci => ci.Product).Where(ci => ci.RequestNumber == RequestNumber).ToListAsync();
 
         // داده‌های پیش‌فرض در صورت خالی بودن دیتابیس
         if (!ProductCategories.Any())
@@ -271,7 +271,7 @@
                 new ProductCategory { Id = 3, Name = "کالاهای الکترونیکی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
                 new ProductCategory { Id = 4, Name = "لوازم خانگی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false }
             };
-            DbContext.ProductCategories.AddRange(ProductCategories);
+            //DbContext.ProductCategories.AddRange(ProductCategories);
         }
 
         if (!BusinessCategories.Any())
@@ -282,7 +282,7 @@
                 new ProductCategory { Id = 6, Name = "پرطرفدارترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true },
                 new ProductCategory { Id = 7, Name = "جدیدترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true }
             };
-            DbContext.ProductCategories.AddRange(BusinessCategories);
+            //DbContext.ProductCategories.AddRange(BusinessCategories);
         }
 
         if (!Products.Any())
@@ -294,10 +294,10 @@
                 new Product { Id = 3, Name = "لپ‌تاپ لنوو", Price = 25_000_000, CategoryId = 3 },
                 new Product { Id = 4, Name = "یخچال سامسونگ", Price = 30_000_000, CategoryId = 4 }
             };
-            DbContext.Products.AddRange(Products);
+            //DbContext.Products.AddRange(Products);
         }
 
-        await DbContext.SaveChangesAsync();
+        //await DbContext.SaveChangesAsync();
     }
 
     public class WizardStep
