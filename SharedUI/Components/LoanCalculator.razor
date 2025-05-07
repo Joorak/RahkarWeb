@@ -84,9 +84,14 @@
     </div> *@
 
     <!-- دکمه و جدول بازپرداخت -->
-    <button class="lc-toggle-table lc-btn-wfull w-75 mx-auto" @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
+    <div class="position-relative py-4">
+    <button class="lc-toggle-table position-absolute start-50 top-50 translate-middle" @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
+    </div>
     @if (ShowTable)
     {
+        <div class="position-relative pt-3">
+            <div class="position-absolute start-0 top-100 translate-middle-y"><i class="bi bi-file-excel fw-bold"></i></div>
+        </div>
         <div class="lc-table-container" style="height: @(TableHeight)px; overflow: hidden; transition: height 0.5s ease;">
             <table class="lc-payment-table">
                 <thead>
