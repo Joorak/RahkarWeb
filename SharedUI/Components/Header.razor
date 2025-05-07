@@ -11,14 +11,14 @@
                     {
                         <li class="nav-item">
 
-                            <a class="nav-link @(menuItem.IsActive ? "active" : "")" href="@menuItem.Link">@menuItem.Title <i class="@menuItem.Icon"></i></a>
+                            <a class="nav-link @(menuItem.IsActive ? "active" : "")" href="@menuItem.Link" @onclick="() => ItemClicked(menuItem)">@menuItem.Title <i class="@menuItem.Icon"></i></a>
                         </li>
                     }
                 </ul>
             </div>
             
         </div>
-        <a class="user-avatar " href="#">
+        <a class="text-decoration-none user-avatar " href="#">
             <img src="_content/SharedUI/img/1.png" alt="User Avatar">
             <span>@UserName</span>
             <small>(@UserRole)</small>
@@ -42,7 +42,13 @@
         new MenuItem { Title = "تامین‌کنندگان", Link = "#", Icon = "bi bi-truck", IsActive = false },
         new MenuItem { Title = "تماس با ما", Link = "#", Icon = "bi bi-telephone", IsActive = false }
     };
-
+    private async Task ItemClicked(MenuItem item)
+    {
+        var options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
+        Parallel.ForEach(MenuItems, options, x => { x.IsActive = false; });
+        MenuItems.Where(x => x.Title == item.Title).FirstOrDefault()!.IsActive = true;
+        await InvokeAsync(StateHasChanged);
+    }
     public class MenuItem
     {
         public string Title { get; set; }

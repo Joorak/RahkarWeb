@@ -18,24 +18,26 @@
                 </div>
             </div>
         }
+        @if (ShowNavigationButtons)
+        {
+            <button class="carousel-control-prev" @onclick="PreviousItem">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <button class="carousel-control-next" @onclick="NextItem">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        }
     </div>
 
-    @if (ShowNavigationButtons)
-    {
-        <button class="carousel-control-prev" @onclick="PreviousItem">
-            <span class="carousel-control-prev-icon">&lt;</span>
-        </button>
-        <button class="carousel-control-next" @onclick="NextItem">
-            <span class="carousel-control-next-icon">&gt;</span>
-        </button>
-    }
+    
 
     @if (IsIndicators)
     {
-        <div class="carousel-indicators">
+        <div class="carousel-indicators mx-auto">
             @for (int i = 0; i < Items.Count; i++)
             {
-                <button class="@(i == CurrentIndex ? "active" : "")" @onclick="() => GoToItem(i)"></button>
+                var index = i;
+                <button class="@(i == CurrentIndex ? "active" : "")" @onclick="() => GoToItem(index)"></button>
             }
         </div>
     }
@@ -61,10 +63,10 @@
     public string bsClass { get; set; } = "";
 
     [Parameter]
-    public string Width { get; set; } = "100%";
+    public string Width { get; set; } = "";
 
     [Parameter]
-    public string Height { get; set; } = "400px";
+    public string Height { get; set; } = "";
 
     [Parameter]
     public EventCallback<CarouselItem> ItemChangeCall { get; set; }
@@ -73,14 +75,14 @@
     private int CurrentIndex { get; set; } = 0;
     private System.Timers.Timer AutoPlayTimer;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (AutoPlay && Items.Any())
         {
             AutoPlayTimer = new System.Timers.Timer(CurrentItem.DisplayDuration);
-            AutoPlayTimer.Elapsed += (sender, e) => NextItem();
+            AutoPlayTimer.Elapsed += (sender, e) =>  Task.Run(() => NextItem());
             AutoPlayTimer.AutoReset = true;
-            AutoPlayTimer.Start();
+            await Task.Run(() => AutoPlayTimer.Start());
         }
     }
 
@@ -93,7 +95,7 @@
             AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
             AutoPlayTimer.Start();
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task PreviousItem()
@@ -105,7 +107,7 @@
             AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
             AutoPlayTimer.Start();
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task GoToItem(int index)
@@ -117,7 +119,7 @@
             AutoPlayTimer.Interval = CurrentItem.DisplayDuration;
             AutoPlayTimer.Start();
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
