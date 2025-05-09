@@ -38,23 +38,67 @@
     </div>
 
     <!-- نتایج محاسبات -->
-    <div class="container">
-        <div class="row my-3">
+    <div class="container lc-results4 my-3">
+        <div class="row mt-3">
             <div class="col text-center fs-2">
                 نتایج محاسبات
             </div>
         </div>
-        <div class="row justify-content-evenly">
+        <div class="row my-3">
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ هر بازپرداخت:</label>
-                <span>@(MonthlyPayment.ToString("N0")) تومان</span>
+                <strong>@(MonthlyPayment.ToString("N0")) تومان</strong>
             </div>
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ فرع تسهیلات:</label>
-                <span>@(InterestAmount.ToString("N0")) تومان</span>
+                <strong>@(InterestAmount.ToString("N0")) تومان</strong>
             </div>
         </div>
+
+        <!-- دکمه و جدول بازپرداخت -->
+        <div class="row justify-content-center my-3">
+            <button class="lc-toggle-table mx-auto w-auto " @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
+        </div>
+        @if (ShowTable)
+        {
+            <div class="position-relative pt-3">
+                <div class="position-absolute start-0 top-100 translate-middle-y"><i class="bi bi-file-excel fw-bold"></i></div>
+            </div>
+            <div class="lc-table-container" style="height: @(TableHeight)px; overflow: hidden; transition: height 0.5s ease;">
+                <table class="lc-payment-table">
+                    <thead>
+                        <tr>
+                            <th>شماره بازپرداخت</th>
+                            <th>مبلغ بازپرداخت</th>
+                            <th>سهم اصل</th>
+                            <th>سهم فرع</th>
+                            <th>مانده تسهیلات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in PaginatedPaymentSchedule)
+                        {
+                            <tr>
+                                <td>@payment.InstallmentNumber</td>
+                                <td>@payment.PaymentAmount.ToString("N0") تومان</td>
+                                <td>@payment.PrincipalShare.ToString("N0") تومان</td>
+                                <td>@payment.InterestShare.ToString("N0") تومان</td>
+                                <td>@payment.RemainingBalance.ToString("N0") تومان</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="lc-pagination">
+                    <button class="lc-pagination-btn" disabled="@(CurrentPage == 1)" @onclick="PreviousPage">قبلی</button>
+                    <span>صفحه @CurrentPage از @TotalPages</span>
+                    <button class="lc-pagination-btn" disabled="@(CurrentPage == TotalPages)" @onclick="NextPage">بعدی</button>
+                </div>
+                <button class="lc-export-btn" @onclick="ExportToExcel">صدور به اکسل</button>
+                <button class="lc-export-btn" @onclick="ExportToPDF">صدور به PDF</button>
+            </div>
+        }
     </div>
+</div>
     @* <div class="lc-results ">
         <h4 class=" fw-bold">نتایج محاسبات</h4>
         <div class="lc-result-row">
@@ -83,49 +127,7 @@
         </div>
     </div> *@
 
-    <!-- دکمه و جدول بازپرداخت -->
-    <div class="position-relative py-4">
-    <button class="lc-toggle-table position-absolute start-50 top-50 translate-middle" @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
-    </div>
-    @if (ShowTable)
-    {
-        <div class="position-relative pt-3">
-            <div class="position-absolute start-0 top-100 translate-middle-y"><i class="bi bi-file-excel fw-bold"></i></div>
-        </div>
-        <div class="lc-table-container" style="height: @(TableHeight)px; overflow: hidden; transition: height 0.5s ease;">
-            <table class="lc-payment-table">
-                <thead>
-                    <tr>
-                        <th>شماره بازپرداخت</th>
-                        <th>مبلغ بازپرداخت</th>
-                        <th>سهم اصل</th>
-                        <th>سهم فرع</th>
-                        <th>مانده تسهیلات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var payment in PaginatedPaymentSchedule)
-                    {
-                        <tr>
-                            <td>@payment.InstallmentNumber</td>
-                            <td>@payment.PaymentAmount.ToString("N0") تومان</td>
-                            <td>@payment.PrincipalShare.ToString("N0") تومان</td>
-                            <td>@payment.InterestShare.ToString("N0") تومان</td>
-                            <td>@payment.RemainingBalance.ToString("N0") تومان</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="lc-pagination">
-                <button class="lc-pagination-btn" disabled="@(CurrentPage == 1)" @onclick="PreviousPage">قبلی</button>
-                <span>صفحه @CurrentPage از @TotalPages</span>
-                <button class="lc-pagination-btn" disabled="@(CurrentPage == TotalPages)" @onclick="NextPage">بعدی</button>
-            </div>
-            <button class="lc-export-btn" @onclick="ExportToExcel">صدور به اکسل</button>
-            <button class="lc-export-btn" @onclick="ExportToPDF">صدور به PDF</button>
-        </div>
-    }
-</div>
+    
 
 @code {
     // پارامترهای ورودی

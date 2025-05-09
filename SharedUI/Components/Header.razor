@@ -1,5 +1,44 @@
-﻿<header >
-    <nav class="d-flex justify-content-around justify-content-md-between  navbar navbar-expand-md navbar-light container">
+﻿<div class="container-wfull container-m-1">
+    <nav class="navbar navbar-expand-md">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                @* <a class="navbar-brand" href="#">Hidden brand</a> *@
+                <ul class="navbar-nav ms-auto mb-md-0">
+                    @foreach (var menuItem in MenuItems)
+                    {
+                        <li class="nav-item mx-md-5">
+
+                            <a class="nav-link @(menuItem.IsActive ? "active" : "")" href="@menuItem.Link" @onclick="() => ItemClicked(menuItem)" aria-current="page">@menuItem.Title <i class="@menuItem.Icon"></i></a>
+                        </li>
+                    }
+                    @* <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li> *@
+                </ul>
+                <a class="text-decoration-none user-avatar me-auto" href="#">
+                    <img src="_content/SharedUI/img/1.png" alt="User Avatar">
+                    <span>@UserName</span>
+                    <small>(@UserRole)</small>
+                </a>
+                @* <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form> *@
+            </div>
+            
+        </div>
+        
+    </nav>
+@*     <nav class="d-flex justify-content-md-between  navbar navbar-expand-md navbar-light">
         <div class="navbar-container">
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,7 +48,7 @@
                 <ul class="navbar-nav">
                     @foreach (var menuItem in MenuItems)
                     {
-                        <li class="nav-item">
+                        <li class="nav-item mx-md-5">
 
                             <a class="nav-link @(menuItem.IsActive ? "active" : "")" href="@menuItem.Link" @onclick="() => ItemClicked(menuItem)">@menuItem.Title <i class="@menuItem.Icon"></i></a>
                         </li>
@@ -23,9 +62,9 @@
             <span>@UserName</span>
             <small>(@UserRole)</small>
         </a>
-    </nav>
+    </nav> *@
     
-</header>
+</div>
 @code {
     [Parameter]
     public string UserName { get; set; } = "علی اکبر رضاپور";
