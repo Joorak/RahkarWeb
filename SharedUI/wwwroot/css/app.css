@@ -250,6 +250,7 @@ html, body {
         .page .header {
             flex: 0 1 auto;
             
+            z-index: 99;
         }
 
         .page .content {
@@ -258,6 +259,7 @@ html, body {
 
         .page .footer {
             flex: 0 1 2rem;
+            
             z-index: 99;
         }
 
@@ -271,9 +273,13 @@ html, body {
 /*    margin: 0 !important;
     padding: 0 !important;*/
 }
-.container-shadow {
+.container-shadow-primary-50 {
     border-radius: 1rem;
     box-shadow: 0 2px 10px var(--primary-color-50);
+}
+.container-shadow-secondary-50 {
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px var(--secondary-color-50);
 }
 .container-p-1 {
     padding: 1rem;
@@ -282,9 +288,25 @@ html, body {
     margin: 1rem;
 }
 
+#btn-back-to-top {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAxOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xLjUgOS4zMzM0NEw5IDEuNTU1NjZNOSAxLjU1NTY2TDkgMjYuNDQ0Nk05IDEuNTU1NjZMMTYuNSA5LjMzMzQ0IiBzdHJva2U9IiNGRjYyNkEiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4NCjwvc3ZnPg0K");
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: fixed;
+    color: black;
+    display: none;
+    bottom: 34px;
+    width: 4.5rem;
+    height: 4.5rem;
+    z-index: 10000000;
+    background-color: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 10px var(--primary-color-25);
+    left: 2.5rem;
+    cursor: pointer;
+}
 
-
-h1,
+/*h1,
 h2,
 h3,
 h4,
@@ -307,8 +329,15 @@ h6 {
     .flags.flag-us {
         background: url(../img/us.svg);
         background-size: cover;
-    }
-
+    }*/
+.title-text {
+    background-color: #fff;
+    width: fit-content;
+    padding: 0 1.5rem;
+    font-weight: bold;
+    font-size: 1.875rem;
+    color: var(--app-title-color);
+}
 
 .not-found-wrapper {
     position: fixed;
@@ -380,7 +409,12 @@ padding-inline-start: 5px !important;
     font-size: 14px;
     border-top: 1px solid #e0e0e0;
 }*/
-
+.hr-divider {
+    align-self: stretch;
+    min-height: 1px;
+    min-width: 1px;
+    max-width: 100%;
+}
     .footer-title {
         color: #FF626A;
         font-weight: bold;
@@ -399,7 +433,7 @@ padding-inline-start: 5px !important;
     .copyright {
         color: #FF626A;
         text-align: right;
-        margin: 20px 30px 0 0;
+       
     }
 /*#endregion */
 

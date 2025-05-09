@@ -1,7 +1,12 @@
 ﻿@* <link href="css/loan-calculator.css" rel="stylesheet" /> *@
 
-<div class="lc-calculator">
-    <h3 class="d-flex mx-auto mb-5">ماشین حساب وام</h3>
+<div class="lc-calculator5">
+    <div class="row my-3">
+        <div class="col text-center">
+            <h3 class="mx-auto title-text">ماشین حساب وام</h3>
+        </div>
+    </div>
+    @* <h3 class="d-flex mx-auto mb-5 title-text">ماشین حساب وام</h3> *@
 
     <!-- باکس نرخ سود قابل تغییر -->
     <div class="lc-info-box mt-5">
@@ -38,12 +43,17 @@
     </div>
 
     <!-- نتایج محاسبات -->
-    <div class="container lc-results4 my-3">
-        <div class="row mt-3">
+    <div class="container-wfull container-shadow-secondary-50 container-p-1 my-5">
+        <div class="row mt-1">
+            <div class="col text-center">
+                <h3 class="mx-auto title-text">نتایج محاسبات</h3>
+            </div>
+        </div>
+       @*  <div class="row mt-3">
             <div class="col text-center fs-2">
                 نتایج محاسبات
             </div>
-        </div>
+        </div> *@
         <div class="row my-3">
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ هر بازپرداخت:</label>
@@ -52,6 +62,22 @@
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ فرع تسهیلات:</label>
                 <strong>@(InterestAmount.ToString("N0")) تومان</strong>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-12 col-md-6 text-center">
+                <label>مبلغ اصل و فرع:</label>
+                <strong>@(TotalAmount.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col-12 col-md-6 text-center">
+                <label>فرع تنفس:</label>
+                <strong>@(GraceInterestAmount.ToString("N0")) تومان</strong>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-12 text-center">
+                <label>@DifferenceTitle:</label>
+                <strong>@(FeeAmount.ToString("N0")) تومان</strong>
             </div>
         </div>
 

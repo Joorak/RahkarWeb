@@ -8,15 +8,15 @@
                   IsIndicators="true"
                   bsClass=""
                   Width=""
-                  Height="33.33rem"
+                  Height="30rem"
                   ItemChangeCall="OnCarouselItemChange" />
     </div>
-    <div class="container-wfull container-shadow container-p-1 container-m-1">
-        <LoanCalculator InterestRate="26" RealInterestRate="36" DifferenceTitle="کارمزد خدمات"
+    <div class="container-wfull container-shadow-primary-50 container-p-1 container-m-1">
+        <LoanCalculator InterestRate="26" RealInterestRate="56" DifferenceTitle="کارمزد خدمات"
                     MinLoanAmount="50000000" MaxLoanAmount="1000000000" LoanStep="10000000" MinPaymentMonths="1"
                     MaxPaymentMonths="240" MaxGraceDays="365" MaxPaymentInterval="24" />
     </div>
-    <div class="container-wfull container-shadow container-p-1 container-m-1">
+    <div class="container-wfull container-shadow-primary-50 container-p-1 container-m-1">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-2">
             @foreach (var item in sellableItems.Where(s => s.TemplateType == "SuppliersBanner").ToList())
             {
@@ -29,7 +29,7 @@
             }
         </div>
     </div>
-    <div class="container-wfull container-shadow container-p-1 container-m-1">
+    <div class="container-wfull container-shadow-primary-50 container-p-1 container-m-1">
         
         <div class="scroll-wrapper">
             <button class="scroll-btn left" onclick="scrollContainer(-1)">

@@ -6,3 +6,12 @@
         behavior: 'smooth'
     });
 }
+
+window.onscroll = function () {
+    var showAfter = 150;
+    var element = document.getElementById('btn-back-to-top');
+    if (window.scrollY > showAfter)
+        element.style.display = 'block';
+    else
+        element.style.display = 'none';
+};
