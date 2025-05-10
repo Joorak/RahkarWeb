@@ -21,6 +21,6 @@ global using SharedUI.AuthPolicies;
 global using SharedUI.Interceptor;
 global using SharedUI.Interfaces;
 global using SharedUI.Services;
-global using SharedUI.Shared;
+global using SharedUI.Components.Layouts;
 global using Application;
 global using Domain.Entities;

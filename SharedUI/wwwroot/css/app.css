@@ -281,6 +281,10 @@ html, body {
     border-radius: 1rem;
     box-shadow: 0 2px 10px var(--secondary-color-50);
 }
+.container-shadow-secondary-10 {
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px var(--secondary-color-10);
+}
 .container-p-1 {
     padding: 1rem;
 }
@@ -289,11 +293,11 @@ html, body {
 }
 
 #btn-back-to-top {
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAxOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xLjUgOS4zMzM0NEw5IDEuNTU1NjZNOSAxLjU1NTY2TDkgMjYuNDQ0Nk05IDEuNTU1NjZMMTYuNSA5LjMzMzQ0IiBzdHJva2U9IiNGRjYyNkEiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4NCjwvc3ZnPg0K");
+    /*background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAxOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xLjUgOS4zMzM0NEw5IDEuNTU1NjZNOSAxLjU1NTY2TDkgMjYuNDQ0Nk05IDEuNTU1NjZMMTYuNSA5LjMzMzQ0IiBzdHJva2U9IiNGRjYyNkEiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4NCjwvc3ZnPg0K");
     background-position: center center;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat;*/
     position: fixed;
-    color: black;
+    /*color: black;*/
     display: none;
     bottom: 34px;
     width: 4.5rem;
@@ -301,11 +305,18 @@ html, body {
     z-index: 10000000;
     background-color: #ffffff;
     border-radius: 1.25rem;
-    box-shadow: 0 2px 10px var(--primary-color-25);
+    box-shadow: 0 2px 10px var(--primary-color-50);
     left: 2.5rem;
     cursor: pointer;
 }
-
+.svg-icon {
+    
+    width: 80%;
+    height: 80%;
+    margin:10%;
+    color:var(--primary-color-75);
+    
+}
 /*h1,
 h2,
 h3,
@@ -338,8 +349,25 @@ h6 {
     font-size: 1.875rem;
     color: var(--app-title-color);
 }
+.btn-auto-w {
+    width:auto;
+    padding:0.5rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform .2s;
+}
+    .btn-auto-w:hover:enabled {
+        transform: scale(1.05);
+    }
 
-.not-found-wrapper {
+    .btn-auto-w:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    .not-found-wrapper {
     position: fixed;
     left: 0;
     top: 0;
@@ -713,19 +741,20 @@ padding-inline-start: 5px !important;
     }
 }
 
-.lc-slider-group {
+.lc-slider-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    flex: 1;
+    gap: 0.5rem;
+    margin:1rem 0;
+    
 }
 
-    .lc-slider-group label {
+    .lc-slider-item label {
         font-size: 14px;
         color: #555;
     }
 
-    .lc-slider-group input[type="range"] {
+    .lc-slider-item input[type="range"] {
         width: 100%;
         -webkit-appearance: none;
         height: 8px;
@@ -734,7 +763,7 @@ padding-inline-start: 5px !important;
         outline: none;
     }
 
-        .lc-slider-group input[type="range"]::-webkit-slider-thumb {
+        .lc-slider-item input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
@@ -743,7 +772,7 @@ padding-inline-start: 5px !important;
             cursor: pointer;
         }
 
-        .lc-slider-group input[type="range"]::-moz-range-thumb {
+        .lc-slider-item input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
             background: #FF626A;
@@ -751,10 +780,19 @@ padding-inline-start: 5px !important;
             cursor: pointer;
         }
 
-    .lc-slider-group span {
+    .lc-slider-item span {
         font-size: 14px;
         color: #333;
     }
+
+.lc-result-item {
+    display: flex;
+    justify-content: space-between;
+    gap:1rem;
+
+}
+
+
 
 .lc-results {
     display: flex;
@@ -783,18 +821,18 @@ padding-inline-start: 5px !important;
     }
 }
 
-.lc-result-item {
+.lc-result-item-single {
     display: flex;
     justify-content: center;
     font-size: 14px;
     flex: 1;
 }
 
-    .lc-result-item label {
+    .lc-result-item-single label {
         color: #555;
     }
 
-    .lc-result-item span {
+    .lc-result-item-single span {
         font-weight: bold;
         color: #333;
     }
@@ -969,10 +1007,11 @@ padding-inline-start: 5px !important;
     left: auto;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    font-size: 20px;
-    color: #fff;
+.prev-icon,
+.next-icon {
+    width:1.5rem;
+    height:1.5rem;
+    color:
 }
 
 .carousel-indicators {

@@ -1,15 +1,128 @@
 ﻿@* <link href="css/loan-calculator.css" rel="stylesheet" /> *@
+<div class="row mb-2">
+    <div class="col text-center">
+        <h3 class="mx-auto title-text">ماشین حساب وام</h3>
+        <i class="fas fa-user-times fs-3 m-1"></i>
+    </div>
+</div>
 
-<div class="lc-calculator5">
-    <div class="row my-3">
-        <div class="col text-center">
-            <h3 class="mx-auto title-text">ماشین حساب وام</h3>
+<div class="row row-cols-1 row-cols-md-2">
+    <div class="col-12 col-md-6 container-shadow-secondary-50 mx-md-auto">
+        <div class="row row-cols-1">
+            <div class="col lc-slider-item">
+                <label>نرخ سود (%): <span>@LocalInterestRate.ToString("N0") درصد</span></label>
+                @* <input type="number" step="0.2" @bind-Value="@LocalInterestRate" @bind-Value:event="oninput" style="width: 100px;" /> *@
+                <input type="range" min="1" max="100" step="1" @bind-Value="@LocalInterestRate" @bind-Value:event="oninput" @onchange="Calculate" />
+                
+            </div>
+            <div class="col lc-slider-item">
+                <label>مبلغ تسهیلات (تومان): <span>@LoanAmount.ToString("N0") تومان</span></label>
+                <input type="range" min="@MinLoanAmount" max="@MaxLoanAmount" step="@LoanStep" @bind-Value="@LoanAmount" @bind-Value:event="oninput" @onchange="Calculate" />
+                
+            </div>
+            <div class="col lc-slider-item">
+                <label>تعداد بازپرداخت: <span>@PaymentMonths ماه</span></label>
+                <input type="range" min="@MinPaymentMonths" max="@MaxPaymentMonths" step="1" @bind-Value="@PaymentMonths" @bind-Value:event="oninput" @onchange="Calculate" />
+                
+            </div>
+            <div class="col lc-slider-item">
+                <label>تعداد روز تنفس: <span>@GraceDays روز</span></label>
+                <input type="range" min="0" max="@MaxGraceDays" step="10" @bind-Value="@GraceDays" @bind-Value:event="oninput" @onchange="Calculate" />
+                
+            </div>
+            <div class="col lc-slider-item">
+                <label>فاصله بین دو بازپرداخت (ماه): <span>@PaymentInterval ماه</span></label>
+                <input type="range" min="1" max="@MaxPaymentInterval" step="1" @bind-Value="@PaymentInterval" @bind-Value:event="oninput" @onchange="Calculate" />
+                
+            </div>
         </div>
     </div>
-    @* <h3 class="d-flex mx-auto mb-5 title-text">ماشین حساب وام</h3> *@
+    <div class="col-12 col-md-5   container-shadow-secondary-50 mx-md-auto">
+        <div class="row row-cols-1  mt-1">
+            <div class="col text-center my-4">
+                <h3 class="mx-auto title-text">نتایج محاسبات</h3>
+            </div>
+            <div class="col lc-result-item my-2">
+                <label>مبلغ هر بازپرداخت:</label>
+                <strong>@(MonthlyPayment.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col lc-result-item my-2 ">
+                <label>مبلغ فرع تسهیلات:</label>
+                <strong>@(InterestAmount.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col lc-result-item my-2 ">
+                <label>مبلغ اصل و فرع:</label>
+                <strong>@(TotalAmount.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col lc-result-item my-2">
+                <label>فرع تنفس:</label>
+                <strong>@(GraceInterestAmount.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col lc-result-item my-2">
+                <label>@DifferenceTitle:</label>
+                <strong>@(FeeAmount.ToString("N0")) تومان</strong>
+            </div>
+            <div class="col text-center my-2">
+                <button class="btn-auto-w mx-auto w-auto" @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row my-2">
+    @if (ShowTable)
+    {
+        <div class="position-relative pt-3">
+            <div class="position-absolute start-0 top-100 translate-middle-y"><i class="bi bi-file-excel fw-bold"></i></div>
+        </div>
+        <div class="lc-table-container" style="height: @(TableHeight)px; overflow: hidden; transition: height 0.5s ease;">
+            <table class="lc-payment-table">
+                <thead>
+                    <tr>
+                        <th>شماره بازپرداخت</th>
+                        <th>مبلغ بازپرداخت</th>
+                        <th>سهم اصل</th>
+                        <th>سهم فرع</th>
+                        <th>مانده تسهیلات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in PaginatedPaymentSchedule)
+                    {
+                        <tr>
+                            <td>@payment.InstallmentNumber</td>
+                            <td>@payment.PaymentAmount.ToString("N0") تومان</td>
+                            <td>@payment.PrincipalShare.ToString("N0") تومان</td>
+                            <td>@payment.InterestShare.ToString("N0") تومان</td>
+                            <td>@payment.RemainingBalance.ToString("N0") تومان</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="lc-pagination">
+                <button class="lc-pagination-btn" disabled="@(CurrentPage == 1)" @onclick="PreviousPage">قبلی</button>
+                <span>صفحه @CurrentPage از @TotalPages</span>
+                <button class="lc-pagination-btn" disabled="@(CurrentPage == TotalPages)" @onclick="NextPage">بعدی</button>
+            </div>
+            <button class="lc-export-btn" @onclick="ExportToExcel">صدور به اکسل</button>
+            <button class="lc-export-btn" @onclick="ExportToPDF">صدور به PDF</button>
+        </div>
+    }
+</div>
+
+
+
+
+
+
+
+
+@*<div class="lc-calculator5">
+
+    <h3 class="d-flex mx-auto mb-5 title-text">ماشین حساب وام</h3>
 
     <!-- باکس نرخ سود قابل تغییر -->
-    <div class="lc-info-box mt-5">
+    <div class="lc-info-box mt-3">
         <label>نرخ سود (%):</label>
         <input type="number" step="0.2" @bind-Value="@LocalInterestRate" @bind-Value:event="oninput" style="width: 100px;" />
     </div>
@@ -17,24 +130,24 @@
     <!-- اسلایدرها -->
     <div class="lc-sliders">
         <div class="lc-slider-row">
-            <div class="lc-slider-group">
+            <div class="lc-slider-item">
                 <label>مبلغ تسهیلات (تومان):</label>
                 <input type="range" min="@MinLoanAmount" max="@MaxLoanAmount" step="@LoanStep" @bind-Value="@LoanAmount" @bind-Value:event="oninput" @onchange="Calculate" />
                 <span>@LoanAmount.ToString("N0") تومان</span>
             </div>
-            <div class="lc-slider-group">
+            <div class="lc-slider-item">
                 <label>تعداد بازپرداخت:</label>
                 <input type="range" min="@MinPaymentMonths" max="@MaxPaymentMonths" step="1" @bind-Value="@PaymentMonths" @bind-Value:event="oninput" @onchange="Calculate" />
                 <span>@PaymentMonths ماه</span>
             </div>
         </div>
         <div class="lc-slider-row">
-            <div class="lc-slider-group">
+            <div class="lc-slider-item">
                 <label>تعداد روز تنفس:</label>
                 <input type="range" min="0" max="@MaxGraceDays" step="10" @bind-Value="@GraceDays" @bind-Value:event="oninput" @onchange="Calculate" />
                 <span>@GraceDays روز</span>
             </div>
-            <div class="lc-slider-group">
+            <div class="lc-slider-item">
                 <label>فاصله بین دو بازپرداخت (ماه):</label>
                 <input type="range" min="1" max="@MaxPaymentInterval" step="1" @bind-Value="@PaymentInterval" @bind-Value:event="oninput" @onchange="Calculate" />
                 <span>@PaymentInterval ماه</span>
@@ -43,18 +156,11 @@
     </div>
 
     <!-- نتایج محاسبات -->
-    <div class="container-wfull container-shadow-secondary-50 container-p-1 my-5">
+    <div class="container-wfull container-shadow-secondary-50 container-p-1 my-3">
         <div class="row mt-1">
-            <div class="col text-center">
-                <h3 class="mx-auto title-text">نتایج محاسبات</h3>
-            </div>
+            
         </div>
-       @*  <div class="row mt-3">
-            <div class="col text-center fs-2">
-                نتایج محاسبات
-            </div>
-        </div> *@
-        <div class="row my-3">
+        <div class="row my-2">
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ هر بازپرداخت:</label>
                 <strong>@(MonthlyPayment.ToString("N0")) تومان</strong>
@@ -64,7 +170,7 @@
                 <strong>@(InterestAmount.ToString("N0")) تومان</strong>
             </div>
         </div>
-        <div class="row my-3">
+        <div class="row my-2">
             <div class="col-12 col-md-6 text-center">
                 <label>مبلغ اصل و فرع:</label>
                 <strong>@(TotalAmount.ToString("N0")) تومان</strong>
@@ -74,57 +180,15 @@
                 <strong>@(GraceInterestAmount.ToString("N0")) تومان</strong>
             </div>
         </div>
-        <div class="row my-3">
+        <div class="row my-2">
             <div class="col-12 text-center">
                 <label>@DifferenceTitle:</label>
                 <strong>@(FeeAmount.ToString("N0")) تومان</strong>
             </div>
         </div>
 
-        <!-- دکمه و جدول بازپرداخت -->
-        <div class="row justify-content-center my-3">
-            <button class="lc-toggle-table mx-auto w-auto " @onclick="ToggleTable">@(ShowTable ? "مخفی کردن جدول" : "مشاهده جدول بازپرداخت")</button>
-        </div>
-        @if (ShowTable)
-        {
-            <div class="position-relative pt-3">
-                <div class="position-absolute start-0 top-100 translate-middle-y"><i class="bi bi-file-excel fw-bold"></i></div>
-            </div>
-            <div class="lc-table-container" style="height: @(TableHeight)px; overflow: hidden; transition: height 0.5s ease;">
-                <table class="lc-payment-table">
-                    <thead>
-                        <tr>
-                            <th>شماره بازپرداخت</th>
-                            <th>مبلغ بازپرداخت</th>
-                            <th>سهم اصل</th>
-                            <th>سهم فرع</th>
-                            <th>مانده تسهیلات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var payment in PaginatedPaymentSchedule)
-                        {
-                            <tr>
-                                <td>@payment.InstallmentNumber</td>
-                                <td>@payment.PaymentAmount.ToString("N0") تومان</td>
-                                <td>@payment.PrincipalShare.ToString("N0") تومان</td>
-                                <td>@payment.InterestShare.ToString("N0") تومان</td>
-                                <td>@payment.RemainingBalance.ToString("N0") تومان</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="lc-pagination">
-                    <button class="lc-pagination-btn" disabled="@(CurrentPage == 1)" @onclick="PreviousPage">قبلی</button>
-                    <span>صفحه @CurrentPage از @TotalPages</span>
-                    <button class="lc-pagination-btn" disabled="@(CurrentPage == TotalPages)" @onclick="NextPage">بعدی</button>
-                </div>
-                <button class="lc-export-btn" @onclick="ExportToExcel">صدور به اکسل</button>
-                <button class="lc-export-btn" @onclick="ExportToPDF">صدور به PDF</button>
-            </div>
-        }
     </div>
-</div>
+</div> *@
     @* <div class="lc-results ">
         <h4 class=" fw-bold">نتایج محاسبات</h4>
         <div class="lc-result-row">
@@ -306,6 +370,7 @@
         }
 
         // بازنشانی صفحه‌بندی
+        ShowTable = false;
         CurrentPage = 1;
         StateHasChanged();
     }
