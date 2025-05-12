@@ -50,7 +50,7 @@ namespace WebApi.Filters
             var response = new RequestResponse
             {
                 Successful = false,
-                Error = $"Fluent Handlers Validations. {exception.Message}. {exception.InnerException?.Message}",
+                Error = $"Api Handlers Validations. {exception.Message}. {exception.InnerException?.Message}",
             };
             foreach (var item in exception.Errors)
             {

@@ -17,6 +17,7 @@ try
     builder.WebHost.UseUrls(builder.Configuration["HostURL"]!.ToString());
 
     builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(builder.Configuration));
+    
 
     var allowedOrigins = builder.Configuration["AllowedOrigins"];
     var corsPolicy = "EnableCORS";
@@ -94,10 +95,12 @@ try
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationDbContext>();
-                if (context.Database.IsSqlServer())
-                {
-                    context.Database.Migrate();
-                }
+                //if (context.Database.IsSqlServer())
+                //{
+                //    context.Database.Migrate();
+                //}
+
+                context.Database.Migrate();
 
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<Role>>();
@@ -106,6 +109,10 @@ try
                 {
                     AdminRoleName = builder.Configuration["RolesSeedModel:AdminRoleName"],
                     AdminRoleNormalizedName = builder.Configuration["RolesSeedModel:AdminRoleNormalizedName"],
+                    CustomerRoleName = builder.Configuration["RolesSeedModel:CustomerRoleName"],
+                    CustomerRoleNormalizedName = builder.Configuration["RolesSeedModel:CustomerRoleNormalizedName"],
+                    SupplierRoleName = builder.Configuration["RolesSeedModel:SupplierRoleName"],
+                    SupplierRoleNormalizedName = builder.Configuration["RolesSeedModel:SupplierRoleNormalizedName"],
                     UserRoleName = builder.Configuration["RolesSeedModel:UserRoleName"],
                     UserRoleNormalizedName = builder.Configuration["RolesSeedModel:UserRoleNormalizedName"],
                     DefaultRoleName = builder.Configuration["RolesSeedModel:DefaultRoleName"],

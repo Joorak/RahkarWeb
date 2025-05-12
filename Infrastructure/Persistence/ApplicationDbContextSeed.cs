@@ -14,6 +14,16 @@ namespace Infrastructure.Persistence
                 Name = seedData.AdminRoleName,
                 NormalizedName = seedData.AdminRoleNormalizedName,
             };
+            var customerRole = new Role
+            {
+                Name = seedData.CustomerRoleName,
+                NormalizedName = seedData.CustomerRoleNormalizedName,
+            };
+            var supplierRole = new Role
+            {
+                Name = seedData.SupplierRoleName,
+                NormalizedName = seedData.SupplierRoleNormalizedName,
+            };
             var defaultRole = new Role
             {
                 Name = seedData.DefaultRoleName,
@@ -28,6 +38,14 @@ namespace Infrastructure.Persistence
             if (roleManager.Roles.All(r => r.Name != adminRole.Name))
             {
                 await roleManager.CreateAsync(adminRole).ConfigureAwait(false);
+            }
+            if (roleManager.Roles.All(r => r.Name != customerRole.Name))
+            {
+                await roleManager.CreateAsync(customerRole).ConfigureAwait(false);
+            }
+            if (roleManager.Roles.All(r => r.Name != supplierRole.Name))
+            {
+                await roleManager.CreateAsync(supplierRole).ConfigureAwait(false);
             }
 
             if (roleManager.Roles.All(r => r.Name != defaultRole.Name))

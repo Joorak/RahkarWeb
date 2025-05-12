@@ -9,34 +9,22 @@ namespace Infrastructure.Utils
     /// </summary>
     public class RolesSeedModel
     {
-        /// <summary>
-        /// Gets or Sets the admin role name.
-        /// </summary>
+
         public string? AdminRoleName { get; set; }
 
-        /// <summary>
-        /// Gets or Sets the admin normalized role name.
-        /// </summary>
         public string? AdminRoleNormalizedName { get; set; }
 
-        /// <summary>
-        /// Gets or Sets the default role name.
-        /// </summary>
+        public string? CustomerRoleName { get; set; }
+        public string? CustomerRoleNormalizedName { get; set; }
+        public string? SupplierRoleName { get; set; }
+        public string? SupplierRoleNormalizedName { get; set; }
         public string? DefaultRoleName { get; set; }
 
-        /// <summary>
-        /// Gets or Sets the default normalized role name.
-        /// </summary>
         public string? DefaultRoleNormalizedName { get; set; }
 
-        /// <summary>
-        /// Gets or Sets the user role name.
-        /// </summary>
         public string? UserRoleName { get; set; }
 
-        /// <summary>
-        /// Gets or Sets the user normalized role name.
-        /// </summary>
+
         public string? UserRoleNormalizedName { get; set; }
     }
 }

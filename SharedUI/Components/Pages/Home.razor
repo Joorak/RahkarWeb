@@ -1,9 +1,11 @@
 ﻿@page "/"
-@using SharedUI
+@inject AuthenticationStateProvider _authState
+@inject NavigationManager _navMgr
+@inject HttpClient _httpClient
 
     <div class="container-wfull container-m-1">
         <Carousel IsRTL="true"
-                  Items="CarouselItems"
+                  Items="_carouselItems"
                   ShowNavigationButtons="true"
                   AutoPlay="true"
                   IsIndicators="true"
@@ -19,7 +21,7 @@
     </div>
     <div class="container-wfull container-shadow-primary-50 container-p-1 container-m-1">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-2">
-            @foreach (var item in sellableItems.Where(s => s.TemplateType == "SuppliersBanner").ToList())
+            @foreach (var item in _sellableItems.Where(s => s.TemplateType == "SuppliersBanner").ToList())
             {
                 @* <div class="col-12 col-md-6 col-lg-4"> *@
                 <div class="col">
@@ -39,7 +41,7 @@
                 </svg>
             </button>
             <div class="horizontal-scroll-container d-flex">
-                @foreach (var item in sellableItems.Where(s => s.TemplateType == "Product").ToList())
+                @foreach (var item in _sellableItems.Where(s => s.TemplateType == "Product").ToList())
                 {
                 <a href="@item.ClickTarget" class="product-item mx-1" target="_blank">
                     <img src="@item.ImageUrl" alt="@item.Title" class="product-image" />
@@ -67,17 +69,39 @@
 
 
 @code {
-    private List<CarouselItem> CarouselItems { get; set; } = new List<CarouselItem>();
-    private List<SellableContainer> Containers { get; set; } = new List<SellableContainer>();
-    private List<SellableItem> sellableItems { get; set; } = new List<SellableItem>();
+    private List<CarouselItem> _carouselItems { get; set; } = new List<CarouselItem>();
+    private List<SellableContainer> _containers { get; set; } = new List<SellableContainer>();
+    private List<SellableItem> _sellableItems { get; set; } = new List<SellableItem>();
+    private string _username { get; set; }
+    private int _userId { get; set; }
+    private string _userRole { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        await _httpClient.GetAsync("Home/test");
+
+        var authstate = await _authState.GetAuthenticationStateAsync();
+        var user = authstate.User;
+
+        if (!user.Identity!.IsAuthenticated) return;
+        _username = user.Claims.FirstOrDefault(
+            x => x.Type == StringRoleResources.NameClaim || x.Type == StringRoleResources.NameClaimSecond
+        )!.Value.Replace("@", " ");
+        _userId = int.Parse(user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.UserIdClaim)!.Value);
+        _userRole = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim)!.Value;
+
+        var isAdmin = user.Claims.FirstOrDefault(x => x.Type == StringRoleResources.RoleClaim)!.Value;
+
+        if (!isAdmin.Equals(StringRoleResources.Admin))
+        {
+            counts = await GetCartCount(_userId);
+        }
+
         // بارگذاری داده‌های Carousel از دیتابیس
         //CarouselItems = await DbContext.CarouselItems.ToListAsync();
-        if (!CarouselItems.Any())
+        if (!_carouselItems.Any())
         {
-            CarouselItems = new List<CarouselItem>
+            _carouselItems = new List<CarouselItem>
             {
                 new CarouselItem
                 {
@@ -167,9 +191,9 @@
 
         // بارگذاری کانتینرها و آیتم‌ها
         //var sellableItems = await DbContext.SellableItems.ToListAsync();
-        if (!sellableItems.Any())
+        if (!_sellableItems.Any())
         {
-            sellableItems = new List<SellableItem>
+            _sellableItems = new List<SellableItem>
             {
                 // دسته‌بندی‌ها (فقط تصویر و لینک)
                 new SellableItem { ImageUrl = "./_content/SharedUI/img/home/offers/1.webp", ClickTarget = "https://B2n.ir/rs2224", TemplateType = "SuppliersBanner", Title = "خودرو تویوتا" },
@@ -201,7 +225,7 @@
         }
 
         // تنظیم کانتینرها
-        Containers = new List<SellableContainer>
+        _containers = new List<SellableContainer>
         {
             // کانتینر دسته‌بندی‌ها (Swipeable)
             new SellableContainer
@@ -213,7 +237,7 @@
                     <img src="@context.ImageUrl" alt="@context.Title" class="category-image" />
                     <p>@context.Title</p>
                 </a>,
-                Items = sellableItems.Where(s => s.TemplateType == "ImageOnly").ToList()
+                Items = _sellableItems.Where(s => s.TemplateType == "ImageOnly").ToList()
             },
             // کانتینر بنرهای تبلیغاتی (Wrap)
             new SellableContainer
@@ -226,7 +250,7 @@
                     @**<h5>@context.Title</h5> **@
                     @*<p>@context.Text</p>*@
                 </a>,
-                Items = sellableItems.Where(s => s.TemplateType == "ImageWithText").ToList()
+                Items = _sellableItems.Where(s => s.TemplateType == "ImageWithText").ToList()
             },
             // کانتینر محصولات (Wrap + Swipeable)
             new SellableContainer
@@ -251,13 +275,13 @@
     
                                             <p class="original-price me-auto mt-0 fw-light fs-6 text-body-tertiary">@context.OriginalPrice.ToString("N0") تومان</p>
                                         </a>,
-                Items = sellableItems.Where(s => s.TemplateType == "Product").ToList()
+                Items = _sellableItems.Where(s => s.TemplateType == "Product").ToList()
             }
         };
     }
 
     private void OnCarouselItemChange(CarouselItem item)
     {
-        System.Console.WriteLine($"Carousel item changed to: {item.Title}");
+        //System.Console.WriteLine($"Carousel item changed to: {item.Title}");
     }
 }

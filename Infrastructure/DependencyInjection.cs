@@ -11,12 +11,35 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    configuration["ConnectionStrings:WebApiConnection"],
-                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(
+            //        configuration["ConnectionStrings:WebApiConnection"],
+            //        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             
+            var _dbProvider = configuration["DbProvider"] ?? "SqlServer".ToString();
+            var _connectionString = configuration[$"ConnectionStrings:{_dbProvider}"];
+            switch (_dbProvider)
+            {
+                case "Sqlite":
+                    services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlite(_connectionString, b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+                    break;
+                case "LocalDb":
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(
+                            _connectionString,
+                            b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    break;
+
+                default:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(
+                            _connectionString,
+                            b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    break;
+
+            }
+
             // Inject services
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
@@ -30,11 +53,11 @@ namespace Infrastructure
             var builder = services.AddIdentityCore<User>(opt =>
             {
                 // configure password options & others
-                opt.Password.RequireDigit = true;
-                opt.Password.RequireLowercase = true;
-                opt.Password.RequireNonAlphanumeric = true;
-                opt.Password.RequireUppercase = true;
-                opt.Password.RequiredLength = 6;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequiredLength = 3;
                 opt.Password.RequiredUniqueChars = 1;
                 opt.User.RequireUniqueEmail = true;
             });
@@ -44,6 +67,8 @@ namespace Infrastructure
             services.AddAuthorizationCore(config =>
             {
                 config.AddPolicy(StringRoleResources.Admin, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Admin));
+                config.AddPolicy(StringRoleResources.Customer, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Customer));
+                config.AddPolicy(StringRoleResources.Supplier, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Supplier));
                 config.AddPolicy(StringRoleResources.User, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.User));
                 config.AddPolicy(StringRoleResources.Default, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Default));
             });

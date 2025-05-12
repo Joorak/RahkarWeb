@@ -270,7 +270,7 @@ html, body {
     padding:0 !important;
 }*/
 .bg-primary {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color) !important;
 }
 
 .bg-primary-10 {
@@ -291,7 +291,7 @@ html, body {
 
 
 .primary-color {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 .primary-color-10 {
     color: var(--primary-color-10);
@@ -365,37 +365,29 @@ html, body {
     box-shadow: 0 2px 10px var(--primary-color-50);
     left: 2.5rem;
     cursor: pointer;
+    opacity:0.5;
 }
-.svg-icon {
-    
-    width: 80%;
-    height: 80%;
-    margin:10%;
-}
-/*h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    outline: none;
-}
-
-
-.flags {
-    width: 2rem;
-    height: 1.5rem;
-}
-
-    .flags.flag-ir {
-        background: url(../img/ir.svg);
-        background-size: cover;
+    #btn-back-to-top:hover {
+        opacity: 1;
     }
+    .svg-icon {
+        width: 80%;
+        height: 80%;
+        margin: 10%;
+    }
+.hover-transform-down:hover {
+    transform: translate3d(0, .25em, 0);
+}
+.svg-icon-1 {
+    width: 1rem;
+    height: 1rem;
+    
+}
+.svg-icon-2 {
+    width: 2rem;
+    height: 2rem;
+}
 
-    .flags.flag-us {
-        background: url(../img/us.svg);
-        background-size: cover;
-    }*/
 .title-text {
     background-color: #fff;
     width: fit-content;
@@ -404,21 +396,18 @@ h6 {
     font-size: 1.875rem;
     color: var(--app-title-color);
 }
-.btn-auto-w {
+.primary-btn {
     width:auto;
-    padding:0.5rem;
-    background-color: var(--primary-color);
-    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: transform .2s;
 }
-    .btn-auto-w:hover:enabled {
+    .primary-btn:hover:enabled {
         transform: scale(1.05);
     }
 
-    .btn-auto-w:disabled {
+    .primary-btn:disabled {
         background-color: #ccc;
         cursor: not-allowed;
     }
