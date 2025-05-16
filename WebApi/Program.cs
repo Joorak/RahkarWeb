@@ -94,7 +94,7 @@ try
             if (runSeeding)
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicationDbContext>();
+                var context = services.GetRequiredService<AppDbContext>();
                 //if (context.Database.IsSqlServer())
                 //{
                 //    context.Database.Migrate();
@@ -129,7 +129,7 @@ try
 
                 await ApplicationDbContextSeed.SeedRolesAsync(roleManager, rolesSeed).ConfigureAwait(false);
                 await ApplicationDbContextSeed.SeedAdminUserAsync(userManager, roleManager, adminSeed).ConfigureAwait(false);
-                await ApplicationDbContextSeed.SeedCustomersDataAsync(context).ConfigureAwait(false);
+                //await ApplicationDbContextSeed.SeedCustomersDataAsync(context).ConfigureAwait(false);
             }
         }
         catch (Exception ex)
@@ -165,25 +165,25 @@ try
     app.UseAuthorization();
 
     // Security Headers for Website
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
-        context.Response.Headers.Add("Access-Control-Allow-Origin", allowedOrigins);
-        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-        context.Response.Headers.Add("Referrer-Policy", "same-origin");
-        context.Response.Headers.Add("Permissions-Policy", "geolocation=(), camera=()");
-#pragma warning disable SA1118 // Parameter should not span multiple lines
-        context.Response.Headers.Add(builder.Configuration["ContentPolicy"]!, "default-src "
-            + "self  "
-            + "https://maxcdn.bootstrapcdn.com  "
-            + "https://login.microsoftonline.com "
-            + "https://sshmantest.azurewebsites.net "
-            + " 'unsafe-inline' 'unsafe-eval'");
-#pragma warning restore SA1118 // Parameter should not span multiple lines
-        context.Response.Headers.Add("SameSite", "Strict");
-        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
-        await next();
-    });
+//    app.Use(async (context, next) =>
+//    {
+//        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+//        context.Response.Headers.Add("Access-Control-Allow-Origin", allowedOrigins);
+//        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+//        context.Response.Headers.Add("Referrer-Policy", "same-origin");
+//        context.Response.Headers.Add("Permissions-Policy", "geolocation=(), camera=()");
+//#pragma warning disable SA1118 // Parameter should not span multiple lines
+//        context.Response.Headers.Add(builder.Configuration["ContentPolicy"]!, "default-src "
+//            + "self  "
+//            + "https://maxcdn.bootstrapcdn.com  "
+//            + "https://login.microsoftonline.com "
+//            + "https://sshmantest.azurewebsites.net "
+//            + " 'unsafe-inline' 'unsafe-eval'");
+//#pragma warning restore SA1118 // Parameter should not span multiple lines
+//        context.Response.Headers.Add("SameSite", "Strict");
+//        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+//        await next();
+//    });
 
     app.MapControllerRoute(
         name: "default",

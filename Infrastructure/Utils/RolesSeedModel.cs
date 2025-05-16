@@ -1,12 +1,7 @@
-﻿// <copyright file="RolesSeedModel.cs" company="Joorak Rezapour">
-// Copyright (c) Joorak Rezapour. All rights reserved.
-// </copyright>
+﻿
 
 namespace Infrastructure.Utils
 {
-    /// <summary>
-    /// A model of Roles seed.
-    /// </summary>
     public class RolesSeedModel
     {
 

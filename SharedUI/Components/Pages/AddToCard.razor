@@ -7,13 +7,13 @@
     <!-- شماره درخواست و سبد خرید -->
     <div class="request-info">
         <span>شماره درخواست: @RequestNumber</span>
-        <button class="btn btn-link p-0 ms-2" @onclick="ShowCartModal">
+        @* <button class="btn btn-link p-0 ms-2" @onclick="ShowCartModal">
             <i class="bi bi-cart"></i>
             @if (CartItems.Any())
             {
                 <span class="badge bg-danger rounded-circle position-absolute">@CartItems.Count</span>
             }
-        </button>
+        </button> *@
     </div>
 
     <!-- ویزارد -->
@@ -32,7 +32,7 @@
     </div>
 
     <!-- محتوای اصلی -->
-    @if (ShowCategories)
+@*     @if (ShowCategories)
     {
         <!-- دسته‌بندی‌ها -->
         <div class="categories-section">
@@ -133,10 +133,10 @@
         </div>
         <div class="modal-backdrop fade show"></div>
     }
-
+ *@
     <!-- دکمه‌ها -->
     <div class="action-buttons">
-        <button class="btn btn-danger" @onclick="Continue" disabled="@(!CartItems.Any())">ادامه</button>
+        <button class="btn btn-danger" @onclick="Continue" >ادامه</button>
         <button class="btn btn-outline-secondary" @onclick="Save">ذخیره</button>
         <button class="btn btn-outline-secondary" @onclick="AddNewProduct">ثبت کالا</button>
     </div>
@@ -167,7 +167,7 @@
         .Where(p => string.IsNullOrEmpty(SearchTerm) || p.Name.Contains(SearchTerm))
         .OrderBy(p => SortOption == "name" ? p.Name : p.Price.ToString())
         .ToList();
-    private List<CartItem> CartItems { get; set; } = new List<CartItem>();
+    //private List<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     private void SetStep(int step)
     {
@@ -184,51 +184,47 @@
         //Products = DbContext.Products.Where(p => p.CategoryId == category.Id).ToList();
     }
 
-    private void ToggleProductSelection(Product product, bool isSelected)
-    {
-        product.IsSelected = isSelected;
-        if (isSelected && !CartItems.Any(ci => ci.ProductId == product.Id))
-        {
-            var cartItem = new CartItem { RequestNumber = RequestNumber, ProductId = product.Id, Product = product };
-            CartItems.Add(cartItem);
-            //DbContext.CartItems.Add(cartItem);
-            //DbContext.SaveChanges();
-        }
-        else if (!isSelected && CartItems.Any(ci => ci.ProductId == product.Id))
-        {
-            var cartItem = CartItems.First(ci => ci.ProductId == product.Id);
-            CartItems.Remove(cartItem);
-            //DbContext.CartItems.Remove(cartItem);
-            //DbContext.SaveChanges();
-        }
-    }
+    // private void ToggleProductSelection(Product product, bool isSelected)
+    // {
+    //     product.IsSelected = isSelected;
+    //     if (isSelected && !CartItems.Any(ci => ci.ProductId == product.Id))
+    //     {
+    //         var cartItem = new CartItem { RequestNumber = RequestNumber, ProductId = product.Id, Product = product };
+    //         CartItems.Add(cartItem);
+    //         //DbContext.CartItems.Add(cartItem);
+    //         //DbContext.SaveChanges();
+    //     }
+    //     else if (!isSelected && CartItems.Any(ci => ci.ProductId == product.Id))
+    //     {
+    //         var cartItem = CartItems.First(ci => ci.ProductId == product.Id);
+    //         CartItems.Remove(cartItem);
+    //         //DbContext.CartItems.Remove(cartItem);
+    //         //DbContext.SaveChanges();
+    //     }
+    // }
 
-    private void RemoveFromCart(CartItem cartItem)
-    {
-        var product = Products.FirstOrDefault(p => p.Id == cartItem.ProductId);
-        if (product != null) product.IsSelected = false;
-        CartItems.Remove(cartItem);
-        //DbContext.CartItems.Remove(cartItem);
-        //DbContext.SaveChanges();
-    }
+    // private void RemoveFromCart(CartItem cartItem)
+    // {
+    //     var product = Products.FirstOrDefault(p => p.Id == cartItem.ProductId);
+    //     if (product != null) product.IsSelected = false;
+    //     CartItems.Remove(cartItem);
+    //     //DbContext.CartItems.Remove(cartItem);
+    //     //DbContext.SaveChanges();
+    // }
 
-    private void ShowCartModal()
-    {
-        IsCartModalOpen = true;
-    }
+    // private void ShowCartModal()
+    // {
+    //     IsCartModalOpen = true;
+    // }
 
-    private void CloseCartModal()
-    {
-        IsCartModalOpen = false;
-    }
+    // private void CloseCartModal()
+    // {
+    //     IsCartModalOpen = false;
+    // }
 
     private void Continue()
     {
-        if (CartItems.Any())
-        {
-            CurrentStep = 2;
-            // انتقال به مرحله بعدی (در آینده پیاده‌سازی می‌شود)
-        }
+        System.Console.WriteLine("انتقال به مرحله بعد");
     }
 
     private void Save()
@@ -240,14 +236,7 @@
     private void AddNewProduct()
     {
         // منطق افزودن کالای جدید (شبیه‌سازی)
-        var newProduct = new Product { Name = "کالای جدید", Price = 10_000_000, CategoryId = ProductCategories.First().Id };
-        //DbContext.Products.Add(newProduct);
-        //DbContext.SaveChanges();
-        Products.Add(newProduct);
-        var cartItem = new CartItem { RequestNumber = RequestNumber, ProductId = newProduct.Id, Product = newProduct };
-        CartItems.Add(cartItem);
-        //DbContext.CartItems.Add(cartItem);
-        //DbContext.SaveChanges();
+        System.Console.WriteLine("کالا اضافه شد.");
     }
 
     protected override async Task OnInitializedAsync()
@@ -262,40 +251,40 @@
         //CartItems = await DbContext.CartItems.Include(ci => ci.Product).Where(ci => ci.RequestNumber == RequestNumber).ToListAsync();
 
         // داده‌های پیش‌فرض در صورت خالی بودن دیتابیس
-        if (!ProductCategories.Any())
-        {
-            ProductCategories = new List<ProductCategory>
-            {
-                new ProductCategory { Id = 1, Name = "خودرو", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
-                new ProductCategory { Id = 2, Name = "طلا و جواهر", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
-                new ProductCategory { Id = 3, Name = "کالاهای الکترونیکی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
-                new ProductCategory { Id = 4, Name = "لوازم خانگی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false }
-            };
-            //DbContext.ProductCategories.AddRange(ProductCategories);
-        }
+        // if (!ProductCategories.Any())
+        // {
+        //     ProductCategories = new List<ProductCategory>
+        //     {
+        //         new ProductCategory { Id = 1, Name = "خودرو", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
+        //         new ProductCategory { Id = 2, Name = "طلا و جواهر", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
+        //         new ProductCategory { Id = 3, Name = "کالاهای الکترونیکی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false },
+        //         new ProductCategory { Id = 4, Name = "لوازم خانگی", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = false }
+        //     };
+        //     //DbContext.ProductCategories.AddRange(ProductCategories);
+        // }
 
-        if (!BusinessCategories.Any())
-        {
-            BusinessCategories = new List<ProductCategory>
-            {
-                new ProductCategory { Id = 5, Name = "بیشترین تخفیف‌ها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true },
-                new ProductCategory { Id = 6, Name = "پرطرفدارترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true },
-                new ProductCategory { Id = 7, Name = "جدیدترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true }
-            };
-            //DbContext.ProductCategories.AddRange(BusinessCategories);
-        }
+        // if (!BusinessCategories.Any())
+        // {
+        //     BusinessCategories = new List<ProductCategory>
+        //     {
+        //         new ProductCategory { Id = 5, Name = "بیشترین تخفیف‌ها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true },
+        //         new ProductCategory { Id = 6, Name = "پرطرفدارترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true },
+        //         new ProductCategory { Id = 7, Name = "جدیدترین کالاها", ImageUrl = "https://via.placeholder.com/150", IsBusinessCategory = true }
+        //     };
+        //     //DbContext.ProductCategories.AddRange(BusinessCategories);
+        // }
 
-        if (!Products.Any())
-        {
-            Products = new List<Product>
-            {
-                new Product { Id = 1, Name = "خودروی پراید", Price = 200_000_000, CategoryId = 1 },
-                new Product { Id = 2, Name = "گوشی سامسونگ", Price = 15_000_000, CategoryId = 3 },
-                new Product { Id = 3, Name = "لپ‌تاپ لنوو", Price = 25_000_000, CategoryId = 3 },
-                new Product { Id = 4, Name = "یخچال سامسونگ", Price = 30_000_000, CategoryId = 4 }
-            };
-            //DbContext.Products.AddRange(Products);
-        }
+        // if (!Products.Any())
+        // {
+        //     Products = new List<Product>
+        //     {
+        //         new Product { Id = 1, Name = "خودروی پراید", Price = 200_000_000, CategoryId = 1 },
+        //         new Product { Id = 2, Name = "گوشی سامسونگ", Price = 15_000_000, CategoryId = 3 },
+        //         new Product { Id = 3, Name = "لپ‌تاپ لنوو", Price = 25_000_000, CategoryId = 3 },
+        //         new Product { Id = 4, Name = "یخچال سامسونگ", Price = 30_000_000, CategoryId = 4 }
+        //     };
+        //     //DbContext.Products.AddRange(Products);
+        // }
 
         //await DbContext.SaveChangesAsync();
     }

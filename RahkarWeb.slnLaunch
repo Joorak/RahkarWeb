@@ -1,6 +1,6 @@
 [
   {
-    "Name": "New Profile",
+    "Name": "VASM",
     "Projects": [
       {
         "Path": "WebApi\\WebApi.csproj",

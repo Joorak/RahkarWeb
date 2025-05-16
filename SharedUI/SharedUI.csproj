@@ -13,6 +13,8 @@
 	
   <ItemGroup>
     <Compile Remove="Interceptor\HttpInterceptorService.cs" />
+    <Compile Remove="Interfaces\ICustomerService.cs" />
+    <Compile Remove="Services\CustomerService.cs" />
   </ItemGroup>
 
   <ItemGroup>

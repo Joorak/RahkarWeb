@@ -11,10 +11,10 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
+            //services.AddDbContext<AppDbContext>(options =>
             //    options.UseSqlServer(
             //        configuration["ConnectionStrings:WebApiConnection"],
-            //        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+            //        b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
             
             var _dbProvider = configuration["DbProvider"] ?? "SqlServer".ToString();
             var _connectionString = configuration[$"ConnectionStrings:{_dbProvider}"];
@@ -25,23 +25,23 @@ namespace Infrastructure
                     options.UseSqlite(_connectionString, b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
                     break;
                 case "LocalDb":
-                    services.AddDbContext<ApplicationDbContext>(options =>
+                    services.AddDbContext<AppDbContext>(options =>
                         options.UseSqlServer(
                             _connectionString,
-                            b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                            b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
                     break;
 
                 default:
-                    services.AddDbContext<ApplicationDbContext>(options =>
+                    services.AddDbContext<AppDbContext>(options =>
                         options.UseSqlServer(
                             _connectionString,
-                            b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                            b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
                     break;
 
             }
 
             // Inject services
-            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();
@@ -61,8 +61,9 @@ namespace Infrastructure
                 opt.Password.RequiredUniqueChars = 1;
                 opt.User.RequireUniqueEmail = true;
             });
-            builder = new IdentityBuilder(builder.UserType, builder.RoleType!, builder.Services);
-            builder.AddRoles<Role>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            builder.AddRoles<Role>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            builder = new IdentityBuilder(builder.UserType, builder.RoleType, builder.Services);
+            
 
             services.AddAuthorizationCore(config =>
             {

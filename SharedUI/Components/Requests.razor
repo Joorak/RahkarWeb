@@ -14,14 +14,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var request in _requests)
+            @foreach (var Order in _Orders)
             {
                 <tr>
-                    <td>@request.RequestNumber</td>
-                    <td>@request.CreatedDate.ToString("yyyy/MM/dd")</td>
-                    <td>@request.CustomerName</td>
-                    <td>@request.FacilityPlan</td>
-                    <td>@request.Status</td>
+                    <td>@Order.OrderNumber</td>
+                    <td>@Order.OrderDate.ToString("yyyy/MM/dd")</td>
+                    <td>@Order.Customer</td>
+                    <td>@Order.LoanSchema.Name</td>
+                    <td>@Order.StatusLogs.OrderByDescending(i => i.StatusDate).FirstOrDefault()!.Status.ToString() </td>
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,7 +51,7 @@
 
 @code {
     [Parameter]
-    public List<Request> _requests { get; set; } = new List<Request>();
+    public List<Order> _Orders { get; set; } = new List<Order>();
 
     [Parameter]
     public List<DropdownAction> Actions { get; set; } = new List<DropdownAction>
@@ -68,17 +68,17 @@
     protected override async Task OnInitializedAsync()
     {
         // بارگذاری درخواست‌ها از دیتابیس
-        //_requests = await DbContext.Requests.ToListAsync();
-        if (!_requests.Any())
+        //_Orders = await DbContext.Orders.ToListAsync();
+        if (!_Orders.Any())
         {
             // داده‌های پیش‌فرض در صورت خالی بودن دیتابیس
-            _requests = new List<Request>
-            {
-                new Request { RequestNumber = "REQ-001", CreatedDate = DateTime.Now.AddDays(-10), CustomerName = "محمد حسینی", FacilityPlan = "طرح 12 ماهه", Status = "در انتظار" },
-                new Request { RequestNumber = "REQ-002", CreatedDate = DateTime.Now.AddDays(-9), CustomerName = "سارا احمدی", FacilityPlan = "طرح 24 ماهه", Status = "تایید شده" },
-                new Request { RequestNumber = "REQ-003", CreatedDate = DateTime.Now.AddDays(-8), CustomerName = "رضا کاظمی", FacilityPlan = "طرح 36 ماهه", Status = "رد شده" },
-                new Request { RequestNumber = "REQ-004", CreatedDate = DateTime.Now.AddDays(-7), CustomerName = "نیما رحیمی", FacilityPlan = "طرح 12 ماهه", Status = "در حال بررسی" }
-            };
+            // _Orders = new List<Order>
+            // {
+            //     new Order { OrderNumber = "REQ-001", OrderDate = DateTime.Now.AddDays(-10), CustomerName = "محمد حسینی", FacilityPlan = "طرح 12 ماهه", Status = "در انتظار" },
+            //     new Order { OrderNumber = "REQ-002", OrderDate = DateTime.Now.AddDays(-9),  CustomerName = "سارا احمدی", FacilityPlan = "طرح 24 ماهه", Status = "تایید شده" },
+            //     new Order { OrderNumber = "REQ-003", OrderDate = DateTime.Now.AddDays(-8),  CustomerName = "رضا کاظمی", FacilityPlan = "طرح 36 ماهه", Status = "رد شده" },
+            //     new Order { OrderNumber = "REQ-004", OrderDate = DateTime.Now.AddDays(-7),  CustomerName = "نیما رحیمی", FacilityPlan = "طرح 12 ماهه", Status = "در حال بررسی" }
+            // };
         }
     }
 

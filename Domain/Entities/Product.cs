@@ -7,7 +7,6 @@ namespace Domain.Entities
         public string Name { get; set; }
         public long Price { get; set; }
         public int CategoryId { get; set; }
-        public ProductCategory Category { get; set; }
         public bool IsSelected { get; set; }
     }
 }

@@ -81,53 +81,53 @@ namespace Infrastructure.Persistence
                 await userManager.AddToRoleAsync(admin, adminRole.Name!).ConfigureAwait(false);
             }
         }
-        public static async Task SeedCustomersDataAsync(ApplicationDbContext context)
-        {
-            if (!context.Customers.Any())
-            {
-                context.Customers.Add(new Customer
-                {
-                    FirstName = "Customer Name 1",
-                    LastName = "Customer Family 1",
-                    Email = "CustomerName1@CustomerFamily1.com",
-                    BirthDate = 13500101,
-                    Gender = Domain.Enums.PersonGender.Male
-                });
-                context.Customers.Add(new Customer
-                {
-                    FirstName = "Customer Name 2",
-                    LastName = "Customer Family 2",
-                    Email = "CustomerName2@CustomerFamily2.com",
-                    BirthDate = 13500202,
-                    Gender = Domain.Enums.PersonGender.Female
-                });
-                context.Customers.Add(new Customer
-                {
-                    FirstName = "Customer Name 3",
-                    LastName = "Customer Family 3",
-                    Email = "CustomerName3@CustomerFamily3.com",
-                    BirthDate = 13500303,
-                    Gender = Domain.Enums.PersonGender.Male
-                });
-                context.Customers.Add(new Customer
-                {
-                    FirstName = "Customer Name 4",
-                    LastName = "Customer Family 4",
-                    Email = "CustomerName4@CustomerFamily4.com",
-                    BirthDate = 13500404,
-                    Gender = Domain.Enums.PersonGender.Female
-                });
-                context.Customers.Add(new Customer
-                {
-                    FirstName = "Customer Name 5",
-                    LastName = "Customer Family 5",
-                    Email = "CustomerName5@CustomerFamily5.com",
-                    BirthDate = 13500505,
-                    Gender = Domain.Enums.PersonGender.Male
-                });
+        //public static async Task SeedCustomersDataAsync(AppDbContext context)
+        //{
+        //    if (!context.Customers.Any())
+        //    {
+        //        context.Customers.Add(new Customer
+        //        {
+        //            FirstName = "Customer Name 1",
+        //            LastName = "Customer Family 1",
+        //            Email = "CustomerName1@CustomerFamily1.com",
+        //            BirthDate = 13500101,
+        //            Gender = Domain.Enums.PersonGender.Male
+        //        });
+        //        context.Customers.Add(new Customer
+        //        {
+        //            FirstName = "Customer Name 2",
+        //            LastName = "Customer Family 2",
+        //            Email = "CustomerName2@CustomerFamily2.com",
+        //            BirthDate = 13500202,
+        //            Gender = Domain.Enums.PersonGender.Female
+        //        });
+        //        context.Customers.Add(new Customer
+        //        {
+        //            FirstName = "Customer Name 3",
+        //            LastName = "Customer Family 3",
+        //            Email = "CustomerName3@CustomerFamily3.com",
+        //            BirthDate = 13500303,
+        //            Gender = Domain.Enums.PersonGender.Male
+        //        });
+        //        context.Customers.Add(new Customer
+        //        {
+        //            FirstName = "Customer Name 4",
+        //            LastName = "Customer Family 4",
+        //            Email = "CustomerName4@CustomerFamily4.com",
+        //            BirthDate = 13500404,
+        //            Gender = Domain.Enums.PersonGender.Female
+        //        });
+        //        context.Customers.Add(new Customer
+        //        {
+        //            FirstName = "Customer Name 5",
+        //            LastName = "Customer Family 5",
+        //            Email = "CustomerName5@CustomerFamily5.com",
+        //            BirthDate = 13500505,
+        //            Gender = Domain.Enums.PersonGender.Male
+        //        });
 
-                await context.SaveChangesAsync().ConfigureAwait(false);
-            }
-        }
+        //        await context.SaveChangesAsync().ConfigureAwait(false);
+        //    }
+        //}
     }
 }
