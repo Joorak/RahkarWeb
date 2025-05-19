@@ -1,17 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<!--<EnableNETAnalyzers>False</EnableNETAnalyzers>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-	  <AddRazorSupportForMvc>true</AddRazorSupportForMvc>-->
+    <CompressionEnabled>false</CompressionEnabled>
+    <!--<StaticWebAssetBasePath>/</StaticWebAssetBasePath>-->
+    <StaticWebAssetsExcludeFromBuild>true</StaticWebAssetsExcludeFromBuild>
+    <StaticWebAssetsBuildAction>None</StaticWebAssetsBuildAction>
+    <StaticWebAssetsCopyToOutputDirectory>PreserveNewest</StaticWebAssetsCopyToOutputDirectory>
+    <StaticWebAssetsCopyToPublishDirectory>PreserveNewest</StaticWebAssetsCopyToPublishDirectory>
+    <GenerateRazorAssemblyAttribute>false</GenerateRazorAssemblyAttribute>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <!--<AddRazorSupportForMvc>true</AddRazorSupportForMvc>-->
   </PropertyGroup>
-
-	
-  <ItemGroup>
+  <!--<Target Name="RemoveConflictingAssets" BeforeTargets="ResolveStaticWebAssetsConfiguration">
+		<ItemGroup>
+			<StaticWebAsset Remove="@(StaticWebAsset)" Condition="'%(Extension)' == '.gz'" />
+		</ItemGroup>
+	</Target>-->
+  <!--<ItemGroup>
     <Compile Remove="Interceptor\HttpInterceptorService.cs" />
     <Compile Remove="Interfaces\ICustomerService.cs" />
     <Compile Remove="Services\CustomerService.cs" />
@@ -26,45 +36,49 @@
     <Content Remove="Components\Pages\Admin\Users\AddEditUser.razor" />
     <Content Remove="Components\Pages\Admin\Users\Users.razor" />
     <Content Remove="Components\Pages\User\Profile.razor" />
-  </ItemGroup>
-
+  </ItemGroup>-->
   <!--<ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>-->
-	
-	<!--<ItemGroup Condition="'$(IsWasmProject)' != 'true'">
+  <!--<ItemGroup Condition="'$(IsWasmProject)' != 'true'">
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>-->
   <ItemGroup>
-	<!--<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.2" />-->
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.2" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />-->
-	  <!--<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />-->
-	  <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />-->
-	  <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />-->
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />-->
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />-->
+    <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />-->
     <!--<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.6.1" />-->
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <!--<PackageReference Include="Serilog" Version="4.2.0" />-->
     <!--<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />-->
     <!--<PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="14.0.0" />-->
-	  <!--<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.4" />-->
   </ItemGroup>
-
-  <ItemGroup>
+  <!--<ItemGroup>
     <Folder Include="Components\Pages\Admin\Roles\" />
     <Folder Include="Components\Pages\Admin\Users\" />
     <Folder Include="Components\Pages\User\" />
-    <Folder Include="wwwroot\img\Home\Carousel\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Components\Carousel.razor" />
-  </ItemGroup>
-
+  </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Folder Include="Components\Pages\Admin\Roles\" />
+    <Folder Include="Components\Pages\Admin\Users\" />
+    <Folder Include="Components\Pages\User\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
 </Project>

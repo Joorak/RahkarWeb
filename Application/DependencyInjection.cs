@@ -1,8 +1,6 @@
 ﻿
-
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+//using Microsoft.Extensions.DependencyInjection;
+//using System.Reflection;
 
 namespace Application
 {
@@ -11,8 +9,8 @@ namespace Application
 
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             return services;
         }
     }

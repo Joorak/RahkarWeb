@@ -1,5 +1,4 @@
-﻿using Domain; 
-using FluentValidation; 
+﻿
 namespace Application.Validators;
 public interface ICustomerValidator
 {

@@ -1,16 +1,18 @@
-﻿using Newtonsoft.Json;
+﻿
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Application.Models;
 public class JwtTokenResponse {
-    [JsonProperty("access_token")]
+    [JsonPropertyName("access_token")]
     public string? AccessToken { get; set; } = null;
 
 
-    [JsonProperty("scope")]
+    [JsonPropertyName("scope")]
     public string Scope { get; set; }
 
 
-    [JsonProperty("expires_in")]
+    [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
 
     public string? Type => "Bearer";
