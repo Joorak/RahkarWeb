@@ -7,7 +7,7 @@ namespace SharedUI.Auth
 
     public class AuthStateProvider : AuthenticationStateProvider
     {
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage, NavigationManager navMagager)
+        public AuthStateProvider(HttpClient httpClient, IAccessTokenService localStorage, NavigationManager navMagager)
         {
             this.HttpClient = httpClient;
             this.LocalStorage = localStorage;
@@ -19,7 +19,7 @@ namespace SharedUI.Auth
         private HttpClient HttpClient { get; }
 
 
-        private ILocalStorageService LocalStorage { get; }
+        private IAccessTokenService LocalStorage { get; }
 
 
         private AuthenticationState Anonymous { get; }

@@ -5,7 +5,7 @@ using Infrastructure.Services;
 
 namespace WebApi.Controllers
 {
-
+    [ApiController]
     public class UsersController : ControllerBase
     {
 
@@ -73,11 +73,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => UserService.GetUserById(id)).ConfigureAwait(false);
-                return this.Ok(new Result<UserResponse> { Item = result, Successful = true, Error = null, Items = null });
+                return this.Ok(new RequestResult<UserResponse> { Item = result, Successful = true, Error = null, Items = null });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
 
@@ -89,11 +89,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => UserService.GetUsers()).ConfigureAwait(false);
-                return this.Ok(new Result<UserResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = result.ToList() });
+                return this.Ok(new RequestResult<UserResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = result.ToList() });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
 
@@ -104,11 +104,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => UserService.GetUsersInactive()).ConfigureAwait(false);
-                return this.Ok(new Result<UserResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = result.ToList() });
+                return this.Ok(new RequestResult<UserResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = result.ToList() });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
     }

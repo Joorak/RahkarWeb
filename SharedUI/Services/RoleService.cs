@@ -5,16 +5,8 @@
 
 namespace SharedUI.Services
 {
-    /// <summary>
-    /// An implementation of <see cref="IRoleService"/>.
-    /// </summary>
     public class RoleService : IRoleService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RoleService"/> class.
-        /// </summary>
-        /// <param name="httpClient">The instance of the <see cref="HttpClient"/> to use.</param>
-        /// <param name="snackBar">The instance of the <see cref="ISnackbar"/> to use.</param>
         public RoleService(HttpClient httpClient)
         {
             this.HttpClient = httpClient;
@@ -51,7 +43,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add("The role was added.", Severity.Success);
             //}
 
-            return result;
+            return result!;
         }
 
         /// <inheritdoc/>
@@ -71,7 +63,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add("The role was deleted.", Severity.Success);
             //}
 
-            return result;
+            return result!;
         }
 
         /// <inheritdoc/>
@@ -79,7 +71,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync($"Roles/role/{id}");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<RoleResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<RoleResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)
@@ -87,9 +79,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add(result.Error, MudBlazor.Severity.Error);
             //}
 
-            return !response.IsSuccessStatusCode
-                ? null
-                : result.Item;
+            return !response.IsSuccessStatusCode ? null! : result!.Item!;
         }
 
         /// <inheritdoc/>
@@ -97,7 +87,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync("Roles/roles");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<RoleResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<RoleResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)
@@ -105,9 +95,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add(result.Error, MudBlazor.Severity.Error);
             //}
 
-            return !response.IsSuccessStatusCode
-                ? null
-                : result.Items;
+            return !response.IsSuccessStatusCode ? null! : result!.Items!;
         }
 
         /// <inheritdoc/>
@@ -115,7 +103,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync("Roles/rolesAdmin");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<RoleResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<RoleResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)
@@ -123,9 +111,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add(result.Error, MudBlazor.Severity.Error);
             //}
 
-            return !response.IsSuccessStatusCode
-                ? null
-                : result.Items;
+            return !response.IsSuccessStatusCode ? null! : result!.Items!;
         }
 
         /// <inheritdoc/>
@@ -150,7 +136,7 @@ namespace SharedUI.Services
             //    this.SnackBar.Add("The role was updated.", Severity.Success);
             //}
 
-            return result;
+            return result!;
         }
     }
 }

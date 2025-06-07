@@ -454,4 +454,13 @@ namespace Domain.Entities
         [ForeignKey(nameof(InstallmentId))]
         public virtual Installment Installment { get; set; }
     }
+    public class CountriesTurnoverReport
+    {
+        [Key]
+        public int Id { get; set; }
+        public string ISO3 { get; set; }
+        public string Country { get; set; }
+        public float LeasingVolume { get; set; }
+        public float MarketShare { get; set; }
+    }
 }

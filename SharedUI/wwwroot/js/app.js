@@ -15,14 +15,14 @@ window.onscroll = function () {
     else
         element.style.display = 'none';
 };
-async function drawmap(container, tradedata) {
+async function drawLeasingWorldMap(container, turnoverData) {
     const topology = await fetch(
         '/js/world.topo.json'
     ).then(response => response.json());
 
     // Load the data from the HTML table and tag it with an upper case name used
     // for joining
-    var data = tradedata.map(function (item) {
+    var data = turnoverData.map(function (item) {
         return {
             key: item.title2,
             value: item.value3,
@@ -83,7 +83,7 @@ async function drawmap(container, tradedata) {
             '#9fccba', '#00b469'],
         legend: {
             title: {
-                text: 'مجموع صادرات و واردات به دلار',
+                text: 'مجموع گردش به میلیون دلار',
                 style: {
                     color: ( // theme
                         Highcharts.defaultOptions &&

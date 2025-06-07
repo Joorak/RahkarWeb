@@ -5,7 +5,7 @@ using Domain.Entities;
 namespace Infrastructure.Persistence
 {
 
-    public static class ApplicationDbContextSeed
+    public static class AppDbContextSeed
     {
         public static async Task SeedRolesAsync(RoleManager<Role> roleManager, RolesSeedModel seedData)
         {

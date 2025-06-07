@@ -1,5 +1,8 @@
 ﻿
 
+using Domain.Entities.Identity;
+using System.Data;
+
 namespace Infrastructure.Services
 {
 
@@ -7,12 +10,13 @@ namespace Infrastructure.Services
     {
         public RoleService(
             UserManager<User> userManager,
-            RoleManager<Role> roleManager,
-            IMapper mapper)
+            RoleManager<Role> roleManager
+            //, IMapper mapper
+            )
         {
             this.UserManager = userManager;
             this.RoleManager = roleManager;
-            this.Mapper = mapper;
+            //this.Mapper = mapper;
         }
 
 
@@ -22,7 +26,7 @@ namespace Infrastructure.Services
         private RoleManager<Role> RoleManager { get; }
 
 
-        private IMapper Mapper { get; }
+        //private IMapper Mapper { get; }
 
 
         public async Task<List<string>> CheckUserRolesAsync(User user)
@@ -38,9 +42,10 @@ namespace Infrastructure.Services
                 .TagWith(nameof(this.GetDefaultRole))
                 .Where(x => x.Name == StringRoleResources.Default &&
                     x.NormalizedName == StringRoleResources.DefaultNormalized)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return role;
+            RoleResponse roleResponse = new() { Id = role!.Id, Name = role.Name , NormalizedName = role.NormalizedName  };
+            return roleResponse;
         }
 
 
@@ -50,9 +55,10 @@ namespace Infrastructure.Services
                 .TagWith(nameof(this.GetUserRole))
                 .Where(x => x.Name == StringRoleResources.User &&
                     x.NormalizedName == StringRoleResources.UserNormalized)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return role;
+            RoleResponse roleResponse = new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName };
+            return roleResponse;
         }
 
 
@@ -62,9 +68,10 @@ namespace Infrastructure.Services
                 .TagWith(nameof(this.GetAdminRole))
                 .Where(x => x.Name == StringRoleResources.Admin &&
                     x.NormalizedName == StringRoleResources.AdminNormalized)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return role;
+            RoleResponse roleResponse = new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName };
+            return roleResponse;
         }
 
 
@@ -95,9 +102,13 @@ namespace Infrastructure.Services
                 .TagWith(nameof(this.GetRoles))
                 .Where(x => x.Name != StringRoleResources.Admin &&
                     x.NormalizedName != StringRoleResources.AdminNormalized)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .ToList();
-            return result;
+            
+            var roles = new List<RoleResponse>();
+            foreach (var role in result)
+                roles.Add(new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName });
+            return roles;
         }
 
 
@@ -105,31 +116,37 @@ namespace Infrastructure.Services
         {
             var result = this.RoleManager.Roles
                 .TagWith(nameof(this.GetRolesForAdmin))
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .ToList();
-            return result;
+
+            var roles = new List<RoleResponse>();
+            foreach (var role in result)
+                roles.Add(new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName });
+            return roles;
         }
 
 
         public RoleResponse? GetRoleById(int id)
         {
-            var result = this.RoleManager.Roles
+            var role = this.RoleManager.Roles
                 .TagWith(nameof(this.GetRoleById))
                 .Where(x => x.Id == id)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return result;
+            RoleResponse roleResponse = new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName };
+            return roleResponse;
         }
 
 
         public RoleResponse? GetRoleByNormalizedName(string normalizedName)
         {
-            var result = this.RoleManager.Roles
+            var role = this.RoleManager.Roles
                 .TagWith(nameof(this.GetRoleByNormalizedName))
                 .Where(x => x.NormalizedName == normalizedName)
-                .ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<RoleResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return result;
+            RoleResponse roleResponse = new() { Id = role!.Id, Name = role.Name, NormalizedName = role.NormalizedName };
+            return roleResponse;
         }
 
 

@@ -17,7 +17,7 @@ namespace SharedUI
 
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration["BaseAddress"]!.ToString()) });
             services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-            services.AddScoped<ILocalStorageService, LocalStorageService>();
+            services.AddScoped<IAccessTokenService, AccessTokenService>();
             return services;
         }
     }

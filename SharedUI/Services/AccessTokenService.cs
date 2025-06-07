@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 namespace SharedUI.Services
 {
 
-    public class LocalStorageService : ILocalStorageService, IDisposable
+    public class AccessTokenService : IAccessTokenService, IDisposable
     {
         private IJSRuntime _jsRuntime;
 
-        public LocalStorageService(IJSRuntime jSRuntime)
+        public AccessTokenService(IJSRuntime jSRuntime)
         {
             _jsRuntime = jSRuntime;
         }

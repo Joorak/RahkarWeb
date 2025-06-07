@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SharedUI.Interfaces
 {
-    public interface ILocalStorageService
+    public interface IAccessTokenService
     {
         Task<string> GetItemAsync(string tokenName);
         string GetAccessToken(string tokenName);

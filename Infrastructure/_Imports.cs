@@ -6,8 +6,8 @@ global using System.Reflection;
 global using System.Security.Claims;
 global using System.Text;
 
-global using AutoMapper;
-global using AutoMapper.QueryableExtensions;
+//global using AutoMapper;
+//global using AutoMapper.QueryableExtensions;
 global using Application.Models;
 global using Application.Common.Interfaces;
 global using Application.Utils;

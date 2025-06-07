@@ -112,7 +112,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync($"Users/user/{id}");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<UserResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<UserResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)
@@ -130,7 +130,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync("Users/users");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<UserResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<UserResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)
@@ -148,7 +148,7 @@ namespace SharedUI.Services
         {
             var response = await this.HttpClient.GetAsync("Users/usersInactive");
             var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<Result<UserResponse>>(
+            var result = JsonSerializer.Deserialize<RequestResult<UserResponse>>(
                 responseResult, this.Options);
 
             //if (response.IsSuccessStatusCode == false)

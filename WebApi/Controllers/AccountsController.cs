@@ -6,7 +6,7 @@ using Serilog;
 namespace WebApi.Controllers
 {
 
-
+    [ApiController]
     public class AccountsController : ControllerBase
     {
 
@@ -32,7 +32,7 @@ namespace WebApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromForm] LoginRequest login)
         {
-            var result = await this.AccountService.LoginAsync(login).ConfigureAwait(false);
+            var result = await this.AccountService.LoginAsync(login);
 
             return result.Successful == true
                 ? this.Ok(result)

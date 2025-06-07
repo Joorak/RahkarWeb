@@ -329,7 +329,7 @@ html, body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius:1rem;
 }
-    .container-wfull {
+.container-wfull {
     width: 100%;
     height: 100%;
 /*    margin: 0 !important;
@@ -357,7 +357,10 @@ html, body {
 .container-m-1 {
     margin: 1rem;
 }
-
+p.text-align-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
 #btn-back-to-top {
     /*background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAxOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xLjUgOS4zMzM0NEw5IDEuNTU1NjZNOSAxLjU1NTY2TDkgMjYuNDQ0Nk05IDEuNTU1NjZMMTYuNSA5LjMzMzQ0IiBzdHJva2U9IiNGRjYyNkEiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4NCjwvc3ZnPg0K");
     background-position: center center;

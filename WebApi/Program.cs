@@ -3,6 +3,9 @@ using Application.Common.Interfaces;
 using FluentValidation;
 using Infrastructure.Persistence;
 using Infrastructure.Utils;
+using Scalar.AspNetCore;
+
+//using Scalar.AspNetCore;
 using WebApi.Services;
 using WebAPI.Filters;
 
@@ -22,14 +25,24 @@ try
     var allowedOrigins = builder.Configuration["AllowedOrigins"];
     var corsPolicy = "EnableCORS";
 
+    //builder.Services.AddCors(options =>
+    //{
+    //    options.AddPolicy(corsPolicy, builder =>
+    //    {
+    //        builder.WithOrigins(allowedOrigins!)
+    //            .AllowAnyHeader()
+    //            .AllowAnyMethod()
+    //            .AllowCredentials();
+    //    });
+    //});
+
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy(corsPolicy, builder =>
+        options.AddPolicy("EnableCORS", builder =>
         {
-            builder.WithOrigins(allowedOrigins!)
+            builder.AllowAnyOrigin()
                 .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowAnyMethod();
         });
     });
 
@@ -38,7 +51,7 @@ try
     builder.Services.AddInfrastructureLayer(builder.Configuration);
 
     builder.Services.AddHttpContextAccessor();
-    builder.Services.AddFluentValidationAutoValidation();
+    //builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<ApiExceptionFilterAttribute>();
 
     builder.Services.AddControllers(options => 
@@ -82,6 +95,8 @@ try
 
     // Stripe Configuration - Secret Key
     StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
+
+    builder.Services.AddOpenApi();
 
     var app = builder.Build();
 
@@ -127,8 +142,8 @@ try
                     RoleName = builder.Configuration["AdminSeedModel:RoleName"],
                 };
 
-                await ApplicationDbContextSeed.SeedRolesAsync(roleManager, rolesSeed).ConfigureAwait(false);
-                await ApplicationDbContextSeed.SeedAdminUserAsync(userManager, roleManager, adminSeed).ConfigureAwait(false);
+                await AppDbContextSeed.SeedRolesAsync(roleManager, rolesSeed).ConfigureAwait(false);
+                await AppDbContextSeed.SeedAdminUserAsync(userManager, roleManager, adminSeed).ConfigureAwait(false);
                 //await ApplicationDbContextSeed.SeedCustomersDataAsync(context).ConfigureAwait(false);
             }
         }
@@ -143,6 +158,25 @@ try
     {
         app.UseDeveloperExceptionPage();
         app.UseMigrationsEndPoint();
+        app.MapOpenApi();
+        //app.UseSwaggerUi(options =>
+        //{
+        //    options.DocumentPath = "openapi/v1.json";
+        //});
+        //app.UseSwaggerUi();
+        //app.UseReDoc(options =>
+        //{
+        //    options.Path = "/redoc";
+        //});
+
+        /* use /scalar/v1 at the end of address  */
+        app.MapScalarApiReference();
+        //app.MapScalarApiReference(options =>
+        //{
+        //    options.WithTitle("Rahkar API");
+        //    options.WithTheme(ScalarTheme.BluePlanet);
+        //    options.WithSidebar(false);
+        //});
     }
     else
     {
@@ -165,25 +199,25 @@ try
     app.UseAuthorization();
 
     // Security Headers for Website
-//    app.Use(async (context, next) =>
-//    {
-//        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
-//        context.Response.Headers.Add("Access-Control-Allow-Origin", allowedOrigins);
-//        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-//        context.Response.Headers.Add("Referrer-Policy", "same-origin");
-//        context.Response.Headers.Add("Permissions-Policy", "geolocation=(), camera=()");
-//#pragma warning disable SA1118 // Parameter should not span multiple lines
-//        context.Response.Headers.Add(builder.Configuration["ContentPolicy"]!, "default-src "
-//            + "self  "
-//            + "https://maxcdn.bootstrapcdn.com  "
-//            + "https://login.microsoftonline.com "
-//            + "https://sshmantest.azurewebsites.net "
-//            + " 'unsafe-inline' 'unsafe-eval'");
-//#pragma warning restore SA1118 // Parameter should not span multiple lines
-//        context.Response.Headers.Add("SameSite", "Strict");
-//        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
-//        await next();
-//    });
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", allowedOrigins);
+        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+        context.Response.Headers.Add("Referrer-Policy", "same-origin");
+        context.Response.Headers.Add("Permissions-Policy", "geolocation=(), camera=()");
+#pragma warning disable SA1118 // Parameter should not span multiple lines
+        context.Response.Headers.Add(builder.Configuration["ContentPolicy"]!, "default-src "
+            + "self  "
+            + "https://maxcdn.bootstrapcdn.com  "
+            + "https://login.microsoftonline.com "
+            + "https://sshmantest.azurewebsites.net "
+            + " 'unsafe-inline' 'unsafe-eval'");
+#pragma warning restore SA1118 // Parameter should not span multiple lines
+        context.Response.Headers.Add("SameSite", "Strict");
+        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+        await next();
+    });
 
     app.MapControllerRoute(
         name: "default",

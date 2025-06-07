@@ -26,9 +26,7 @@ namespace Infrastructure
                     break;
                 case "LocalDb":
                     services.AddDbContext<AppDbContext>(options =>
-                        options.UseSqlServer(
-                            _connectionString,
-                            b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+                        options.UseSqlServer(_connectionString,b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
                     break;
 
                 default:
@@ -41,13 +39,14 @@ namespace Infrastructure
             }
 
             // Inject services
+            services.AddDbContext<ReportingContext>(options => options.UseInMemoryDatabase("ReportDb"));
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
             services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
 
-            services.AddTransient<IDateTimeService, DateTimeService>();
+            services.AddTransient<IPersianCalendarService, PersianCalendarService>();
             services.AddTransient<IEmailService, EmailService>();
 
             var builder = services.AddIdentityCore<User>(opt =>
@@ -62,14 +61,14 @@ namespace Infrastructure
                 opt.User.RequireUniqueEmail = true;
             });
             builder.AddRoles<Role>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-            builder = new IdentityBuilder(builder.UserType, builder.RoleType, builder.Services);
+            builder = new IdentityBuilder(builder.UserType, builder.RoleType!, builder.Services);
             
 
             services.AddAuthorizationCore(config =>
             {
                 config.AddPolicy(StringRoleResources.Admin, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Admin));
-                config.AddPolicy(StringRoleResources.Customer, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Customer));
-                config.AddPolicy(StringRoleResources.Supplier, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Supplier));
+                //config.AddPolicy(StringRoleResources.Customer, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Customer));
+                //config.AddPolicy(StringRoleResources.Supplier, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Supplier));
                 config.AddPolicy(StringRoleResources.User, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.User));
                 config.AddPolicy(StringRoleResources.Default, policy => policy.RequireRole(ClaimTypes.Role, StringRoleResources.Default));
             });

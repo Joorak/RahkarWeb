@@ -1,5 +1,5 @@
 ﻿namespace Application.Models;
-public class Result<T> where T : class
+public class RequestResult<T> where T : class
 {
     public bool Successful { get; set; } = false;
 

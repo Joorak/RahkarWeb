@@ -9,7 +9,7 @@ public class AuthenticationService : IAuthenticationService
     public AuthenticationService(
         HttpClient httpClient,
         AuthenticationStateProvider authStateProvider,
-        ILocalStorageService localStorage,
+        IAccessTokenService localStorage,
         ToastService toastService)
     {
         this.HttpClient = httpClient;
@@ -24,7 +24,7 @@ public class AuthenticationService : IAuthenticationService
     private AuthenticationStateProvider AuthStateProvider { get; }
 
 
-    private ILocalStorageService LocalStorage { get; }
+    private IAccessTokenService LocalStorage { get; }
 
 
     private ToastService ToastService { get; }

@@ -1,5 +1,6 @@
 ﻿
 
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Infrastructure.Services
@@ -11,13 +12,11 @@ namespace Infrastructure.Services
         public UserService(
             UserManager<User> userManager,
             IRoleService roleService,
-            IMapper mapper,
             IUserClaimsPrincipalFactory<User> userClaimsPrincipalFactory,
             IAuthorizationService authorizationService)
         {
             this.UserManager = userManager;
             this.RoleService = roleService;
-            this.Mapper = mapper;
             this.UserClaimsPrincipalFactory = userClaimsPrincipalFactory;
             this.AuthorizationService = authorizationService;
         }
@@ -29,7 +28,7 @@ namespace Infrastructure.Services
         private IRoleService RoleService { get; }
 
 
-        private IMapper Mapper { get; }
+        //private IMapper Mapper { get; }
 
 
         private IUserClaimsPrincipalFactory<User> UserClaimsPrincipalFactory { get; }
@@ -100,9 +99,11 @@ namespace Infrastructure.Services
             var user = this.UserManager.Users
                 .TagWith(nameof(this.GetUserById))
                 .Where(x => x.Id == userId && x.IsActive == true)
-                .ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return user;
+
+            UserResponse userResponse = new() { Id = user!.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, RoleId = user.Roles.FirstOrDefault()!.RoleId , IsActive = user.IsActive };
+            return userResponse;
         }
 
         public UserResponse? GetUserByEmail(string email)
@@ -110,9 +111,10 @@ namespace Infrastructure.Services
             var user = this.UserManager.Users
                 .TagWith(nameof(this.GetUserByEmail))
                 .Where(x => x.Email == email.ToLower() && x.IsActive == true)
-                .ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
                 .FirstOrDefault();
-            return user;
+            UserResponse userResponse = new() { Id = user!.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, RoleId = user.Roles.FirstOrDefault()!.RoleId, IsActive = user.IsActive };
+            return userResponse;
         }
 
         public async Task<List<string>> GetUserRoleAsync(User user)
@@ -184,9 +186,12 @@ namespace Infrastructure.Services
             var result = this.UserManager.Users
                 .TagWith(nameof(this.GetUsers))
                 .Where(u => u.IsActive == true)
-                .ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
                 .ToList();
-            return result;
+            var users = new List<UserResponse>();
+            foreach (var user in result)
+                users.Add(new() { Id = user!.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, RoleId = user.Roles.FirstOrDefault()!.RoleId, IsActive = user.IsActive });
+            return users;
         }
 
         public List<UserResponse> GetUsersInactive()
@@ -194,9 +199,12 @@ namespace Infrastructure.Services
             var result = this.UserManager.Users
                 .TagWith(nameof(this.GetUsersInactive))
                 .Where(u => u.IsActive == false)
-                .ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
+                //.ProjectTo<UserResponse>(this.Mapper.ConfigurationProvider)
                 .ToList();
-            return result;
+            var users = new List<UserResponse>();
+            foreach (var user in result)
+                users.Add(new() { Id = user!.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, RoleId = user.Roles.FirstOrDefault()!.RoleId, IsActive = user.IsActive });
+            return users;
         }
 
 

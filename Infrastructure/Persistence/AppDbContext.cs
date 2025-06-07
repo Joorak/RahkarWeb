@@ -1,8 +1,37 @@
 ﻿
 
+using Domain.Entities.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Infrastructure.Persistence
 {
+    public class ReportingContext : DbContext
+    {
+        public ReportingContext(
+            DbContextOptions<ReportingContext> options)
+            : base(options)
+        {
+        }
 
+        protected ReportingContext(
+            DbContextOptions options)
+
+            : base(options)
+        {
+        }
+
+        protected ReportingContext()
+        {
+        }
+        public DbSet<CountriesTurnoverReport> CountriesTurnoverReport { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<CountriesTurnoverReport>().ToTable(nameof(CountriesTurnoverReport), t => t.ExcludeFromMigrations());
+
+        }
+    }
     public class AppDbContext : IdentityDbContext<User, Role, int,
         UserClaim, UserRole, UserLogin,
         RoleClaim, UserToken>, IApplicationDbContext
@@ -28,7 +57,7 @@ namespace Infrastructure.Persistence
         public DbSet<Product> Products { get; set; }
         public DbSet<CarouselItem> CarouselItems { get; set; }
         public DbSet<SellableItem> SellableItems { get; set; }
-
+        
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -40,6 +69,7 @@ namespace Infrastructure.Persistence
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+
             builder.ApplyConfiguration(new RoleClaimConfiguration());
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new RoleConfiguration());
@@ -49,6 +79,8 @@ namespace Infrastructure.Persistence
             builder.ApplyConfiguration(new UserTokenConfiguration());
 
             //builder.ApplyConfiguration(new CustomerConfiguration());
+            builder.Entity<CountriesTurnoverReport>().ToTable(nameof(Users), t => t.ExcludeFromMigrations());
+
         }
 
         /// <summary>

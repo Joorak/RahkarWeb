@@ -5,6 +5,7 @@ namespace WebApi.Controllers
 {
 
     [Authorize(Roles = $"{StringRoleResources.Admin}")]
+    [ApiController]
     public class RolesController : ControllerBase
     {
 
@@ -49,11 +50,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => RoleService.GetRoleById(id)).ConfigureAwait(false);
-                return this.Ok(new Result<RoleResponse> { Item = result, Successful = true, Error = null, Items = null });
+                return this.Ok(new RequestResult<RoleResponse> { Item = result, Successful = true, Error = null, Items = null });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
 
@@ -63,11 +64,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => RoleService.GetRoles()).ConfigureAwait(false);
-                return this.Ok(new Result<RoleResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = null });
+                return this.Ok(new RequestResult<RoleResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = null });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
 
@@ -77,11 +78,11 @@ namespace WebApi.Controllers
             try
             {
                 var result = await Task.Run(() => RoleService.GetRoles()).ConfigureAwait(false);
-                return this.Ok(new Result<RoleResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = null });
+                return this.Ok(new RequestResult<RoleResponse> { Item = result.FirstOrDefault(), Successful = true, Error = null, Items = null });
             }
             catch (Exception ex)
             {
-                return this.BadRequest(new Result<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
             }
         }
     }

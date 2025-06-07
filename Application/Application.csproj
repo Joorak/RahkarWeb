@@ -3,7 +3,7 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+	<!--<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />-->
     <!--<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />-->
     <PackageReference Include="System.Text.Json" />
     <!--<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />-->
