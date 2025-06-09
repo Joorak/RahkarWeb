@@ -94,7 +94,7 @@ window.onscroll = function () {
                         <img class="rounded-pill" src="./_content/SharedUI/img/countriesFlag/4x3/{point.iso-a2}.svg" style="width:4rem;height:3rem">
                     </div>
                     <div class="d-flex flex-row-reverse text-danger">
-                        <div >حجم صنعت : <strong>{point.value}</strong>(میلیون دلار)</div>
+                        <div >حجم عملیات لیزینگ : <strong>{point.value}</strong>(میلیون دلار)</div>
                     </div>
                     <div class="d-flex flex-row-reverse text-success">
                         <div >درصد به کل : <strong>{point.percent}</strong> درصد</div>

@@ -1,4 +1,6 @@
 ﻿:root {
+    --app-primary-font: Yekan;
+    --app-secondary-font: Vazirmatn;
     --app-red: rgba(255, 98, 106, 1);
     --app-green: rgba(0, 180, 105, 1);
     --app-title-color: #005168;
@@ -93,7 +95,7 @@ html, body {
 }
 
     html, body :dir(rtl) {
-        font-family: Yekan, Georgia, Monaco !important;
+        font-family: var(--app-primary-font), Georgia, Monaco !important;
         /*font-family: "Vazirmatn", Georgia, Monaco !important;*/
     }
 
@@ -552,7 +554,7 @@ padding-inline-start: 5px !important;
 
     .highcharts-root text {
         stroke-width: 0;
-        font-family: Vazir !important;
+        font-family: var(--app-secondary-font) !important;
         font-size: 0.8rem !important;
     }
 
@@ -733,8 +735,8 @@ div.highcharts-tooltip {
 .map-tooltip-box {
     width: 16rem;
     height: 9rem;
-    font-family: Vazir;
-    font-size: 1rem;
+    font-family: var(--app-primary-font) !important;
+    font-size: 0.85rem;
     direction: ltr !important;
 }
 

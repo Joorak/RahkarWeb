@@ -1,6 +1,6 @@
 [
   {
-    "Name": "VASM",
+    "Name": "WASM",
     "Projects": [
       {
         "Path": "WebApi\\WebApi.csproj",

@@ -81,7 +81,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1);
+        
         // await _httpClient.GetAsync("Home/test");
 
         // var authstate = await _authState.GetAuthenticationStateAsync();
@@ -189,6 +189,7 @@
                 }
 
             };
+            await Task.Delay(1);
             //await DbContext.CarouselItems.AddRangeAsync(CarouselItems);
             //await DbContext.SaveChangesAsync();
         }
