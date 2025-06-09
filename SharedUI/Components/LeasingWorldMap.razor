@@ -1,27 +1,20 @@
 ﻿@inject IJSRuntime _jsRuntime
-<div id="mapContainer" class="w-100 h-100"></div>
+@inject IHomeService _homeService
+<div id="mapContainer" class="map-container w-100 h-100"></div>
 
 @code {
-    private class CountriesLeasingTurnover
-    {
-        public string CountryISO3 { get; set; }
-        public double Turnover { get; set; }
-        public double Percentage { get; set; }
-    }
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
 
-            List<CountriesLeasingTurnover> mapData = new();
-            // var serviceResponse = await _informationCaseViewModel.GetContractInfo();
-            // if (!serviceResponse.Success) return;
-            // Data = serviceResponse.Data;
+            List<CountriesTurnoverStat> mapData = new();
+            var res = await _homeService.GetCountriesTurnover();
+            if (!res.Successful) return;
+            mapData = res.Items!.Where(i => i.LeasingVolume > 0).ToList();
 
-            // mapData = (from contract in Data
-            //            group contract by contract.StateName
-            //                                 into s
-            //            select new ContractInfo { StateName = s.Key, DebtAmount = s.Sum(e => e.DebtAmount), CreditAmount = s.Sum(e => e.CreditAmount) }).ToList<ContractInfo>();
+
             await _jsRuntime.InvokeVoidAsync("drawLeasingWorldMap", "mapContainer", mapData);
         }
         catch (Exception ex)

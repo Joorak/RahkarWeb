@@ -39,7 +39,7 @@ namespace Infrastructure
             }
 
             // Inject services
-            services.AddDbContext<ReportingContext>(options => options.UseInMemoryDatabase("ReportDb"));
+            services.AddDbContext<ReportingContext>(options => options.UseSqlServer(configuration["ConnectionStrings:Default2"]));
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
             services.AddTransient<IAccountService, AccountService>();

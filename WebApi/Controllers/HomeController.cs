@@ -14,8 +14,8 @@ namespace WebApi.Controllers
         public HomeController(IWebHostEnvironment webHostEnvironment, ReportingContext reportContext)
             : base()
         {
-            this._webHostEnvironment = webHostEnvironment;
-            this._dbContext = reportContext;
+            _webHostEnvironment = webHostEnvironment;
+            _dbContext = reportContext;
         }
 
 
@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         [HttpGet("test")]
         public IActionResult Index()
         {
-            return this.Ok();
+            return Ok();
         }
 
 
@@ -33,7 +33,7 @@ namespace WebApi.Controllers
         public IActionResult Home()
         {
             return new PhysicalFileResult(
-                Path.Combine(this._webHostEnvironment.ContentRootPath, "Views/Home.html"),
+                Path.Combine(_webHostEnvironment.ContentRootPath, "Views/Home.html"),
                 new MediaTypeHeaderValue("text/html").ToString());
         }
 
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         public IActionResult Error()
         {
             return new PhysicalFileResult(
-                Path.Combine(this._webHostEnvironment.ContentRootPath, "Views/Error.html"),
+                Path.Combine(_webHostEnvironment.ContentRootPath, "Views/Error.html"),
                 new MediaTypeHeaderValue("text/html").ToString());
         }
 
@@ -49,29 +49,29 @@ namespace WebApi.Controllers
         public IActionResult Health()
         {
             // This endpoint can be used for health checks
-            return this.Ok(new { status = "Healthy" });
+            return Ok(new { status = "Healthy" });
         }
 
         [HttpGet("getExcelData")]
         public async Task<IActionResult> GetExcelData()
         {
             
-            var filePath = Path.Combine(this._webHostEnvironment.ContentRootPath, "Files", "Countries_Leasing_Stats.xlsx");
+            string filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Files", "Countries_Leasing_Stats.xlsx");
             if (System.IO.File.Exists(filePath))
             {
                 try
                 {
-                    FormattableString sql = $"SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 'Excel 12.0;Database={filePath};HDR=YES;' ,Sheet1$);";
-                    var result = await _dbContext.CountriesTurnoverReport.FromSql(sql).AsNoTracking().ToListAsync();
-                    return this.Ok(new RequestResult<CountriesTurnoverReport> { Items = result, Successful = true, Error = null, Item = null });
+                    string sql = $"SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0', 'Excel 12.0;Database={filePath};HDR=YES;' ,'SELECT * FROM [Sheet1$]')";
+                    var result = await _dbContext.CountriesTurnoverReport.FromSqlRaw(sql).AsNoTracking().ToListAsync();
+                    return Ok(new RequestResult<CountriesTurnoverStat> { Items = result, Successful = true, Error = null, Item = null });
                 }
                 catch (Exception ex)
                 {
-                    return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
+                    return BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = ex.Message, Items = null });
                 }
 
             }
-            return this.BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = "Data Not Found...", Items = null });
+            return BadRequest(new RequestResult<UserResponse> { Item = null, Successful = false, Error = "Data Not Found...", Items = null });
         }
 
 

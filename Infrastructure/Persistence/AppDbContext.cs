@@ -23,12 +23,12 @@ namespace Infrastructure.Persistence
         protected ReportingContext()
         {
         }
-        public DbSet<CountriesTurnoverReport> CountriesTurnoverReport { get; set; }
+        public DbSet<CountriesTurnoverStat> CountriesTurnoverReport { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<CountriesTurnoverReport>().ToTable(nameof(CountriesTurnoverReport), t => t.ExcludeFromMigrations());
+            builder.Entity<CountriesTurnoverStat>().ToTable(nameof(CountriesTurnoverReport), t => t.ExcludeFromMigrations()).HasNoKey();
 
         }
     }
@@ -79,7 +79,7 @@ namespace Infrastructure.Persistence
             builder.ApplyConfiguration(new UserTokenConfiguration());
 
             //builder.ApplyConfiguration(new CustomerConfiguration());
-            builder.Entity<CountriesTurnoverReport>().ToTable(nameof(Users), t => t.ExcludeFromMigrations());
+            builder.Entity<CountriesTurnoverStat>().ToTable(nameof(Users), t => t.ExcludeFromMigrations());
 
         }
 

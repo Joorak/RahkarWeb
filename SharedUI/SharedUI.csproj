@@ -79,6 +79,5 @@
     <Folder Include="Components\Pages\Admin\Roles\" />
     <Folder Include="Components\Pages\Admin\Users\" />
     <Folder Include="Components\Pages\User\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 </Project>

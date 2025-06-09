@@ -20,6 +20,9 @@
                     MaxPaymentMonths="240" MaxGraceDays="365" MaxPaymentInterval="24" />
     </div>
     <div class="container-wfull container-shadow-primary-50 p-3 mb-5">
+        <LeasingWorldMap />
+    </div>
+    <div class="container-wfull container-shadow-primary-50 p-3 mb-5">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-2">
             @foreach (var item in _sellableItems.Where(s => s.TemplateType == "SuppliersBanner").ToList())
             {
@@ -78,6 +81,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(1);
         // await _httpClient.GetAsync("Home/test");
 
         // var authstate = await _authState.GetAuthenticationStateAsync();

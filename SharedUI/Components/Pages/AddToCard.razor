@@ -162,8 +162,8 @@
 
     private List<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
     private List<ProductCategory> BusinessCategories { get; set; } = new List<ProductCategory>();
-    private List<CountriesTurnoverReport> Products { get; set; } = new List<CountriesTurnoverReport>();
-    private List<CountriesTurnoverReport> FilteredProducts => Products
+    private List<Product> Products { get; set; } = new List<Product>();
+    private List<Product> FilteredProducts => Products
         .Where(p => string.IsNullOrEmpty(SearchTerm) || p.Name.Contains(SearchTerm))
         .OrderBy(p => SortOption == "name" ? p.Name : p.Price.ToString())
         .ToList();
