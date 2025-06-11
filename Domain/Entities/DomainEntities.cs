@@ -454,6 +454,24 @@ namespace Domain.Entities
         [ForeignKey(nameof(InstallmentId))]
         public virtual Installment Installment { get; set; }
     }
+
+    // جدول پارامترهای فرمول (FormulaParameter)
+    public class FormulaParameter
+    {
+        [Key]
+        public Guid Id { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; }
+
+        [Required, MaxLength(50)]
+        public string OutputType { get; set; } // نوع خروجی (عدد، تاریخ و ...)
+
+        public string Query { get; set; } // کوئری SQL
+        public bool HasAdditionalParameters { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
     public class CountriesTurnoverStat
     {
         //[Key]
