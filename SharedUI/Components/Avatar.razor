@@ -1,0 +1,25 @@
+<div class="d-flex align-items-center">
+    <button class="btn btn-light rounded-circle me-2" @onclick="OnAvatarClick">
+        <i class="bi bi-person-circle"></i>
+    </button>
+    <span>@DisplayText</span>
+</div>
+
+@code {
+    [Parameter]
+    public bool IsLoggedIn { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnLoginStatusChanged { get; set; }
+
+    private string DisplayText => IsLoggedIn ? "خروج" : "ورود";
+
+    private async Task OnAvatarClick()
+    {
+        IsLoggedIn = !IsLoggedIn;
+        if (OnLoginStatusChanged.HasDelegate)
+        {
+            await OnLoginStatusChanged.InvokeAsync(IsLoggedIn);
+        }
+    }
+}

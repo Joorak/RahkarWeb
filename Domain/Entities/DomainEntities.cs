@@ -199,35 +199,6 @@ namespace Domain.Entities
         public virtual ICollection<FinancialDocument> FinancialDocuments { get; set; }
     }
 
-    // جدول اقلام سفارش (OrderItem)
-    public class OrderItem
-    {
-        [Key]
-        public Guid Id { get; set; }
-
-        [Required]
-        public Guid OrderId { get; set; }
-
-        [Required]
-        public Guid SupplierId { get; set; }
-
-        [Required]
-        [MaxLength(200)]
-        public string ProductName { get; set; }
-
-        public int Quantity { get; set; }
-
-        public decimal UnitPrice { get; set; }
-
-        public decimal TotalPrice { get; set; }
-
-        [ForeignKey(nameof(OrderId))]
-        public virtual Order Order { get; set; }
-
-        [ForeignKey(nameof(SupplierId))]
-        public virtual Person Supplier { get; set; }
-    }
-
     // جدول لاگ وضعیت سفارش (OrderStatusLog)
     public class OrderStatusLog
     {

@@ -1,0 +1,52 @@
+<div class="authentication-container d-flex align-items-center ms-4 box-shadow-3d">
+    <button class="btn btn-light rounded-circle me-2" disabled>
+        <i class="bi bi-person-circle"></i>
+    </button>
+    @if (!IsLoggedIn)
+    {
+        <button class="btn" @onclick="OnLoginClick">
+            <span>ورود | ثبت نام</span>
+        </button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="OnLogoutClick">
+            <span>خروج</span>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool IsLoggedIn { get; set; }
+
+    [Parameter]
+    public EventCallback OnLogin { get; set; }
+
+    [Parameter]
+    public EventCallback OnRegister { get; set; }
+
+    [Parameter]
+    public EventCallback OnLogout { get; set; }
+
+    private async Task OnLoginClick()
+    {
+        if (OnLogin.HasDelegate)
+        {
+            await OnLogin.InvokeAsync();
+        }
+        else if (OnRegister.HasDelegate)
+        {
+            await OnRegister.InvokeAsync();
+        }
+    }
+
+    private async Task OnLogoutClick()
+    {
+        if (OnLogout.HasDelegate)
+        {
+            await OnLogout.InvokeAsync();
+            IsLoggedIn = false; // به‌روزرسانی وضعیت پس از خروج
+        }
+    }
+}

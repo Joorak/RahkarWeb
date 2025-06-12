@@ -91,7 +91,7 @@ html, body {
     font-size: 15px !important;
     /*overflow-x: hidden !important;*/
     direction: var(--app-dir) !important;
-    scrollbar-gutter: stable both-edges !important;
+    
 }
 
     html, body :dir(rtl) {
@@ -249,8 +249,8 @@ html, body {
     display: flex;
     flex-flow: column;
     min-height: 100vh;
-    width: 100%;
-    padding: 1rem 2rem 0 2rem !important;
+    width: 100% !important;
+    
 
 }
 
@@ -260,14 +260,15 @@ html, body {
     }
 
         .page .header {
-            flex: 0 1 auto;
+            flex: 0 1 3rem;
             
             z-index: 99;
         }
 
-        .page .content {
-            flex: 1 1 auto;
-        }
+    .page .content {
+        flex: 1 1 auto;
+        padding: 1rem 2rem 0 2rem !important;
+    }
 
         .page .footer {
             flex: 0 1 2rem;
@@ -337,6 +338,10 @@ html, body {
 .box-shadow-3d {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius:1rem;
+}
+.shadow-1-bottom {
+    box-shadow: 0 1px 0 rgba(0,0,0,.14),0 2px 0 rgba(0,0,0,.05);
+    --tw-shadow-colored: 0 1px 0 var(--tw-shadow-color),0 2px 0 var(--tw-shadow-color);
 }
 .container-wfull {
     width: 100%;
@@ -478,7 +483,14 @@ padding-inline-start: 5px !important;
         font-size: 14px;
         color: #005168;
     }
-
+.navbar-collapse {
+    align-items: self-end !important;
+}
+.navbar-collapse {
+    flex-basis: 100%;
+    flex-grow: 1;
+    align-items: self-end;
+}
 .navbar-nav .nav-item {
     display: flex;
     align-items: center;
@@ -487,14 +499,20 @@ padding-inline-start: 5px !important;
 
 .navbar-nav .nav-link {
     color: #005168;
-    font-size: 16px;
+    font-size: 0.85rem;
 }
 
     .navbar-nav .nav-link.active {
         color: #FF626A;
         font-weight: bold;
-        text-decoration: underline;
+        /*text-decoration: underline;*/
     }
+.navbar-nav .nav-link:not(.active):hover {
+    -ms-transform: scale(1.15); /* IE 9 */
+    -webkit-transform: scale(1.15); /* Safari 3-8 */
+    transform: scale(1.15);
+    color: #FF626A;
+}
 /*.footer {
     background-color: #F9F9F9;
     padding: 20px 0;

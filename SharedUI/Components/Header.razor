@@ -24,11 +24,63 @@
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                     </li> *@
                 </ul>
-                <a class="text-decoration-none user-avatar me-auto" href="#">
+                <!--<a class="text-decoration-none user-avatar me-auto" href="#">
                     <img src="_content/SharedUI/img/1.png" alt="User Avatar">
                     <span>@UserName</span>
-                    <small>(@UserRole)</small>
-                </a>
+                    @* <small>(@UserRole)</small> *@
+                </a>-->
+                <div class="d-flex items-center justify-end  me-auto">
+                    <Authentication IsLoggedIn="@isLoggedIn" OnLogin="@Login" OnRegister="@Register" OnLogout="@Logout" />
+                    <Cart CartItems="@cartItems" OnCartUpdated="@OnCartUpdated" ShippingCost="50000" />
+                </div>
+                @* <div class="flex items-center justify-end">
+                    <a class="ml-3 relative p-2 cursor-pointer flex justify-center items-center shrink-0" href="/profile/notification/">
+                        <div class="flex">
+                            <div class="cube-font-icon" data-icon-name="cube-alert-notification-outline" data-icon="" style="width: 24px; height: 24px; font-size: 24px; font-weight: normal; color: var(--color-icon-high-emphasis);">
+                            </div>
+                        </div>
+                    </a>
+                    <a class="styles_Link__RMyqc" href="/users/login/?backUrl=/">
+                        <button class="relative flex items-center user-select-none styles_btn__Q4MvL text-button-2 styles_btn--medium__4GoNC styles_btn--neutralOutlined__mLWvq styles_btn--black__xj6Mt rounded-medium whitespace-nowrap shrink-0 ml-2 lg:ml-0" data-cro-id="header-profile">
+                            <div class="flex items-center justify-center relative grow">
+                                <div class="flex ml-2">
+                                    <svg style="width: 24px; height: 24px; fill: var(--color-icon-high-emphasis);">
+                                        <use xlink:href="#registerationSignIn"></use>
+                                    </svg>
+                                </div>
+                                ورود | ثبت‌نام
+                            </div>
+                        </button>
+                    </a>
+                    <span class="bg-neutral-200 mx-3 hidden lg:block styles_BaseLayoutHeaderUserSection__divider__5TsZs"></span>
+                    <div class="relative flex flex-col">
+                        <a class="relative inline-flex pr-2 pl-0 lg:p-2 bg-neutral-000 rounded py-2" data-cro-id="header-cart" href="/checkout/cart/">
+                            <div class="flex">
+                                <svg style="width: 24px; height: 24px; fill: var(--color-icon-high-emphasis);">
+                                    <use xlink:href="#cartOff"></use>
+                                </svg>
+                            </div>
+                        </a>
+                        <div class="styles_MiniCartPopup__popup__7z9H_ bg-neutral-000 rounded shadow-3-bottom absolute z-1 styles_BaseLayoutMiniCart__container__NMEVO hidden">
+                            <div class="flex items-center py-2 px-3"></div>
+                            <div class="overflow-auto styles_MiniCartPopup__items__JUJlY">
+                                <div class="py-6 lg:px-0 bg-neutral-000 rounded-large">
+                                    <div class="flex justify-center">
+                                        <div style="width: 200px; height: 150px; line-height: 0;">
+                                            <span class="w-full inline-block" style="display: inline-block; object-fit: contain; width: 200px; height: 150px;"></span>
+                                        </div>
+                                    </div>
+                                    <p class="text-h4 text-neutral-800 text-center mt-6">سبد خرید شما خالی است!</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center py-2 px-3 border-complete-t">
+                                <a class="relative flex items-center user-select-none styles_btn__Q4MvL text-button-1 styles_btn--large__1Muai styles_btn--primary__y0GEv rounded-medium mr-auto" data-cro-id="header-submit-order" href="/checkout/cart/">
+                                    <div class="flex items-center justify-center relative grow">ثبت سفارش</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div> *@
                 @* <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
@@ -62,10 +114,44 @@
             <span>@UserName</span>
             <small>(@UserRole)</small>
         </a>
-    </nav> *@
+    </na-v> *@
     
 </div>
 @code {
+    private bool isLoggedIn = false;
+
+    private async Task Login()
+    {
+        // منطق ورود (مثلاً فراخوانی API)
+        isLoggedIn = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Register()
+    {
+        // منطق ثبت نام (مثلاً هدایت به صفحه ثبت نام)
+        // پس از ثبت نام موفق: isLoggedIn = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Logout()
+    {
+        // منطق خروج (مثلاً پاک کردن توکن)
+        isLoggedIn = false;
+        await InvokeAsync(StateHasChanged);
+    }
+    private List<OrderItem> cartItems = new List<OrderItem>
+    {
+        new OrderItem { Id = Guid.NewGuid(), ProductName = "تلویزیون 55 اینچ", UnitPrice = 15000000m, Quantity = 1, ImageUrl = "images/tv.jpg", Discount = 5m, SupplierId = Guid.NewGuid() },
+        new OrderItem { Id = Guid.NewGuid(), ProductName = "موبایل A", UnitPrice = 12000000m, Quantity = 2, ImageUrl = "images/phone.jpg", Discount = 10m, SupplierId = Guid.NewGuid() }
+    };
+
+    private async Task OnCartUpdated(List<OrderItem> updatedCart)
+    {
+        cartItems = updatedCart;
+        await InvokeAsync(StateHasChanged);
+        // منطق اضافی (مثلاً ذخیره در دیتابیس)
+    }
     [Parameter]
     public string UserName { get; set; } = "علی اکبر رضاپور";
 
@@ -76,10 +162,10 @@
     public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>
     {
         new MenuItem { Title = "خانه", Link = "/", Icon = "bi bi-house", IsActive = true },
-        new MenuItem { Title = "مشتریان", Link = "#", Icon = "bi bi-people", IsActive = false },
+        new MenuItem { Title = "آفِروز", Link = "#", Icon = "bi bi-people", IsActive = false },
         new MenuItem { Title = "نمایندگان", Link = "/agents/dashboard", Icon = "bi bi-person-badge", IsActive = false },
-        new MenuItem { Title = "تامین‌کنندگان", Link = "#", Icon = "bi bi-truck", IsActive = false },
-        new MenuItem { Title = "تماس با ما", Link = "#", Icon = "bi bi-telephone", IsActive = false }
+        new MenuItem { Title = "خرید قسطی", Link = "#", Icon = "bi bi-truck", IsActive = false },
+        new MenuItem { Title = "فروشنده شو", Link = "#", Icon = "bi bi-telephone", IsActive = false }
     };
     private async Task ItemClicked(MenuItem item)
     {
