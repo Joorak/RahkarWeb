@@ -1,4 +1,4 @@
-﻿<div class="container-wfull">
+﻿<div class="container">
     <nav class="navbar navbar-expand-md">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,10 +29,7 @@
                     <span>@UserName</span>
                     @* <small>(@UserRole)</small> *@
                 </a>-->
-                <div class="d-flex items-center justify-end  me-auto">
-                    <Authentication IsLoggedIn="@isLoggedIn" OnLogin="@Login" OnRegister="@Register" OnLogout="@Logout" />
-                    <Cart CartItems="@cartItems" OnCartUpdated="@OnCartUpdated" ShippingCost="50000" />
-                </div>
+                
                 @* <div class="flex items-center justify-end">
                     <a class="ml-3 relative p-2 cursor-pointer flex justify-center items-center shrink-0" href="/profile/notification/">
                         <div class="flex">
@@ -118,40 +115,8 @@
     
 </div>
 @code {
-    private bool isLoggedIn = false;
-
-    private async Task Login()
-    {
-        // منطق ورود (مثلاً فراخوانی API)
-        isLoggedIn = true;
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task Register()
-    {
-        // منطق ثبت نام (مثلاً هدایت به صفحه ثبت نام)
-        // پس از ثبت نام موفق: isLoggedIn = true;
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task Logout()
-    {
-        // منطق خروج (مثلاً پاک کردن توکن)
-        isLoggedIn = false;
-        await InvokeAsync(StateHasChanged);
-    }
-    private List<OrderItem> cartItems = new List<OrderItem>
-    {
-        new OrderItem { Id = Guid.NewGuid(), ProductName = "تلویزیون 55 اینچ", UnitPrice = 15000000m, Quantity = 1, ImageUrl = "images/tv.jpg", Discount = 5m, SupplierId = Guid.NewGuid() },
-        new OrderItem { Id = Guid.NewGuid(), ProductName = "موبایل A", UnitPrice = 12000000m, Quantity = 2, ImageUrl = "images/phone.jpg", Discount = 10m, SupplierId = Guid.NewGuid() }
-    };
-
-    private async Task OnCartUpdated(List<OrderItem> updatedCart)
-    {
-        cartItems = updatedCart;
-        await InvokeAsync(StateHasChanged);
-        // منطق اضافی (مثلاً ذخیره در دیتابیس)
-    }
+    
+    
     [Parameter]
     public string UserName { get; set; } = "علی اکبر رضاپور";
 

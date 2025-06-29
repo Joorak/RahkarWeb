@@ -1,17 +1,22 @@
-<div class="authentication-container d-flex align-items-center ms-4 box-shadow-3d">
-    <button class="btn btn-light rounded-circle me-2" disabled>
+<div class="authentication-container d-flex align-items-center ms-4 box-border-primary">
+    @* <button class="btn btn-light rounded-circle me-2" disabled>
         <i class="bi bi-person-circle"></i>
-    </button>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-icon-2 primary-color" fill="currentColor">
+            <path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
+        </svg>
+    </button> *@
     @if (!IsLoggedIn)
     {
-        <button class="btn" @onclick="OnLoginClick">
+        <button class="btn px-2" @onclick="OnLoginClick">
             <span>ورود | ثبت نام</span>
         </button>
     }
     else
     {
-        <button class="btn btn-primary" @onclick="OnLogoutClick">
-            <span>خروج</span>
+        <button class="btn" @onclick="OnLogoutClick">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-icon-2 primary-color" fill="currentColor">
+                <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
+            </svg>
         </button>
     }
 </div>

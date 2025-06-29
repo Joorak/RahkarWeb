@@ -1,0 +1,90 @@
+@attribute [CascadingParameter(Name = "Role")] string Role { get; set; }
+
+<div class="login-container">
+    @if (Role == "User" || Role == "Admin")
+    {
+        <div class="login-form">
+            <div class="form-group">
+                <label for="username">نام کاربری</label>
+                <input type="text" id="username" class="form-control" @bind="Username" />
+            </div>
+            <div class="form-group">
+                <label for="password">رمز عبور</label>
+                <input type="password" id="password" class="form-control" @bind="Password" />
+            </div>
+            <button class="btn btn-primary" @onclick="Login">ورود</button>
+        </div>
+    }
+    else if (Role == "Customer" || Role == "Supplier")
+    {
+        <div class="login-form">
+            <div class="form-group">
+                <label for="mobileNumber">شماره موبایل</label>
+                <div class="input-group">
+                    <input type="text" id="mobileNumber" class="form-control" @bind="MobileNumber" @oninput="ValidateMobile" />
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" @onclick="SendCode" disabled="@(!IsMobileValid)">
+                            <span class="icon-eye"></span>
+                        </button>
+                    </div>
+                </div>
+                <small class="text-danger" style="display: @MobileValidationMessageDisplay;">@MobileValidationMessage</small>
+            </div>
+
+            @if (ShowCodeInput)
+            {
+                <div class="form-group">
+                    <label for="verificationCode">کد پیامک شده</label>
+                    <input type="text" id="verificationCode" class="form-control" @bind="VerificationCode" />
+                </div>
+                <button class="btn btn-primary" @onclick="VerifyCode">ورود</button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string Username { get; set; }
+    private string Password { get; set; }
+    private string MobileNumber { get; set; }
+    private string VerificationCode { get; set; }
+    private bool IsMobileValid { get; set; }
+    private string MobileValidationMessage { get; set; } = "شماره موبایل باید با 09 شروع شود و 11 رقم باشد.";
+    private string MobileValidationMessageDisplay { get; set; } = "none";
+    private bool ShowCodeInput { get; set; }
+
+    private void ValidateMobile()
+    {
+        if (string.IsNullOrEmpty(MobileNumber) || MobileNumber.Length != 11 || !MobileNumber.StartsWith("09"))
+        {
+            IsMobileValid = false;
+            MobileValidationMessageDisplay = "block";
+        }
+        else
+        {
+            IsMobileValid = true;
+            MobileValidationMessageDisplay = "none";
+        }
+    }
+
+    private void SendCode()
+    {
+        if (IsMobileValid)
+        {
+            ShowCodeInput = true; // شبیه‌سازی ارسال کد
+            StateHasChanged();
+        }
+    }
+
+    private void Login()
+    {
+        // منطق ورود برای User و Admin
+        Console.WriteLine($"Login attempt with Username: {Username}, Password: {Password}");
+    }
+
+    private void VerifyCode()
+    {
+        // منطق تأیید کد برای Customer و Supplier
+        Console.WriteLine($"Verify code: {VerificationCode} for Mobile: {MobileNumber}");
+    }
+}
