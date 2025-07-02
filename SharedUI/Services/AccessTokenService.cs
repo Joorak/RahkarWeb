@@ -13,7 +13,20 @@ namespace SharedUI.Services
         {
             _jsRuntime = jSRuntime;
         }
+        public async Task<string> GetToken()
+        {
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken") ?? string.Empty;
+        }
 
+        public async Task SetToken(string token)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+        }
+
+        public async Task RemoveToken()
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
+        }
         public async Task<string> GetItemAsync(string tokenName)
         {
             var res = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", tokenName);

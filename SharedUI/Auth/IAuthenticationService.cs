@@ -6,9 +6,9 @@ namespace SharedUI.Auth
     public interface IAuthenticationService
     {
 
-        Task<JwtTokenResponse> Login(LoginRequest userForAuthenticatrion);
+        Task<RequestResponse<JwtTokenResponse>> Login(LoginRequest userForAuthenticatrion);
 
-        Task<JwtTokenResponse> Register(RegisterRequest userForAuthenticatrion);
+        Task<RequestResponse<JwtTokenResponse>> Register(RegisterRequest userForAuthenticatrion);
 
 
         Task Logout();

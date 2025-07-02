@@ -18,7 +18,7 @@ namespace WebApi.Controllers
 
         [Authorize(Roles = $"{StringRoleResources.Admin}")]
         [HttpPost("user")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
+        public async Task<IActionResult> CreateUser([FromBody] CreateAccountRequest request)
         {
             var result = await UserService.CreateUserAsync(request).ConfigureAwait(false);
             return result.Successful == true

@@ -37,6 +37,7 @@
     <!--<PackageReference Include="Swashbuckle.AspNetCore.ReDoc" />-->
     <!--<PackageReference Include="NSwag.AspNetCore" />-->
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />

@@ -1,19 +1,47 @@
 ﻿namespace Application.Models;
-public class RequestResponse {
+public class RequestResponse 
+{
     public bool Successful { get; set; } = false;
 
     public string? Error { get; set; } = null;
 
 
-    public int EntityId { get; set; } = 0;
+    public int EntityId { get; set; } = -1;
+    public NullResponse? Item { get; set; } = null;
+
+    public List<NullResponse?>? Items { get; set; } = null;
 
     public static RequestResponse Success(int id = 0)
     {
-        return new RequestResponse { Successful = true, EntityId = id, Error = null };
+        return new RequestResponse { Successful = true, EntityId = id };
     }
 
-    public static RequestResponse Failure(string error, int id = 0)
+    public static RequestResponse Failure(string? error = null)
     {
-        return new RequestResponse { Successful = false, EntityId = id, Error = error };
+        return new RequestResponse { Successful = false, Error = error };
     }
+}
+public class RequestResponse<T> where T :  class
+{
+    
+    public bool Successful { get; set; } = false;
+
+    public string? Error { get; set; } = null;
+
+
+    public int EntityId { get; set; } = -1;
+    public T? Item { get; set; } = null;
+
+    public List<T>? Items { get; set; } = null;
+
+    public static RequestResponse<T> Success(int id = 0)
+    {
+        return new RequestResponse<T> { Successful = true, EntityId = id };
+    }
+
+    public static RequestResponse<T> Failure(string? error = null)
+    {
+        return new RequestResponse<T> { Successful = false, Error = error };
+    }
+
 } 

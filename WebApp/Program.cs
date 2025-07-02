@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using SharedUI;
 
 
@@ -8,7 +10,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
+builder.Services.AddScoped<NavigationManager>();
+builder.Services.AddScoped<IJSRuntime, JSRuntime>();
+builder.Services.AddHttpContextAccessor(); // برای دسترسی به NavigationManager
 builder.Services.AddSharedUI(builder.Configuration);
 
 

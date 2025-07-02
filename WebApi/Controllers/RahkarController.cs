@@ -39,12 +39,12 @@ namespace WebApi.Controllers
         public async Task<ContentResult> GetToken([FromQuery] string email, string password)
         {
 
-            var loginRequest = new LoginRequest() { Email = email, Password = password };
+            var loginRequest = new LoginRequest() { AccountId = email, PassKey = password };
             var response = await _accountService.LoginAsync(loginRequest);
 
             string token = string.Empty;
             if (response.Successful)
-                token = response.AccessToken!;
+                token = response.Item!.AccessToken!;
 
             var html = $@"<!DOCTYPE html>
                         <html>

@@ -5,7 +5,7 @@ namespace Application.Models
     public class RegisterRequest 
     {
 
-        public string? Email { get; set; }
+        public string? AccountId { get; set; }
 
 
         public string? FirstName { get; set; }
@@ -13,7 +13,7 @@ namespace Application.Models
         public string? LastName { get; set; }
 
 
-        public string? RoleName { get; set; }
+        public string? RoleForRegister { get; set; }
 
 
         public string? Password { get; set; }

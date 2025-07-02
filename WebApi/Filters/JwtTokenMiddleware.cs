@@ -43,14 +43,14 @@ namespace WebApi.Filters
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ClockSkew = TimeSpan.FromSeconds(1),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(this.Configuration["JwtToken:SecretKey"]!)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(this.Configuration["Jwt:SecretKey"]!)),
                     RequireSignedTokens = true,
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
                     ValidateAudience = true,
                     ValidateIssuer = true,
-                    ValidAudience = this.Configuration["JwtToken:Audience"],
-                    ValidIssuer = this.Configuration["JwtToken:Issuer"],
+                    ValidAudience = this.Configuration["Jwt:Audience"],
+                    ValidIssuer = this.Configuration["Jwt:Issuer"],
                 }, validatedToken: out SecurityToken validatedToken);
                 #pragma warning restore SA1117 // Parameters should be on same line or separate lines
             }

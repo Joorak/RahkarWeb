@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RahkarWeb.Domain.Entities
+namespace Domain.Entities
 {
     // جدول افراد (مشتری، ضامن، تامین‌کننده و ...)
     public class Person

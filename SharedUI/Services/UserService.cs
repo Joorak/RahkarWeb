@@ -1,20 +1,7 @@
-﻿// <copyright file="UserService.cs" company="Joorak Rezapour">
-// Copyright (c) Joorak Rezapour. All rights reserved.
-// </copyright>
-
-
-namespace SharedUI.Services
+﻿namespace SharedUI.Services
 {
-    /// <summary>
-    /// An implementation of <see cref="IUserService"/>.
-    /// </summary>
     public class UserService : IUserService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserService"/> class.
-        /// </summary>
-        /// <param name="httpClient">The instance of the <see cref="HttpClient"/> to use.</param>
-        /// <param name="snackBar">The instance of the <see cref="ISnackbar"/> to use.</param>
         public UserService(HttpClient httpClient)
         {
             this.HttpClient = httpClient;
@@ -22,24 +9,17 @@ namespace SharedUI.Services
             //this.SnackBar = snackBar;
         }
 
-        /// <summary>
-        /// Gets the instance of the <see cref="HttpClient"/> to use.
-        /// </summary>
         private HttpClient HttpClient { get; }
 
 
 
-        /// <summary>
-        /// Gets the instance of the <see cref="JsonSerializerOptions"/> to use.
-        /// </summary>
         private JsonSerializerOptions Options { get; }
 
-        /// <inheritdoc/>
-        public async Task<RequestResponse> AddUser(CreateUserRequest user)
+        public async Task<RequestResponse> AddUser(CreateAccountRequest user)
         {
-            var data = new CreateUserRequest
+            var data = new CreateAccountRequest
             {
-                Email = user.Email,
+                AccountId = user.AccountId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Role = user.Role,
@@ -62,7 +42,6 @@ namespace SharedUI.Services
             return result;
         }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> ActivateUser(ActivateUserRequest user)
         {
             var data = new ActivateUserRequest
@@ -87,7 +66,6 @@ namespace SharedUI.Services
             return result;
         }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> DeleteUser(int id)
         {
             var response = await this.HttpClient.DeleteAsync($"Users/user/{id}");
@@ -107,7 +85,6 @@ namespace SharedUI.Services
             return result;
         }
 
-        /// <inheritdoc/>
         public async Task<UserResponse> GetUser(int id)
         {
             var response = await this.HttpClient.GetAsync($"Users/user/{id}");
@@ -125,7 +102,6 @@ namespace SharedUI.Services
                 : result.Item;
         }
 
-        /// <inheritdoc/>
         public async Task<List<UserResponse>> GetUsers()
         {
             var response = await this.HttpClient.GetAsync("Users/users");
@@ -143,7 +119,6 @@ namespace SharedUI.Services
                 : result.Items;
         }
 
-        /// <inheritdoc/>
         public async Task<List<UserResponse>> GetUsersInactive()
         {
             var response = await this.HttpClient.GetAsync("Users/usersInactive");
@@ -161,7 +136,6 @@ namespace SharedUI.Services
                 : result.Items;
         }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> UpdateUser(UpdateUserRequest user)
         {
             var data = new UpdateUserRequest
@@ -189,7 +163,6 @@ namespace SharedUI.Services
             return result;
         }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> UpdateUserEmail(UpdateUserEmailRequest user)
         {
             var response = await this.HttpClient.PutAsJsonAsync($"Users/userEmail", user);

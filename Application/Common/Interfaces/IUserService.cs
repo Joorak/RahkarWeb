@@ -1,7 +1,7 @@
 ﻿using Application.Models;
 using Domain.Entities.Identity;
 
-namespace Application.Common.Interfaces; 
+namespace Application.Interfaces; 
 public interface IUserService {
     Task<List<string>> GetUserRoleAsync(User user);
 
@@ -20,7 +20,7 @@ public interface IUserService {
 
     Task<User?> FindUserByEmailAsync(string email);
 
-    Task<RequestResponse> CreateUserAsync(CreateUserRequest user);
+    Task<RequestResponse> CreateUserAsync(CreateAccountRequest user);
 
     Task<RequestResponse> AssignUserToRoleAsync(AssignUserToRoleRequest user);
 

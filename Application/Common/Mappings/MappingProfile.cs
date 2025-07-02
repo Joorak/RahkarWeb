@@ -1,6 +1,6 @@
 ﻿//using AutoMapper;
 //using Domain.Entities;
-//namespace Application.Common.Mappings;
+//namespace Application.Mappings;
 //public class MappingProfile : Profile
 //{
 //    /// <summary>

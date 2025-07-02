@@ -1,83 +1,60 @@
-﻿
-
+﻿using Application.Models;
+using Domain.Entities.Identity;
+using SharedUI.Extensions;
+using Application.Interfaces;
+using System.Threading.Tasks;
 
 namespace SharedUI.Services
 {
-    /// <summary>
-    /// An implementation of <see cref="IAccountService"/>.
-    /// </summary>
     public class AccountService : IAccountService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountService"/> class.
-        /// </summary>
-        /// <param name="httpClient">The instance of the <see cref="HttpClient"/> to use.</param>
-        /// <param name="snackBar">The instance of the <see cref="ISnackbar"/> to use.</param>
-        public AccountService(HttpClient httpClient)
+        private readonly HttpClient _httpClient;
+        private readonly IAccessTokenService _tokenService;
+        private readonly NavigationManager _navigationManager;
+
+        public AccountService(HttpClient httpClient, IAccessTokenService tokenService, NavigationManager navigationManager)
         {
-            this.HttpClient = httpClient;
-            this.Options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            _httpClient = httpClient;
+            _tokenService = tokenService;
+            _navigationManager = navigationManager;
         }
 
-        /// <summary>
-        /// Gets the instance of the <see cref="HttpClient"/> to use.
-        /// </summary>
-        private HttpClient HttpClient { get; }
-
-        /// <summary>
-        /// Gets the instance of the <see cref="ISnackbar"/> to use.
-        /// </summary>
-
-        /// <summary>
-        /// Gets the instance of the <see cref="JsonSerializerOptions"/> to use.
-        /// </summary>
-        private JsonSerializerOptions Options { get; }
-
-        /// <inheritdoc/>
-        public async Task<RequestResponse> ChangePassword(ChangePasswordRequest request)
+        public async Task<RequestResponse> ChangePasswordUserAsync(ChangePasswordRequest command)
         {
-            var response = await this.HttpClient.PutAsJsonAsync("Accounts/change-password", request);
-            var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<RequestResponse>(
-                responseResult, this.Options);
-
-            //if (response.IsSuccessStatusCode == false)
-            //{
-            //    this.SnackBar.Add(result.Error, MudBlazor.Severity.Error);
-            //}
-            //else
-            //{
-            //    this.SnackBar.Add("The password was changed.", Severity.Success);
-            //}
-
-            return result;
+            var token = await _tokenService.GetToken();
+           
+            return await _httpClient.PostAsync<RequestResponse>(ApiEndpoint.Account.ChangePassword, command, token);
         }
 
-        /// <inheritdoc/>
-        public async Task<RequestResponse> ResetPassword(ResetPasswordRequest request)
+        public async Task<RequestResponse> ResetPasswordUserAsync(ResetPasswordRequest command)
         {
-            var data = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("Email", request.Email!),
-                new KeyValuePair<string, string>("NewPassword", request.NewPassword!),
-                new KeyValuePair<string, string>("NewConfirmPassword", request.NewConfirmPassword!),
-            });
+            var token = await _tokenService.GetToken();
+            return await _httpClient.PostAsync<RequestResponse>(ApiEndpoint.Account.ResetPassword, command, token);
+        }
 
-            var response = await this.HttpClient.PostAsync("Accounts/reset-password", data);
-            var responseResult = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<RequestResponse>(
-                responseResult, this.Options);
+        public async Task<RequestResponse<JwtTokenResponse>> LoginAsync(LoginRequest login)
+        {
+            return await _httpClient.PostAsync<RequestResponse<JwtTokenResponse>>(ApiEndpoint.Account.Login, login, null);
+        }
 
-            //if (response.IsSuccessStatusCode == false)
-            //{
-            //    this.SnackBar.Add(result.Error, MudBlazor.Severity.Error);
-            //}
-            //else
-            //{
-            //    this.SnackBar.Add("The password was reset.", Severity.Success);
-            //}
+        public async Task<RequestResponse> ValidateToken(string token)
+        {
+            return await _httpClient.GetAsync<RequestResponse>(ApiEndpoint.Account.ValidateToken, token);
+        }
 
-            return result;
+        public Task<RequestResponse<JwtTokenResponse>> GenerateToken(JwtTokenRequest jwtTokenRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RequestResponse<JwtTokenResponse>> RegisterAsync(RegisterRequest register)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CheckPasswordAsync(User user, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }

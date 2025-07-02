@@ -16,7 +16,7 @@ namespace SharedUI.Interfaces
         Task<RequestResponse> ActivateUser(ActivateUserRequest user);
 
 
-        Task<RequestResponse> AddUser(CreateUserRequest user);
+        Task<RequestResponse> AddUser(CreateAccountRequest user);
 
 
         Task<RequestResponse> UpdateUser(UpdateUserRequest user);

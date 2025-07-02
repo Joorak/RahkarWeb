@@ -9,7 +9,7 @@ global using System.Text;
 //global using AutoMapper;
 //global using AutoMapper.QueryableExtensions;
 global using Application.Models;
-global using Application.Common.Interfaces;
+global using Application.Interfaces;
 global using Application.Utils;
 global using Domain.Entities;
 global using Domain.Entities.Identity;

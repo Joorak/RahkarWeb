@@ -6,6 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Entities\AppDbContext.cs" />
+    <Compile Remove="Entities\Entities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Entities\Entities.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />

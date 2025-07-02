@@ -2,11 +2,13 @@
 
 using Microsoft.Win32;
 using Serilog;
+using System.Security.Claims;
 
 namespace WebApi.Controllers
 {
 
     [ApiController]
+    [Authorize]
     public class AccountsController : ControllerBase
     {
 
@@ -38,7 +40,24 @@ namespace WebApi.Controllers
                 ? this.Ok(result)
                 : this.BadRequest(result);
         }
+        
+        [AllowAnonymous]
+        [HttpGet("validate-token")]
+        public IActionResult ValidateToken()
+        {
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(token)) return Unauthorized(RequestResponse.Failure("توکن یافت نشد"));
 
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+            //jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role) == StringRoleResources.
+            if (jwtToken == null || jwtToken.ValidTo < DateTime.UtcNow)
+            {
+                return Unauthorized(RequestResponse.Failure("توکن نامعتبر یا منقضی شده"));
+            }
+
+            return Ok(RequestResponse.Success());
+        }
 
         [AllowAnonymous]
         [HttpPost("register")]

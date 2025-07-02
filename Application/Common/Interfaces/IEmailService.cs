@@ -1,6 +1,6 @@
 ﻿using Application.Models;
 
-namespace Application.Common.Interfaces; 
+namespace Application.Interfaces; 
 public interface IEmailService {
     Task SendEmail(string? email, EmailSettings mail);
 } 

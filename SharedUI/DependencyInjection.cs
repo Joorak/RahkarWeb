@@ -1,6 +1,8 @@
 ﻿
 
 
+using Application.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,8 @@ namespace SharedUI
             services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<IHomeService, HomeService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<NavigationManager>(sp => sp.GetRequiredService<HttpContextAccessor>().HttpContext!.RequestServices.GetRequiredService<NavigationManager>());
             return services;
         }
     }

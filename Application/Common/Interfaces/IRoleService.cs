@@ -1,7 +1,7 @@
 ﻿using Application.Models;
 using Domain.Entities.Identity;
 
-namespace Application.Common.Interfaces; 
+namespace Application.Interfaces; 
 public interface IRoleService {
     Task<List<string>> CheckUserRolesAsync(User user);
 

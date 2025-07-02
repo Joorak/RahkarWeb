@@ -37,9 +37,9 @@ namespace Infrastructure.Services
         private IAuthorizationService AuthorizationService { get; }
 
 
-        public async Task<RequestResponse> CreateUserAsync(CreateUserRequest command)
+        public async Task<RequestResponse> CreateUserAsync(CreateAccountRequest command)
         {
-            var existUser = this.UserManager.Users.SingleOrDefault(u => u.UserName == command.Email && u.IsActive == true);
+            var existUser = this.UserManager.Users.SingleOrDefault(u => u.UserName == command.AccountId && u.IsActive == true);
             if (existUser != null)
             {
                 throw new Exception("The user with the unique identifier already exists");
@@ -48,7 +48,7 @@ namespace Infrastructure.Services
             var newUser = new User
             {
                 UserName = command.FirstName + "@" + command.LastName,
-                Email = command.Email,
+                Email = command.AccountId,
                 FirstName = command.FirstName,
                 LastName = command.LastName,
                 IsActive = true,
@@ -60,7 +60,7 @@ namespace Infrastructure.Services
                 await this.UserManager.AddToRoleAsync(newUser, command.Role).ConfigureAwait(false);
             }
 
-            var user = await this.UserManager.FindByEmailAsync(command.Email!).ConfigureAwait(false);
+            var user = await this.UserManager.FindByIdAsync(command.AccountId!).ConfigureAwait(false);
             return RequestResponse.Success(user!.Id);
         }
 

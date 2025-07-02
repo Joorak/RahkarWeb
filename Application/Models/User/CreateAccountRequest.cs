@@ -4,10 +4,10 @@
 namespace Application.Models
 {
 
-    public class CreateUserRequest 
+    public class CreateAccountRequest 
     {
 
-        public string? Email { get; set; }
+        public string AccountId { get; set; }
 
         public string? FirstName { get; set; }
 
@@ -17,6 +17,6 @@ namespace Application.Models
 
         
         
-        public string? Role { get; set; }
+        public string Role { get; set; }
     }
 }

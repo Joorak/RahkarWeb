@@ -1,20 +1,13 @@
-﻿// <copyright file="AccountService.cs" company="Joorak Rezapour">
-// Copyright (c) Joorak Rezapour. All rights reserved.
-// </copyright>
+﻿
+using Application.Models;
+using Azure;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using System.ComponentModel;
 
 namespace Infrastructure.Services
 {
-    /// <summary>
-    /// An implementation of <see cref="IAccountService"/>.
-    /// </summary>
     public class AccountService : IAccountService
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountService"/> class.
-        /// </summary>
-        /// <param name="userManager">The instance of <see cref="UserManager{User}"/> to use.</param>
-        /// <param name="roleManager">The instance of <see cref="RoleManager{Role}"/> to use.</param>
-        /// <param name="configuration">The instance of <see cref="IConfiguration"/> to use.</param>
         public AccountService(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
@@ -25,22 +18,12 @@ namespace Infrastructure.Services
             this.Configuration = configuration;
         }
 
-        /// <summary>
-        /// Gets the instance of <see cref="UserManager{User}"/> to use.
-        /// </summary>
         private UserManager<User> UserManager { get; }
 
-        /// <summary>
-        /// Gets the instance of <see cref="RoleManager{Role}"/> to use.
-        /// </summary>
         private RoleManager<Role> RoleManager { get; }
 
-        /// <summary>
-        /// Gets the instance of <see cref="IConfiguration"/> to use.
-        /// </summary>
         private IConfiguration Configuration { get; }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> ChangePasswordUserAsync(ChangePasswordRequest changePassword)
         {
             var user = await this.UserManager.FindByIdAsync(changePassword.UserId.ToString()).ConfigureAwait(false);
@@ -63,34 +46,33 @@ namespace Infrastructure.Services
             return RequestResponse.Success();
         }
 
-        /// <inheritdoc/>
         public async Task<bool> CheckPasswordAsync(User user, string password)
         {
             var result = await this.UserManager.CheckPasswordAsync(user, password).ConfigureAwait(false);
             return result;
         }
 
-        /// <inheritdoc/>
-        public async Task<JwtTokenResponse> GenerateToken(User user)
+        public async Task<RequestResponse<JwtTokenResponse>> GenerateToken(JwtTokenRequest jwtTokenRequest)
         {
             var jwtSettings = new JwtTokenConfig
             {
-                Secret = this.Configuration["JwtToken:SecretKey"],
-                Issuer = this.Configuration["JwtToken:Issuer"],
-                Audience = this.Configuration["JwtToken:Audience"],
+                Secret = Configuration["Jwt:SecretKey"],
+                Issuer = Configuration["Jwt:Issuer"],
+                Audience = Configuration["Jwt:Audience"],
             };
             var key = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(jwtSettings.Secret!));
 
-            var userRole = await this.UserManager.GetRolesAsync(user).ConfigureAwait(false);
+            //var userRole = await this.UserManager.GetRolesAsync(user).ConfigureAwait(false);
+            var userRole = jwtTokenRequest.Role;
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.Role, userRole[0]),
-                new Claim(StringRoleResources.UserIdClaim, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, jwtTokenRequest.AccountId!),
+                //new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.Role, userRole),
+                //new Claim(StringRoleResources.UserIdClaim, user.Id.ToString()),
             };
 
-            var expiresIn = DateTime.Now.AddDays(1);
+            var expiresIn = DateTime.Now.AddSeconds(double.Parse(Configuration["Jwt:AccessTokenExpiration"]!));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -101,45 +83,50 @@ namespace Infrastructure.Services
             };
             var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
 
-            return new JwtTokenResponse
+            return new RequestResponse<JwtTokenResponse> {
+
+                Successful = true,
+
+                Item = new JwtTokenResponse
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 ExpiresIn = (int)(expiresIn - DateTime.Now).TotalSeconds,
-                Successful = true,
-            };
+
+
+            }};
         }
 
-        /// <inheritdoc/>
-        public async Task<JwtTokenResponse> LoginAsync(LoginRequest login)
+        public async Task<RequestResponse<JwtTokenResponse>> LoginAsync(LoginRequest login)
         {
-            var user = this.UserManager.Users.SingleOrDefault(u => u.Email == login.Email);
+            var user = UserManager.Users.SingleOrDefault(u => u.UserName == login.AccountId);
             if (user == null)
-            {
-                throw new Exception("Email / password incorrect");
-            }
+                return RequestResponse<JwtTokenResponse>.Failure("Account not found...");
 
-            var passwordValid = await this.CheckPasswordAsync(user, login.Password!).ConfigureAwait(false);
+            if (login.RoleForLogin == StringRoleResources.Customer || login.RoleForLogin == StringRoleResources.Supplier)
+            { 
+            
+            }
+            var passwordValid = await CheckPasswordAsync(user, login.PassKey!).ConfigureAwait(false);
             if (passwordValid == false)
             {
                 throw new Exception("Email / password incorrect");
             }
 
-            return await this.GenerateToken(user).ConfigureAwait(false);
+            return await GenerateToken(new JwtTokenRequest() { AccountId = login.AccountId!, Role = login.RoleForLogin}).ConfigureAwait(false);
         }
 
-        /// <inheritdoc/>
-        public async Task<JwtTokenResponse> RegisterAsync(RegisterRequest register)
+        public async Task<RequestResponse<JwtTokenResponse>> RegisterAsync(RegisterRequest register)
         {
-            var existUser = this.UserManager.Users.SingleOrDefault(u => u.Email == register.Email);
+            var existUser = UserManager.Users.SingleOrDefault(u => u.UserName == register.AccountId && u.Roles.Contains(new UserRole() { Role = new Role() { NormalizedName = register.RoleForRegister!.Normalize() } }));
             if (existUser != null)
             {
-                throw new Exception("The user with the unique identifier already exists");
+                //throw new Exception("The user with the unique identifier already exists");
+                return RequestResponse<JwtTokenResponse>.Failure("The user with the unique identifier and role already exists");
             }
 
             var newUser = new User
             {
-                UserName = register.FirstName + "@" + register.LastName,
-                Email = register.Email,
+                UserName = register.AccountId,
                 FirstName = register.FirstName,
                 LastName = register.LastName,
                 IsActive = true,
@@ -149,22 +136,21 @@ namespace Infrastructure.Services
                 throw new Exception("Passwords do not match");
             }
 
-            await this.UserManager.CreateAsync(newUser, register.Password).ConfigureAwait(false);
+            await UserManager.CreateAsync(newUser, register.Password).ConfigureAwait(false);
 
-            var role = await this.RoleManager.FindByNameAsync(StringRoleResources.Default).ConfigureAwait(false);
+            var role = await RoleManager.FindByNameAsync(register.RoleForRegister!).ConfigureAwait(false);
             if (role == null)
             {
                 throw new Exception("The role does not exist");
             }
 
-            await this.UserManager.AddToRoleAsync(newUser, role.Name!).ConfigureAwait(false);
-            return await this.GenerateToken(newUser).ConfigureAwait(false);
+            await UserManager.AddToRoleAsync(newUser, role.Name!).ConfigureAwait(false);
+            return await GenerateToken(new JwtTokenRequest() { AccountId = register.AccountId!, Role = register.RoleForRegister! }).ConfigureAwait(false);
         }
 
-        /// <inheritdoc/>
         public async Task<RequestResponse> ResetPasswordUserAsync(ResetPasswordRequest resetPassword)
         {
-            var user = await this.UserManager.FindByEmailAsync(resetPassword.Email!).ConfigureAwait(false);
+            var user = await UserManager.FindByEmailAsync(resetPassword.Email!).ConfigureAwait(false);
             if (user == null)
             {
                 throw new Exception("The user does not exist");
@@ -175,9 +161,14 @@ namespace Infrastructure.Services
                 throw new Exception("Passwords do not match");
             }
 
-            var token = await this.UserManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
-            await this.UserManager.ResetPasswordAsync(user, token, resetPassword.NewPassword).ConfigureAwait(false);
+            var token = await UserManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
+            await UserManager.ResetPasswordAsync(user, token, resetPassword.NewPassword).ConfigureAwait(false);
             return RequestResponse.Success();
+        }
+
+        public Task<RequestResponse> ValidateToken(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿// The configurations for the Core Web API.
-using Application.Common.Interfaces;
+using Application.Interfaces;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 using FluentValidation;
 using Infrastructure.Persistence;
 using Infrastructure.Utils;
 using Scalar.AspNetCore;
-
+using System.Security.Claims;
 //using Scalar.AspNetCore;
 using WebApi.Services;
 using WebAPI.Filters;
@@ -48,12 +50,12 @@ try
 
     // Inject Architecture Layers
     builder.Services.AddApplicationLayer();
-    builder.Services.AddInfrastructureLayer(builder.Configuration);
+    builder.Services.AddInfrastructureLayer(builder.Configuration, builder.Environment);
 
-    builder.Services.AddHttpContextAccessor();
+    //builder.Services.AddHttpContextAccessor();
     //builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<ApiExceptionFilterAttribute>();
-
+    
     builder.Services.AddControllers(options => 
             { 
                 options.Filters.Add<ApiExceptionFilterAttribute>(); 
@@ -69,21 +71,21 @@ try
     })
         .AddJwtBearer(options =>
         {
-            options.Audience = builder.Configuration["JwtToken:Audience"];
+            options.Audience = builder.Configuration["Jwt:Audience"];
             options.RequireHttpsMetadata = true;
             options.SaveToken = true;
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ClockSkew = TimeSpan.FromSeconds(1),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(builder.Configuration["JwtToken:SecretKey"]!)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
                 RequireSignedTokens = true,
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
                 ValidateAudience = true,
                 ValidateIssuer = true,
-                ValidAudience = builder.Configuration["JwtToken:Audience"],
-                ValidIssuer = builder.Configuration["JwtToken:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
             };
         });
 
@@ -91,7 +93,6 @@ try
 
     builder.Services.AddHealthChecks();
     builder.Services.AddAuthorization();
-    builder.Services.AddControllers();
 
     // Stripe Configuration - Secret Key
     StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
@@ -157,7 +158,7 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
-        app.UseMigrationsEndPoint();
+        //app.UseMigrationsEndPoint();
         app.MapOpenApi();
         //app.UseSwaggerUi(options =>
         //{
@@ -237,3 +238,4 @@ finally
     Log.Information("Shut down complete");
     Log.CloseAndFlush();
 }
+

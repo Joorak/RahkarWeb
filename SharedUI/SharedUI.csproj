@@ -53,6 +53,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" />
     <!--<PackageReference Include="Serilog" Version="4.2.0" />-->
     <!--<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />-->
     <!--<PackageReference Include="Toolbelt.Blazor.LoadingBar" Version="14.0.0" />-->

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Application.Common.Interfaces
+namespace Application.Interfaces
 {
     public interface IPersianCalendarService
     {
