@@ -12,8 +12,8 @@ namespace Infrastructure.Services
 
 
     /// <summary>
-    /// Created By Joorak
-    /// RahkarSazan Co
+    /// Created By Joorak Rezapour
+    /// joorak.com
     /// </summary>
     [Serializable]
     public class PersianCalendarService :
@@ -1859,7 +1859,6 @@ namespace Infrastructure.Services
     {
         /// <summary>
         /// Convert all persian and arabic digit to english in any string  
-        /// <!-- http://stackoverflow.com/a/28905353/579381 --> 
         /// </summary>
         /// <param name="inputString">input string that maybe contain persian or arabic digit</param>
         /// <returns>a string with english digit</returns>

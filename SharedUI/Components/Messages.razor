@@ -18,7 +18,7 @@
     [Parameter]
     public List<Message> MessagesList { get; set; } = new List<Message>();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         // بارگذاری اعلان‌ها از دیتابیس
         //MessagesList = await DbContext.Messages.ToListAsync();
@@ -38,7 +38,7 @@
         var Message = MessagesList.FirstOrDefault(n => n.Id == id);
         if (Message != null)
         {
-            MessagesList.Remove(Message);
+            await Task.Run(() => MessagesList.Remove(Message));
             //DbContext.Messages.Remove(Message);
             //await DbContext.SaveChangesAsync();
         }

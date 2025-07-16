@@ -3,6 +3,11 @@
 @inject NavigationManager _navMgr
 @inject HttpClient _httpClient
 
+@if (ShowModel){
+    <div class="container-wfull mb-5">
+        <ModelViewer Header=@($"مدل ویوور") Model='new Person() {Id=Guid.NewGuid(),FirstName="ژورک", LastName="رضاپور", NationalId="0451455770" , MobileNumber="09124053989"}' ButtonText="بستن" ButtonCallBack="@CloseModelViewer"></ModelViewer>
+    </div>
+}
     <div class="container-wfull mb-5">
         <Carousel IsRTL="true"
                   Items="_carouselItems"
@@ -78,6 +83,7 @@
     private string _username { get; set; }
     private int _userId { get; set; }
     private string _userRole { get; set; }
+    bool ShowModel { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -288,5 +294,11 @@
     private void OnCarouselItemChange(CarouselItem item)
     {
         //System.Console.WriteLine($"Carousel item changed to: {item.Title}");
+    }
+    async void CloseModelViewer(object dataItem)
+    {
+        ShowModel = false;
+        await InvokeAsync(StateHasChanged);
+
     }
 }

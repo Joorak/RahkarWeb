@@ -160,3 +160,9 @@ window.onscroll = function () {
 }
 
 
+export function showPrompt(message) {
+    return prompt(message, 'Type anything here');
+}
+export function showAlert(message) {
+    return alert(message);
+}

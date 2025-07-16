@@ -1,4 +1,4 @@
-﻿
+﻿    
 namespace WebApi.Controllers
 {
     [ApiController]
@@ -35,16 +35,19 @@ namespace WebApi.Controllers
             return base.Content(html, "text/html");
         }
 
-        [HttpGet("{email}/{password}")]
-        public async Task<ContentResult> GetToken([FromQuery] string email, string password)
+        [HttpGet("{accountId}/{password}")]
+        public async Task<ContentResult> GetAdminToken([FromQuery] string accountId, string password)
         {
-
-            var loginRequest = new LoginRequest() { AccountId = email, PassKey = password };
-            var response = await _accountService.LoginAsync(loginRequest);
-
-            string token = string.Empty;
-            if (response.Successful)
-                token = response.Item!.AccessToken!;
+            string? token = string.Empty;
+            //var loginRequest = new LoginRequest() { AccountId = accountId, PassKey = password };
+            if (accountId != _configuration["AdminSeedModel:AccountId"]!.ToString() || password != _configuration["AdminSeedModel:Password"]!.ToString())
+                token = null;
+            else
+            {
+                var response = await _accountService.LoginAdminAsync(accountId);
+                if (response.Successful)
+                    token = response.Item!.AccessToken!;
+            }
 
             var html = $@"<!DOCTYPE html>
                         <html>

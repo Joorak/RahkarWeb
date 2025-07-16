@@ -14,7 +14,6 @@ global using Infrastructure;
 global using Infrastructure.Services;
 global using Infrastructure.Persistence;
 global using WebApi.Filters;
-global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Identity;

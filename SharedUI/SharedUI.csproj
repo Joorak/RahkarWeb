@@ -16,6 +16,12 @@
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <!--<AddRazorSupportForMvc>true</AddRazorSupportForMvc>-->
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Services\AccountService - Copy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Components\Pages\Login_Grok.razor" />
+  </ItemGroup>
   <!--<Target Name="RemoveConflictingAssets" BeforeTargets="ResolveStaticWebAssetsConfiguration">
 		<ItemGroup>
 			<StaticWebAsset Remove="@(StaticWebAsset)" Condition="'%(Extension)' == '.gz'" />

@@ -22,6 +22,9 @@ namespace Infrastructure
                     services.AddDbContext<AppDbContext>(options =>
                         options.UseSqlite(_connectionString, b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
                     break;
+                case "Memory":
+                    services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("RahkarDb"));
+                    break;
                 case "LocalDb":
                     services.AddDbContext<AppDbContext>(options =>
                         options.UseSqlServer(_connectionString, b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
@@ -33,6 +36,7 @@ namespace Infrastructure
             }
 
             services.AddDbContext<ReportingContext>(options => options.UseSqlServer(configuration["ConnectionStrings:Default2"]));
+
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
             // Inject services

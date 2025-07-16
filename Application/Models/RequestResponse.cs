@@ -1,5 +1,7 @@
-﻿namespace Application.Models;
-public class RequestResponse 
+﻿using System;
+
+namespace Application.Models;
+public class RequestResponse
 {
     public bool Successful { get; set; } = false;
 
@@ -21,9 +23,8 @@ public class RequestResponse
         return new RequestResponse { Successful = false, Error = error };
     }
 }
-public class RequestResponse<T> where T :  class
+public class RequestResponse<T> where T : class
 {
-    
     public bool Successful { get; set; } = false;
 
     public string? Error { get; set; } = null;
@@ -34,9 +35,9 @@ public class RequestResponse<T> where T :  class
 
     public List<T>? Items { get; set; } = null;
 
-    public static RequestResponse<T> Success(int id = 0)
+    public static RequestResponse<T> Success(T? item)
     {
-        return new RequestResponse<T> { Successful = true, EntityId = id };
+        return new RequestResponse<T> { Successful = true, Item = item };
     }
 
     public static RequestResponse<T> Failure(string? error = null)

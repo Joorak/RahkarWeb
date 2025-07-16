@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
-namespace Domain.Entities
+namespace Domain.OldEntities
 {
     // جدول افراد (Person)
     public class Person
@@ -13,6 +15,8 @@ namespace Domain.Entities
 
         [Required]
         [MaxLength(10)]
+        [DataType(DataType.Text)]
+        [DisplayName("کد/شناسه ملی")]
         public string NationalCode { get; set; }
 
         [Required]
@@ -26,7 +30,7 @@ namespace Domain.Entities
         public virtual ICollection<PersonDetail> PersonDetails { get; set; }
         public virtual ICollection<PersonServiceCall> ServiceCalls { get; set; }
         public virtual ICollection<Order> OrdersAsCustomer { get; set; }
-        public virtual ICollection<OrderItem> OrderItemsAsSupplier { get; set; }
+        //public virtual ICollection<OrderItem> OrderItemsAsSupplier { get; set; }
         public virtual ICollection<OrderGuarantor> OrderGuarantors { get; set; }
         public virtual ICollection<FinancialDocument> FinancialDocuments { get; set; }
         public virtual ICollection<Installment> Installments { get; set; }
@@ -191,7 +195,7 @@ namespace Domain.Entities
         [ForeignKey(nameof(LoanSchemaId))]
         public virtual LoanSchema LoanSchema { get; set; }
 
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        //public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<OrderStatusLog> StatusLogs { get; set; }
         public virtual ICollection<OrderGuarantor> Guarantors { get; set; }
         public virtual ICollection<OrderGuarantee> Guarantees { get; set; }
@@ -443,7 +447,7 @@ namespace Domain.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
-    public class CountriesTurnoverStat
+    public class CountriesTurnoverStat11
     {
         //[Key]
         //public int Id { get; set; }

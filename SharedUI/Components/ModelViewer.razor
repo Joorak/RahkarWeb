@@ -1,0 +1,162 @@
+﻿@typeparam T
+@using System
+@using System.Reflection
+@using System.Collections;
+@using System.ComponentModel;
+
+<div class="d-flex flex-column w-100">
+    <div class="d-flex justify-content-between mb-4 flex-wrap">
+        <h1 class="current-theme-75 align-self-center">@GetPersianLayout(Header.ToString())</h1>
+        <button type="button" class="btn btn-outline-current-theme btn-lg align-self-center" @onclick=@(() => ButtonCallBack.Invoke(Model))>@ButtonText</button>
+</div>
+
+@{
+    IEnumerable<PropertyInfo> propertyList = Model!.GetType().GetProperties().AsEnumerable<PropertyInfo>().Where(p => p.GetCustomAttributes(typeof(DisplayNameAttribute),false) !=null);
+    foreach (PropertyInfo item in propertyList)
+    {
+        
+        if (!item.PropertyType.IsGenericType)
+        {
+            var displayNameAttribute = item.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+            
+            MarkupString markupString = default;
+            if (displayNameAttribute == null || displayNameAttribute.Length < 1)
+                    markupString = (MarkupString)$"<div class='input-group mb-3'><span class='input-group-text current-theme-75' style='font-size:1rem'>{@item?.Name}</span><div class='form-control d-flex flex-wrap current-theme' style='font-size:1rem;font-weight:bold'>{@GetPersianLayout(item?.GetValue(Model)?.ToString()!)}</div></div>";
+                // markupString = (MarkupString)$"<div class='hr-text'>{@item?.Name}</div><div class='ps-3 pt-1 mb-3 text-primary text-opacity-50'><strong>{@item?.GetValue(Model).ToString().ToPersian()}</strong></div>";
+            else
+                if (item.PropertyType.FullName!.ToLower().Contains("bool"))
+                {
+                    if (@item?.GetValue(Model)?.ToString()!.ToLower() == "true")
+                    {
+                        markupString = (MarkupString)$"<div class='input-group mb-3'><span class='input-group-text current-theme-75' style='font-size:1rem'>{(@displayNameAttribute[0] as DisplayNameAttribute)!.DisplayName}</span><i class='ms-3 fas  fa-check  fs-2 fa-align-center'></i></div>";
+                    }
+                    else
+                    {
+                        markupString = (MarkupString)$"<div class='input-group mb-3'><span class='input-group-text current-theme-75' style='font-size:1rem'>{(@displayNameAttribute[0] as DisplayNameAttribute)!.DisplayName}</span><i class='ms-3 fas fa-times fs-2 fa-align-center'></i></div>";
+                    }
+                }
+                else
+                {
+                    //markupString = (MarkupString)$"<div class='input-group mb-3'><span class='input-group-text current-theme-75' style='font-size:1rem'>{(@displayNameAttribute[0] as DisplayNameAttribute).DisplayName}</span><input class='form-control text-wrap' type='text' value='{@item?.GetValue(Model)?.ToString().ToPersian()}' readonly  style='font-size:1rem;font-weight:bold'></div>";
+                    markupString = (MarkupString)$"<div class='input-group mb-3'><span class='input-group-text current-theme-75' style='font-size:1rem'>{(@displayNameAttribute[0] as DisplayNameAttribute)!.DisplayName}</span><div class='form-control d-flex flex-wrap current-theme' style='font-size:1rem;font-weight:bold'>{@GetPersianLayout(item?.GetValue(Model)?.ToString()!)}</div></div>";
+                }
+                //markupString = (MarkupString)$"<div class='hr-text'>{(@displayNameAttribute[0] as DisplayNameAttribute).DisplayName}</div><div class='ps-3 pt-1 mb-3 text-primary text-opacity-50'><strong>{@item.GetValue(Model).ToString().ToPersian()}</strong></div>";
+                //markupString = (MarkupString)$"<div class='hr-text'>{(@displayNameAttribute[0] as DisplayNameAttribute).DisplayName}</div><div class='ps-3 pt-1 mb-3 text-primary text-opacity-50'><strong>{@item.GetValue(Model).ToString().ToPersian()}</strong></div>";
+
+            
+            @markupString
+
+        }
+        else
+        {
+            <br />
+            var listType = typeof(List<>);
+            var constructedListType = listType.MakeGenericType(item?.PropertyType.GetGenericArguments()!);
+            var instance = Activator.CreateInstance(constructedListType);
+            //List<object> a = (List<object>)Activator.CreateInstance(item.PropertyType);
+            instance = item!.GetValue(Model);
+            if (instance == null) continue;
+
+            var displayNameAttribute = item.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+            MarkupString markupString = default;
+            if (displayNameAttribute != null && displayNameAttribute.Length > 0)
+            {
+                markupString = (MarkupString)$"<div class='hr-text'>{(displayNameAttribute[0] as DisplayNameAttribute)!.DisplayName}</div>";
+                <div>@markupString</div>
+            }
+            markupString = default;
+            if (item.GetValue(Model)!.GetType().GenericTypeArguments[0].Namespace!.ToString().StartsWith("System"))
+            {
+                
+                for (int i = 0; i < ((System.Collections.IList)instance).Count; i++)
+                {
+                        markupString = (MarkupString)$"{GetPersianLayout((i + 1).ToString())} : <strong>{GetPersianLayout((((System.Collections.IList)instance)[i]!.ToString()!))}</strong>";
+                    <div>@markupString</div>
+                }
+            }
+            else
+            {
+                @if (((System.Collections.IList)instance).Count < 1) continue;
+                    IEnumerable<PropertyInfo> propList = ((System.Collections.IList)instance)[0]!.GetType().GetProperties().AsEnumerable<PropertyInfo>().Where(p => p.GetCustomAttributes(typeof(DisplayNameAttribute), false) != null);
+                <table class="table table-Current-theme table-striped table-hover table-bordered table-responsive">
+                    <thead class="table-light">
+                        <tr>
+                            @foreach (var head in propList)
+                            {
+                                displayNameAttribute = head.GetCustomAttributes(typeof(DisplayNameAttribute), false);
+                                markupString = default;
+                                if (displayNameAttribute == null || displayNameAttribute.Length < 1)
+                                        markupString = (MarkupString)$"<strong>{@GetPersianLayout(head.Name.ToString())}</ strong >";
+                                else
+                                    markupString = (MarkupString)$"<strong>{GetPersianLayout((displayNameAttribute[0] as DisplayNameAttribute)!.DisplayName.ToString())}</strong>";
+                                    <td class="text-center">@markupString</td>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            @for (int i = 0; i < ((System.Collections.IList)instance).Count; i++)
+                            {
+                                IEnumerable<PropertyInfo> row = ((System.Collections.IList)instance)[i]!.GetType().GetProperties().AsEnumerable<PropertyInfo>().Where(p => p.GetCustomAttributes(typeof(DisplayNameAttribute), false) != null);
+                            <tr>
+                                
+                                @foreach (var col in propList)
+                                {
+                                    if(col.PropertyType.FullName!.ToLower().Contains("bool"))
+                                    {
+                                            if (col.GetValue(((System.Collections.IList)instance)[i])?.ToString()!.ToLower() == "true")
+                                            {
+                                                <td class="text-center"><i class='fas fa-check fs-3 fa-align-center'></i></td>
+                                                //<td class="text-center"><input class="form-check-input mx-auto fs-5 current-theme" type="checkbox" value="" checked disabled></td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center"><i class='fas fa-times fs-3 fa-align-center'></i></td>
+                                                //<td class="text-center"><input class="form-check-input mx-auto fs-5 current-theme" type="checkbox" value="" disabled></td>
+                                            }
+                                        }
+                                    else
+                                    {
+                                            <td class="text-center">@GetPersianLayout(col.GetValue(((System.Collections.IList)instance)[i])?.ToString()!)</td>
+                                    }
+                                }
+                            </tr>
+                            }
+                    </tbody>
+                </table>
+            }
+
+
+        }
+    }
+}
+    <button type="button" class="align-self-end  btn btn-outline-current-theme btn-lg my-2" @onclick=@(() => ButtonCallBack.Invoke(Model))>@ButtonText</button>
+</div>
+
+@code {
+    [Parameter]
+    public T Model { get; set; }
+    [Parameter]
+    public string Header { get; set; } = string.Empty;
+    [Parameter]
+    public Action<T> ButtonCallBack { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; } = string.Empty;
+    public string GetPersianLayout(string numberString, bool digitGrouping = false)
+    {
+        if (string.IsNullOrEmpty(numberString)) return "";
+        if (digitGrouping) numberString = String.Format("{0:n0}", numberString);
+        string persianNumber = "";
+        foreach (char ch in numberString)
+        {
+            if (Char.IsDigit(ch))
+                persianNumber += (char)(1776 + char.GetNumericValue(ch));
+            else
+            {
+                persianNumber += ch;
+            }
+        }
+        return persianNumber;
+    }
+    
+}

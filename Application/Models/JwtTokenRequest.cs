@@ -7,6 +7,7 @@ public class JwtTokenRequest {
     public string AccountId { get; set; }
 
     public string Role { get; set; }
+    public string TokenType { get; set; }
 
     
 } 

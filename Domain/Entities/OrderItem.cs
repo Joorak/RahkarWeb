@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Entities
+namespace Domain.oldEntities
 {
     public class OrderItem
     {
@@ -36,13 +36,13 @@ namespace Domain.Entities
         public DateTime? UpdatedAt { get; set; }
 
         // Navigation Properties
-        [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        //[ForeignKey("OrderId")]
+        //public Order Order { get; set; }
 
-        [ForeignKey("SupplierId")]
-        public Person Supplier { get; set; }
+        //[ForeignKey("SupplierId")]
+        //public Person Supplier { get; set; }
 
-        [ForeignKey("ProductCategoryId")]
-        public ProductCategory ProductCategory { get; set; }
+        //[ForeignKey("ProductCategoryId")]
+        //public ProductCategory ProductCategory { get; set; }
     }
 }

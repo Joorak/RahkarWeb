@@ -1,8 +1,5 @@
 ﻿// The configurations for the Core Web API.
 using Application.Interfaces;
-using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Services;
-using FluentValidation;
 using Infrastructure.Persistence;
 using Infrastructure.Utils;
 using Scalar.AspNetCore;
@@ -54,7 +51,7 @@ try
 
     //builder.Services.AddHttpContextAccessor();
     //builder.Services.AddFluentValidationAutoValidation();
-    builder.Services.AddValidatorsFromAssemblyContaining<ApiExceptionFilterAttribute>();
+    //builder.Services.AddValidatorsFromAssemblyContaining<ApiExceptionFilterAttribute>();
     
     builder.Services.AddControllers(options => 
             { 
@@ -89,15 +86,24 @@ try
             };
         });
 
-    builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+    //builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+
 
     builder.Services.AddHealthChecks();
     builder.Services.AddAuthorization();
 
     // Stripe Configuration - Secret Key
-    StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
+    //StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
 
     builder.Services.AddOpenApi();
+
+    builder.Services.AddHttpClient<IExternalApiService, ExternalApiService>(client =>
+    {
+        //client.BaseAddress = new Uri("https://api.example.com/");
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
+
 
     var app = builder.Build();
 

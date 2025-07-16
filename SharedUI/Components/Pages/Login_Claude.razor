@@ -1,0 +1,579 @@
+﻿@page "/login/{Role}"
+@using Application.Models
+@using SharedUI.Services
+@using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
+@inject IAccountService AccountService
+@inject IAccessTokenService AccessTokenService
+@inject IJsUtil JsUtil
+@inject NavigationManager Navigation
+@inject ILogger<Login_Claude> Logger
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo">
+                <i class="fas fa-building"></i>
+            </div>
+            <h2 class="login-title">@GetLoginTitle()</h2>
+            <p class="login-subtitle">@GetLoginSubtitle()</p>
+        </div>
+
+        @if (IsLoading)
+        {
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>در حال بررسی...</p>
+            </div>
+        }
+        else if (Role == "User" || Role == "Admin")
+        {
+            <!-- Username/Password Login -->
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">نام کاربری</label>
+                    <input @bind="LoginModel.AccountId"
+                           type="text"
+                           id="username"
+                           class="form-control"
+                           placeholder="نام کاربری خود را وارد کنید"
+                           disabled="@IsProcessing" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">رمز عبور</label>
+                    <input @bind="LoginModel.PassKey"
+                           type="password"
+                           id="password"
+                           class="form-control"
+                           placeholder="رمز عبور خود را وارد کنید"
+                           disabled="@IsProcessing" />
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" @bind="RememberMe" />
+                        <span class="checkmark"></span>
+                        مرا به خاطر بسپار
+                    </label>
+                </div>
+
+                <button @onclick="HandleLogin"
+                        class="btn btn-primary btn-block"
+                        disabled="@IsProcessing">
+                    @if (IsProcessing)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    ورود
+                </button>
+            </div>
+        }
+        else
+        {
+            <!-- Mobile/SMS Login -->
+            <div class="login-form">
+                @if (!PassKeySent)
+                {
+                    <!-- Mobile Number Input -->
+                    <div class="form-group">
+                        <label for="mobile">شماره موبایل</label>
+                        <div class="input-group">
+                            <input @bind="LoginModel.AccountId"
+                                   @onkeypress="HandleMobileKeyPress"
+                                   type="tel"
+                                   id="mobile"
+                                   class="form-control @(HasMobileError ? "is-invalid" : "")"
+                                   placeholder="09xxxxxxxxx"
+                                   disabled="@IsProcessing" />
+                            <button @onclick="SendPassKey"
+                                    class="btn btn-outline-primary"
+                                    disabled="@(IsProcessing || !IsMobileValid)">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        @if (HasMobileError)
+                        {
+                            <div class="invalid-feedback">
+                                @MobileErrorMessage
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <!-- SMS Code Input -->
+                    <div class="form-group">
+                        <label for="smsCode">کد تایید</label>
+                        <div class="sms-code-container">
+                            <input @bind="LoginModel.PassKey"
+                                   @onkeypress="HandleSmsKeyPress"
+                                   type="text"
+                                   id="smsCode"
+                                   class="form-control text-center"
+                                   placeholder="کد 6 رقمی را وارد کنید"
+                                   maxlength="6"
+                                   disabled="@IsProcessing" />
+                        </div>
+
+                        @if (CountdownSeconds > 0)
+                        {
+                            <div class="countdown-timer">
+                                <i class="fas fa-clock"></i>
+                                <span>@FormatCountdown(CountdownSeconds)</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="resend-options">
+                                <button @onclick="ResendSmsCode"
+                                        class="btn btn-link btn-sm">
+                                    <i class="fas fa-refresh"></i>
+                                    ارسال مجدد کد
+                                </button>
+                                <button @onclick="ShowQrCode"
+                                        class="btn btn-link btn-sm">
+                                    <i class="fas fa-qrcode"></i>
+                                    ورود با QR Code
+                                </button>
+                            </div>
+                        }
+                    </div>
+
+                    <button @onclick="HandleLogin"
+                            class="btn btn-primary btn-block"
+                            disabled="@(IsProcessing || string.IsNullOrEmpty(LoginModel.PassKey))">
+                        @if (IsProcessing)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        ورود
+                    </button>
+
+                    <button @onclick="BackToMobileInput"
+                            class="btn btn-outline-secondary btn-block mt-2">
+                        <i class="fas fa-arrow-right"></i>
+                        بازگشت
+                    </button>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="alert alert-danger mt-3">
+                <i class="fas fa-exclamation-circle"></i>
+                @ErrorMessage
+            </div>
+        }
+
+        @if (ShowQrCodeModal)
+        {
+            <div class="modal-overlay" @onclick="CloseQrCode">
+                <div class="qr-modal" @onclick:stopPropagation="true">
+                    <div class="qr-header">
+                        <h4>اسکن QR Code</h4>
+                        <button @onclick="CloseQrCode" class="btn-close">×</button>
+                    </div>
+                    <div class="qr-content">
+                        <div class="qr-code-container">
+                            @if (!string.IsNullOrEmpty(QrCodeData))
+                            {
+                                <div id="qrcode"></div>
+                            }
+                        </div>
+                        <p>با اسکن این کد توسط تلفن همراه خود وارد شوید</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- QR Code Modal -->
+    @if (showQRModal)
+    {
+        <div class="modal-overlay" @onclick="HideQRCode">
+            <div class="qr-modal" @onclick:stopPropagation="true">
+                <div class="qr-header">
+                    <h4>اسکن QR کد</h4>
+                    <button class="close-btn" @onclick="HideQRCode">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="qr-body">
+                    <div class="qr-code-container">
+                        <img src="@qrCodeImage" alt="QR Code" class="qr-code" />
+                    </div>
+                    <p class="qr-instructions">
+                        QR کد را با تلفن همراه خود اسکن کنید
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Toast Notifications -->
+    @if (showToast)
+    {
+        <div class="toast-container">
+            <div class="toast @(toastType == "success" ? "toast-success" : "toast-error")">
+                <div class="toast-header">
+                    <i class="fa @(toastType == "success" ? "fa-check-circle" : "fa-exclamation-circle")"></i>
+                    <span>@toastTitle</span>
+                    <button class="toast-close" @onclick="HideToast">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    @toastMessage
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter] public string Role { get; set; } = "Customer";
+
+    private LoginRequest LoginModel = new();
+    private bool IsLoading = true;
+    private bool IsProcessing = false;
+    private string RandomPassKey = "";
+    private bool PassKeySent = false;
+    private bool RememberMe = false;
+    private bool ShowQrCodeModal = false;
+    private bool showQRModal = false;
+    private bool showToast = false;
+    private string toastType = "";
+    private string toastTitle = "";
+    private string toastMessage = "";
+    private string qrCodeImage = "";
+    private string qrSessionToken = "";
+    private bool HasMobileError = false;
+
+    private string ErrorMessage = "";
+    private string MobileErrorMessage = "";
+    private string QrCodeData = "";
+    private string SessionToken = "";
+
+    private int CountdownSeconds = 0;
+    private Timer? CountdownTimer;
+
+    private bool IsMobileValid => !string.IsNullOrEmpty(LoginModel.AccountId) &&
+                                 IsValidMobileNumber(LoginModel.AccountId);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckExistingToken();
+        IsLoading = false;
+    }
+
+    private async Task CheckExistingToken()
+    {
+        try
+        {
+            var token = await AccessTokenService.GetToken();
+            if (!string.IsNullOrEmpty(token))
+            {
+                var validationResult = await AccountService.ValidateTokenAsync(token);
+                if (validationResult.Successful)
+                {
+                    await AccessTokenService.SetToken(token);
+                    await RedirectBasedOnRole();
+                    return;
+                }
+                else
+                {
+                    await AccessTokenService.RemoveToken();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error checking existing token");
+        }
+    }
+
+    private async Task SendPassKey()
+    {
+        if (!IsMobileValid) return;
+
+        IsProcessing = true;
+        ErrorMessage = "";
+        HasMobileError = false;
+
+        try
+        {
+            // تولید یک کد برای پیامک
+            GenerateRandomPassKey();
+
+            var result = await AccountService.SendPassKeyAsync(LoginModel.AccountId!, RandomPassKey);
+
+            if (result)
+            {
+                PassKeySent = true;
+                StartCountdown();
+
+                //await JSRuntime.InvokeVoidAsync("showToast", $"کد تایید ارسال شد", "success");
+                await JsUtil.Alert("کد تایید ارسال شد");
+            }
+            else
+            {
+                HasMobileError = true;
+                MobileErrorMessage = "خطا در ارسال پیامک";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error sending SMS code");
+            HasMobileError = true;
+            MobileErrorMessage = "خطا در ارسال پیامک";
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+    void GenerateRandomPassKey()
+    {
+        var random = new Random();
+        RandomPassKey = random.Next(100000, 999999).ToString();
+    }
+    private async Task ResendSmsCode()
+    {
+        await SendPassKey();
+    }
+
+    private async Task HandleLogin()
+    {
+        IsProcessing = true;
+        ErrorMessage = "";
+
+        try
+        {
+            var result = await AccountService.LoginAsync(LoginModel);
+
+            if (result.Successful && result.Item != null)
+            {
+                var token = result.Item.AccessToken;
+
+                if (RememberMe || (Role == "Customer" || Role == "Supplier"))
+                {
+                    await AccessTokenService.SetToken(token!);
+                }
+
+                await RedirectBasedOnRole();
+            }
+            else
+            {
+                ErrorMessage = result.Error ?? "خطا در ورود";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error during login");
+            ErrorMessage = "خطا در ورود";
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+
+    private async Task ShowQrCode()
+    {
+        try
+        {
+            SessionToken = Guid.NewGuid().ToString();
+
+            var qrRequest = new JwtTokenRequest
+            {
+                AccountId = SessionToken,
+                Role = Role,
+                TokenType = "QR"
+            };
+
+            var qrResult = await AccountService.GenerateTokenAsync(qrRequest);
+
+            if (qrResult.Successful && qrResult.Item != null)
+            {
+                QrCodeData = qrResult.Item.AccessToken!;
+                ShowQrCodeModal = true;
+
+                await JSRuntime.InvokeVoidAsync("generateQRCode", QrCodeData);
+                await JsUtil.Alert("کد تایید ارسال شد");
+                _ = Task.Run(async () => await PollQrLogin());
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error generating QR code");
+        }
+    }
+    private async Task ShowQRCode()
+    {
+        try
+        {
+            qrSessionToken = Guid.NewGuid().ToString();
+            var qrData = new
+            {
+                Url = $"{Navigation.BaseUri}api/Account/QRLogin",
+                Token = qrSessionToken,
+                Role = Role,
+                MobileNumber = LoginModel.AccountId
+            };
+
+            var qrContent = JsonSerializer.Serialize(qrData);
+            var qrGenerator = new QRCodeGenerator();
+            var qrCodeData = qrGenerator.CreateQrCode(qrContent, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new Base64QRCode(qrCodeData);
+            qrCodeImage = qrCode.GetGraphic(20);
+
+            showQRModal = true;
+
+            // Start polling for QR code scan
+            await PollForQRLogin();
+        }
+        catch (Exception ex)
+        {
+            ShowToast("خطا", "خطا در تولید QR کد", "error");
+        }
+    }
+    private async Task PollQrLogin()
+    {
+        var attempts = 0;
+        while (ShowQrCodeModal && attempts < 60)
+        {
+            try
+            {
+                var validationResult = await AccountService.ValidateTokenAsync(QrCodeData);
+                if (validationResult.Successful)
+                {
+                    await AccessTokenService.SetToken(QrCodeData);
+                    await InvokeAsync(async () =>
+                    {
+                        ShowQrCodeModal = false;
+                        await RedirectBasedOnRole();
+                    });
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error checking QR login");
+            }
+
+            await Task.Delay(2000);
+            attempts++;
+        }
+    }
+
+    private void CloseQrCode()
+    {
+        ShowQrCodeModal = false;
+    }
+
+    private void BackToMobileInput()
+    {
+        PassKeySent = false;
+        LoginModel.PassKey = "";
+        StopCountdown();
+    }
+
+    private void StartCountdown()
+    {
+        CountdownSeconds = 120;
+        CountdownTimer = new Timer(async _ =>
+        {
+            CountdownSeconds--;
+            await InvokeAsync(StateHasChanged);
+
+            if (CountdownSeconds <= 0)
+            {
+                StopCountdown();
+            }
+        }, null, 1000, 1000);
+    }
+
+    private void StopCountdown()
+    {
+        CountdownTimer?.Dispose();
+        CountdownTimer = null;
+        CountdownSeconds = 0;
+    }
+
+    private async Task RedirectBasedOnRole()
+    {
+        var redirectUrl = Role switch
+        {
+            "Customer" => "/customer/dashboard",
+            "Supplier" => "/supplier/dashboard",
+            "User" => "/user/dashboard",
+            "Admin" => "/admin/dashboard",
+            _ => "/dashboard"
+        };
+
+        await Task.Run(() => Navigation.NavigateTo(redirectUrl));
+    }
+
+    private string GetLoginTitle()
+    {
+        return Role switch
+        {
+            "Customer" => "ورود مشتری",
+            "Supplier" => "ورود تامین کننده",
+            "User" => "ورود کاربر",
+            "Admin" => "ورود مدیر سیستم",
+            _ => "ورود"
+        };
+    }
+
+    private string GetLoginSubtitle()
+    {
+        return Role switch
+        {
+            "Customer" => "به پنل مشتری لیزینگ آلفا خوش آمدید",
+            "Supplier" => "به پنل تامین کننده لیزینگ آلفا خوش آمدید",
+            "User" => "به پنل کاربری لیزینگ آلفا خوش آمدید",
+            "Admin" => "به پنل مدیریت لیزینگ آلفا خوش آمدید",
+            _ => "به سیستم لیزینگ آلفا خوش آمدید"
+        };
+    }
+
+    private bool IsValidMobileNumber(string mobile)
+    {
+        if (string.IsNullOrEmpty(mobile)) return false;
+
+        var digits = new string(mobile.Where(char.IsDigit).ToArray());
+
+        return digits.Length == 11 && digits.StartsWith("09");
+    }
+
+    private string FormatCountdown(int seconds)
+    {
+        var minutes = seconds / 60;
+        var secs = seconds % 60;
+        return $"{minutes:D2}:{secs:D2}";
+    }
+
+    private async Task HandleMobileKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && IsMobileValid)
+        {
+            await SendPassKey();
+        }
+    }
+
+    private async Task HandleSmsKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrEmpty(LoginModel.PassKey))
+        {
+            await HandleLogin();
+        }
+    }
+
+    public void Dispose()
+    {
+        CountdownTimer?.Dispose();
+    }
+}

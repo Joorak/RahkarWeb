@@ -14,11 +14,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <!--<PackageReference Include="AutoMapper" />-->
+    <!--<PackageReference Include="AutoMapper" />
     <PackageReference Include="Duende.IdentityServer" />
     <PackageReference Include="Duende.IdentityServer.AspNetIdentity" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework" />
-    <PackageReference Include="FluentValidation.AspNetCore" />
+    <PackageReference Include="FluentValidation.AspNetCore" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" />-->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />

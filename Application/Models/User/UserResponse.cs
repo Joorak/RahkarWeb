@@ -8,7 +8,7 @@ namespace Application.Models
 {
     
     
-    public class UserResponse //: IMapFrom<User>
+    public class UserResponse : User
     {
         
         

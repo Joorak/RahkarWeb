@@ -19,7 +19,7 @@ namespace Domain.Entities
         [Required]
         public bool IsLegalEntity { get; set; } // حقیقی یا حقوقی
 
-        [Required, MaxLength(20)]
+        [Required, MaxLength(10)]
         public string NationalId { get; set; } // کدملی یا شناسه ملی
 
         [Required]
@@ -241,6 +241,10 @@ namespace Domain.Entities
 
         [Required]
         public decimal UnitPrice { get; set; }
+        public decimal Discount { get; set; } // تخفیف به درصد
+
+        [MaxLength(200)]
+        public string ImageUrl { get; set; } // آدرس تصویر محصول
     }
 
     // جدول وضعیت سفارش
@@ -415,5 +419,62 @@ namespace Domain.Entities
         public string Query { get; set; } // کوئری SQL
 
         public bool HasAdditionalParameters { get; set; } // آیا پارامتر اضافی دارد
+    }
+
+    // جدول پیام‌ها (Message)
+    public class Message
+    {
+        [Key]
+        public Guid Id { get; set; }
+
+        [Required]
+        public Guid PersonId { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Title { get; set; }
+
+        [Required]
+        public string Content { get; set; }
+
+        [Required]
+        public DateTime SentDate { get; set; }
+
+        [MaxLength(50)]
+        public string EventType { get; set; } // نوع رویداد (قبول سفارش، سررسید پرداخت و ...)
+
+        public bool IsRead { get; set; } // خوانده‌شده یا خیر
+
+        [ForeignKey(nameof(PersonId))]
+        public virtual Person Person { get; set; }
+    }
+
+    // جدول تنظیمات کاربر (UserSetting)
+    public class UserSetting
+    {
+        [Key]
+        public Guid Id { get; set; }
+
+        [Required]
+        public Guid PersonId { get; set; }
+
+        public string ProfileJson { get; set; } // اطلاعات پروفایلی قابل تغییر (پسورد، روش ورود و ...)
+
+        public string IdentityJson { get; set; } // اطلاعات هویتی غیرقابل ویرایش (از ثبت احوال)
+
+        [ForeignKey(nameof(PersonId))]
+        public virtual Person Person { get; set; }
+    }
+
+    public class CountriesTurnoverStat
+    {
+        //[Key]
+        //public int Id { get; set; }
+        public string ISO2 { get; set; }
+        public string ISO3 { get; set; }
+        public string Country { get; set; }
+        public string Name { get; set; }
+        public double LeasingVolume { get; set; }
+        public double MarketShare { get; set; }
     }
 }

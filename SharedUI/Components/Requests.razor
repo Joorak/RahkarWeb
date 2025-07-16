@@ -20,8 +20,8 @@
                     <td>@Order.OrderNumber</td>
                     <td>@Order.OrderDate.ToString("yyyy/MM/dd")</td>
                     <td>@Order.Customer</td>
-                    <td>@Order.LoanSchema.Name</td>
-                    <td>@Order.StatusLogs.OrderByDescending(i => i.StatusDate).FirstOrDefault()!.Status.ToString() </td>
+                    <td>@Order.LoanScheme.Name</td>
+                    <td>@Order.Status.ToString() </td>
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,7 +65,7 @@
     private int CurrentPage { get; set; } = 1;
     private int TotalPages { get; set; } = 8;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         // بارگذاری درخواست‌ها از دیتابیس
         //_Orders = await DbContext.Orders.ToListAsync();

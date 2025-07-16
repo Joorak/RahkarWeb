@@ -1,0 +1,167 @@
+@page "/login"
+@inject SharedUI.Services.AccountService AccountService
+@inject IJSRuntime JSRuntime
+@attribute [CascadingParameter(Name = "Role")] string Role
+
+<div class="login-container">
+    @if (string.IsNullOrEmpty(Role) || Role == "User" || Role == "Admin")
+    {
+        <div class="login-box">
+            <input type="text" @bind="Username" placeholder="نام کاربری" class="input-field" />
+            <input type="password" @bind="Password" placeholder="رمز عبور" class="input-field" />
+            <button @onclick="LoginWithCredentials" class="login-button">ورود</button>
+        </div>
+    }
+    else if (Role == "Customer" || Role == "Supplier")
+    {
+        <div class="login-box">
+            <div class="mobile-input-container">
+                <input type="text" @bind="MobileNumber" placeholder="شماره موبایل" class="input-field" @oninput="ValidateMobile" />
+                <button @onclick="SendOtp" class="otp-button"><span class="icon-arrow"></span></button>
+            </div>
+            @if (ShowOtpInput)
+            {
+                <div class="otp-input-container">
+                    <input type="text" @bind="OtpCode" placeholder="کد پیامکی" class="input-field" />
+                    <span class="timer">@TimerText</span>
+                    <button @onclick="LoginWithOtp" class="login-button" disabled="@(!IsLoginEnabled)">ورود</button>
+                </div>
+                @if (Timer == 0)
+                {
+                    <div class="resend-links">
+                        <a href="#" @onclick="ResendOtp">ارسال مجدد کد</a>
+                        <a href="#" @onclick="ScanQrCode">اسکن QR کد</a>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string Username { get; set; }
+    private string Password { get; set; }
+    private string MobileNumber { get; set; }
+    private string OtpCode { get; set; }
+    private bool ShowOtpInput { get; set; } = false;
+    private int Timer { get; set; } = 0;
+    private string TimerText { get; set; } = "";
+    private bool IsLoginEnabled { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+        if (!string.IsNullOrEmpty(token))
+        {
+            var isValid = await AccountService.ValidateToken(token);
+            if (isValid)
+            {
+                await RedirectBasedOnRole();
+            }
+        }
+    }
+
+    private async Task ValidateMobile(ChangeEventArgs e)
+    {
+        MobileNumber = e.Value?.ToString() ?? "";
+        IsLoginEnabled = !string.IsNullOrWhiteSpace(MobileNumber) && MobileNumber.Length == 11 && MobileNumber.All(char.IsDigit);
+    }
+
+    private async Task SendOtp()
+    {
+        if (IsLoginEnabled)
+        {
+            var response = await AccountService.SendOtp(MobileNumber);
+            if (response.Success)
+            {
+                ShowOtpInput = true;
+                Timer = 60; // Configurable from appsettings
+                StartTimer();
+            }
+        }
+    }
+
+    private async Task LoginWithOtp()
+    {
+        if (!string.IsNullOrEmpty(OtpCode))
+        {
+            var response = await AccountService.LoginWithOtp(MobileNumber, OtpCode, Role);
+            if (response.Success)
+            {
+                await SaveTokenAndRedirect(response.Data.ToString());
+            }
+        }
+    }
+
+    private async Task LoginWithCredentials()
+    {
+        if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
+        {
+            var response = await AccountService.LoginWithCredentials(Username, Password, Role);
+            if (response.Success)
+            {
+                await SaveTokenAndRedirect(response.Data.ToString());
+            }
+        }
+    }
+
+    private async Task ResendOtp()
+    {
+        ShowOtpInput = false;
+        await SendOtp();
+    }
+
+    private async Task ScanQrCode()
+    {
+        var qrData = await AccountService.GenerateQrCode(MobileNumber, Role);
+        // Simulate QR code scan logic (mock for now)
+        await JSRuntime.InvokeVoidAsync("alert", "Scan QR code with your device to login");
+    }
+
+    private async Task SaveTokenAndRedirect(string token)
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+        await RedirectBasedOnRole();
+    }
+
+    private async Task RedirectBasedOnRole()
+    {
+        var role = Role ?? "User"; // Default to User if not set
+        switch (role)
+        {
+            case "Admin":
+                await JSRuntime.InvokeVoidAsync("location.href", "/admin");
+                break;
+            case "User":
+                await JSRuntime.InvokeVoidAsync("location.href", "/user");
+                break;
+            case "Customer":
+                await JSRuntime.InvokeVoidAsync("location.href", "/customer/dashboard");
+                break;
+            case "Supplier":
+                await JSRuntime.InvokeVoidAsync("location.href", "/supplier/dashboard");
+                break;
+        }
+    }
+
+    private void StartTimer()
+    {
+        TimerText = $"00:{Timer:D2}";
+        var timer = new System.Timers.Timer(1000);
+        timer.Elapsed += (s, e) =>
+        {
+            if (Timer > 0)
+            {
+                Timer--;
+                TimerText = $"00:{Timer:D2}";
+                StateHasChanged();
+            }
+            else
+            {
+                timer.Stop();
+                StateHasChanged();
+            }
+        };
+        timer.Start();
+    }
+}

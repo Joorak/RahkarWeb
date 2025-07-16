@@ -2,7 +2,10 @@
 using Application.Models;
 using Azure;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.Identity.Client;
+using Microsoft.Win32;
 using System.ComponentModel;
+using static Application.Utils.ApiEndpoint;
 
 namespace Infrastructure.Services
 {
@@ -52,7 +55,7 @@ namespace Infrastructure.Services
             return result;
         }
 
-        public async Task<RequestResponse<JwtTokenResponse>> GenerateToken(JwtTokenRequest jwtTokenRequest)
+        private JwtTokenResponse GenerateToken(JwtTokenRequest jwtTokenRequest)
         {
             var jwtSettings = new JwtTokenConfig
             {
@@ -83,17 +86,11 @@ namespace Infrastructure.Services
             };
             var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
 
-            return new RequestResponse<JwtTokenResponse> {
-
-                Successful = true,
-
-                Item = new JwtTokenResponse
+            return new JwtTokenResponse
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 ExpiresIn = (int)(expiresIn - DateTime.Now).TotalSeconds,
-
-
-            }};
+            };
         }
 
         public async Task<RequestResponse<JwtTokenResponse>> LoginAsync(LoginRequest login)
@@ -112,7 +109,23 @@ namespace Infrastructure.Services
                 throw new Exception("Email / password incorrect");
             }
 
-            return await GenerateToken(new JwtTokenRequest() { AccountId = login.AccountId!, Role = login.RoleForLogin}).ConfigureAwait(false);
+            //return await GenerateTokenAsync(new JwtTokenRequest() { AccountId = login.AccountId!, Role = login.RoleForLogin});
+            var jwtToken = await Task.Run(() => GenerateToken(new JwtTokenRequest() { AccountId = login.AccountId!, Role = login.RoleForLogin }));
+            return new RequestResponse<JwtTokenResponse>
+            {
+                Successful = true,
+                Item = jwtToken
+            };
+        }
+
+        public async Task<RequestResponse<JwtTokenResponse>> LoginAdminAsync(string accountId)
+        {
+            var jwtToken = await Task.Run(() => GenerateToken(new JwtTokenRequest() { AccountId = accountId, Role = StringRoleResources.Admin }));
+            return new RequestResponse<JwtTokenResponse>
+            {
+                Successful = true,
+                Item = jwtToken
+            };
         }
 
         public async Task<RequestResponse<JwtTokenResponse>> RegisterAsync(RegisterRequest register)
@@ -145,7 +158,13 @@ namespace Infrastructure.Services
             }
 
             await UserManager.AddToRoleAsync(newUser, role.Name!).ConfigureAwait(false);
-            return await GenerateToken(new JwtTokenRequest() { AccountId = register.AccountId!, Role = register.RoleForRegister! }).ConfigureAwait(false);
+            var jwtToken = await Task.Run(() => GenerateToken(new JwtTokenRequest() { AccountId = register.AccountId!, Role = register.RoleForRegister! }));
+            return new RequestResponse<JwtTokenResponse>
+            {
+                Successful = true,
+                Item = jwtToken
+            };
+
         }
 
         public async Task<RequestResponse> ResetPasswordUserAsync(ResetPasswordRequest resetPassword)
@@ -166,7 +185,12 @@ namespace Infrastructure.Services
             return RequestResponse.Success();
         }
 
-        public Task<RequestResponse> ValidateToken(string token)
+        public Task<RequestResponse> ValidateTokenAsync(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SendPassKeyAsync(string mobileNumber, string passKey)
         {
             throw new NotImplementedException();
         }

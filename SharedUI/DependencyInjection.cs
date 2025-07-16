@@ -16,8 +16,9 @@ namespace SharedUI
         {
             //services.AddDbContext<AppDbContext>(options =>
             //                    options.UseSqlite(configuration["ConnectionStrings:Sqlite"], b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
-
+            
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration["BaseAddress"]!.ToString()) });
+            services.AddScoped<IJsUtil, JsUtil>();
             services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<IHomeService, HomeService>();
