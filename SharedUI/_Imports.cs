@@ -24,3 +24,4 @@ global using SharedUI.Services;
 global using SharedUI.Components.Layouts;
 global using Application;
 global using Domain.Entities;
+global using BootstrapBlazor.Components;

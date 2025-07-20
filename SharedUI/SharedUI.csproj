@@ -20,7 +20,11 @@
     <Compile Remove="Services\AccountService - Copy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="Components\Carousel.razor" />
+    <Content Remove="Components\Layouts\AppLayout.razor" />
+    <Content Remove="Components\Messages.razor" />
     <Content Remove="Components\Pages\Login_Grok.razor" />
+    <Content Remove="Components\Pages\__Home.razor" />
   </ItemGroup>
   <!--<Target Name="RemoveConflictingAssets" BeforeTargets="ResolveStaticWebAssetsConfiguration">
 		<ItemGroup>
@@ -56,6 +60,9 @@
     <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />-->
     <!--<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />-->
     <!--<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.6.1" />-->
+    <PackageReference Include="Blazicons.FontAwesome" />
+    <PackageReference Include="BootstrapBlazor" />
+    <PackageReference Include="BootstrapBlazor.Authenticator" />
     <PackageReference Include="Microsoft.AspNetCore.Components" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />

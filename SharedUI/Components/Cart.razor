@@ -1,7 +1,45 @@
+<HeadContent>
+<style>
+    .cart-container {
+        position: relative;
+    }
+
+    .cart-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 400px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+        .cart-content.show {
+            display: block;
+        }
+
+    .cart-item img {
+        max-width: 50px;
+    }
+
+    .cart-summary {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+</style>
+</HeadContent>
+
 <div class="cart-container">
-    <button class="btn btn-light rounded-circle position-relative" @onclick="ToggleCart">
+    <button class="btn btn-light position-relative" @onclick="ToggleCart">
         @* <i class="bi bi-cart3"></i> *@
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-icon-3 primary-color" fill="currentColor">
+        @* <i class="fa-regular fa-cart-shopping"></i> *@
+        @* <i class="fas fa-shopping-cart"></i> *@
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-icon-full primary-color" fill="currentColor">
             <path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
         </svg>
         @if (TotalItems > 0)
@@ -38,7 +76,9 @@
                             <span>@(CalculateItemTotal(item).ToString("N0")) تومان</span>
                         </div>
                         <div class="col-1">
-                            <button class="btn btn-danger btn-sm" @onclick="@(() => RemoveItem(item.Id))"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-danger btn-sm" @onclick="@(() => RemoveItem(item.Id))">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                 }
@@ -125,32 +165,3 @@
     }
 }
 
-<style>
-    .cart-container {
-        position: relative;
-    }
-    .cart-content {
-        display: none;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        width: 400px;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-    .cart-content.show {
-        display: block;
-    }
-    .cart-item img {
-        max-width: 50px;
-    }
-    .cart-summary {
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #eee;
-    }
-</style>

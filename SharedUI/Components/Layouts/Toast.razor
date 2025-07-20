@@ -1,0 +1,209 @@
+﻿@inject ToastService toastService
+
+@if (showToast)
+{
+    <div class="toast-message-container">
+        <div class="toast-message-box @toastCssClass">
+            @toastIcon
+            <span class="toast-message-content">@toastContent</span>
+            <button class="toast-close-button" @onclick="HideMessage">x</button>
+        </div>
+    </div>
+
+    
+}
+<style>
+    .toast-message-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        animation: slide-in 0.5s ease-out, slide-out 0.5s ease-in 5s forwards;
+    }
+
+    .toast-message-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 1rem;
+        font-size: 1.5rem;
+    }
+    .toast-message-success {
+        background-color: #28a745;
+    }
+
+    .toast-message-error {
+        background-color: #dc3545;
+    }
+
+    .toast-message-alert {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .toast-message-warning {
+        background-color: #ff8800;
+    }
+
+    .toast-message-default {
+        background-color: #17a2b8;
+    }
+
+    .toast-close-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .toast-close-button:hover {
+            color: #000;
+        }
+
+    @@-webkit-keyframes slide-in {
+        from{transform: translateX(100%);opacity: 0;}
+        to {transform: translateX(0);opacity: 1;}
+    }
+    @@keyframes slide-in {
+        from{transform: translateX(100%);opacity: 0;}
+        to {transform: translateX(0);opacity: 1;}
+
+    }
+
+    @@-webkit-keyframes slide-out {
+        from{transform: translateX(0);opacity: 1;}
+        to {transform: translateX(100%);opacity: 0;}
+    }
+    @@keyframes slide-out {
+        from{transform: translateX(0);opacity: 1;}
+        to {transform: translateX(100%);opacity: 0;}
+    }
+</style>
+@code {
+    // Boolean flag to control toast visibility
+    private bool showToast { get; set; } = false;
+
+    // Message content and type
+    private string toastContent { get; set; } = string.Empty;
+    private ToastService.ToastType toastType { get; set; } = ToastService.ToastType.Success; // Default message type
+
+    // Determines CSS class based on message type
+    private string toastCssClass => toastType switch
+    {
+        ToastService.ToastType.Success => "toast-message-success",
+        ToastService.ToastType.Error => "toast-message-error",
+        ToastService.ToastType.Alert => "toast-message-alert",
+        ToastService.ToastType.Warning => "toast-message-warning",
+        _ => "toast-message-default"
+    };
+    private RenderFragment toastIcon => toastType switch
+    {
+        ToastService.ToastType.Success => @<div class="toast-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                                </svg>
+                                            </div>,
+        ToastService.ToastType.Error => @<div class="toast-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                                </svg>
+                                            </div>,
+        ToastService.ToastType.Alert => @<div class="toast-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                                </svg>
+                                            </div>,
+        ToastService.ToastType.Warning => @<div class="toast-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                                </svg>
+                                            </div>,
+                                    _ => @<div class="toast-icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                                </svg>
+                                            </div>,
+    };
+
+    protected override void OnInitialized()
+    {
+        toastService.OnShow += ShowToast; // Subscribe to toast events
+        toastService.OnHide += HideMessage;
+    }
+
+    private async void ShowToast(string message, ToastService.ToastType type, int dismissAfter)
+    {
+        toastContent = message;
+        toastType = type;
+        showToast = true;
+        await InvokeAsync(StateHasChanged); // Update the UI
+        if (dismissAfter > 0)
+        {
+            await Task.Delay(dismissAfter * 1000);
+            HideMessage();
+        }
+    }
+
+    private void HideMessage() => showToast = false; // Hide the toast
+
+    public void Dispose()
+    {
+        toastService.OnShow -= ShowToast; // Clean up subscriptions
+        toastService.OnHide -= HideMessage;
+    }
+    public class ToastService
+    {
+        // Event for showing toasts
+        public event Action<string, ToastType, int> OnShow;
+
+        // Event for hiding toasts
+        public event Action OnHide;
+
+        /// <summary>
+        /// Shows a generic toast.
+        /// </summary>
+        public void ShowToast(string message, ToastType type = ToastType.Info, int dismissAfter = 3)
+        {
+            OnShow?.Invoke(message, type, dismissAfter);
+        }
+
+        /// <summary>
+        /// Hides the currently displayed toast.
+        /// </summary>
+        public void HideToast()
+        {
+            OnHide?.Invoke();
+        }
+
+        // Convenience methods for common toasts
+        public void ShowSuccess(string message, int dismissAfter = 3) => ShowToast(message, ToastType.Success, dismissAfter);
+        public void ShowError(string message, int dismissAfter = 3) => ShowToast(message, ToastType.Error, dismissAfter);
+        public void ShowWarning(string message, int dismissAfter = 3) => ShowToast(message, ToastType.Warning, dismissAfter);
+        public void ShowInfo(string message, int dismissAfter = 3) => ShowToast(message, ToastType.Info, dismissAfter);
+        public void ShowAlert(string message, int dismissAfter = 3) => ShowToast(message, ToastType.Alert, dismissAfter);
+        public enum ToastType
+        {
+            Info,
+            Success,
+            Warning,
+            Error,
+            Alert
+        }
+    }
+}
+
+
+    
+
+

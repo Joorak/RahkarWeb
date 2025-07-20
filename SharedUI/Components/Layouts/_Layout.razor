@@ -1,23 +1,33 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="header position-sticky d-flex bg-body-tertiary shadow-1-bottom pt-3">
-        
-        <div class="flex-grow-1">
-            <Header />
-        </div>
-        <div class="header-cart-avatar-container d-flex my-md-auto">
-            <Authentication IsLoggedIn="@isLoggedIn" OnLogin="@Login" OnRegister="@Register" OnLogout="@Logout" />
-            <Cart CartItems="@cartItems" OnCartUpdated="@OnCartUpdated" ShippingCost="50000" />
+    <div class="header position-sticky bg-body-tertiary py-1 shadow-1-bottom">
+        <div class="d-flex shadow-1-bottom">
+             <div class="flex-grow-1">
+                <Header />
+            </div>
+            <div class="header-cart-avatar-container d-flex my-md-auto">
+                <Authentication IsLoggedIn="@isLoggedIn" OnLogin="@Login" OnRegister="@Register" OnLogout="@Logout" />
+                <Cart CartItems="@cartItems" OnCartUpdated="@OnCartUpdated" ShippingCost="50000" />
+            </div> 
         </div>
     </div>
     <div class="content py-2 px-5">
-        @Body
+        <BootstrapBlazorRoot>
+            @Body
+        </BootstrapBlazorRoot>
     </div>
     <div class="footer bg-light pt-2">
-        <Footer />
+        <SharedUI.Components.Footer />
     </div>
     <a href="#" aria-label="back to page top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });return false;">
+        @* <svg class="bi bi-arrow-up text-success" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> *@
+        @* <svg class="bi bi-arrow-up text-success" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        </svg> *@
+        @* <svg>
+            <text>&uarr;</text>
+        </svg> *@
+        @* <i class="fas fa-arrow-up fa-4x primary-color"></i> *@
         <div id="btn-back-to-top" class="back-to-top justify-content-center arrow-to-top-img">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-icon primary-color-75" fill="currentColor">
                 <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
@@ -49,8 +59,8 @@
     }
     private List<OrderItem> cartItems = new List<OrderItem>
     {
-        new OrderItem { Id = Guid.NewGuid(), ProductName = "تلویزیون 55 اینچ", UnitPrice = 15000000m, Quantity = 1, ImageUrl = "images/tv.jpg", Discount = 5m, SupplierId = Guid.NewGuid() },
-        new OrderItem { Id = Guid.NewGuid(), ProductName = "موبایل A", UnitPrice = 12000000m, Quantity = 2, ImageUrl = "images/phone.jpg", Discount = 10m, SupplierId = Guid.NewGuid() }
+        new OrderItem { Id = Guid.NewGuid(), ProductName = "تلویزیون 55 اینچ سامسونگ", UnitPrice = 15000000m, Quantity = 1, ImageUrl = "https://www.allsamsung.ir/media/catalog/product/cache/1/image/98215f3a2e8c6d043f09b421fbf55109/s/a/samsung-900-tv-ms9995.jpg", Discount = 5m, SupplierId = Guid.NewGuid() },
+        new OrderItem { Id = Guid.NewGuid(), ProductName = "آیفون 16", UnitPrice = 12000000m, Quantity = 2, ImageUrl = "https://appletelecom.ir/wp-content/uploads/2024/12/iPhone-16-01.jpg", Discount = 10m, SupplierId = Guid.NewGuid() }
     };
     private async Task OnCartUpdated(List<OrderItem> updatedCart)
     {

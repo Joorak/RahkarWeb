@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharedUI.Services
 {
-    public class ToastService
+    public class ToastService____________
     {
         internal async Task Error(string v)
         {

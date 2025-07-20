@@ -8,7 +8,9 @@
         <ModelViewer Header=@($"مدل ویوور") Model='new Person() {Id=Guid.NewGuid(),FirstName="ژورک", LastName="رضاپور", NationalId="0451455770" , MobileNumber="09124053989"}' ButtonText="بستن" ButtonCallBack="@CloseModelViewer"></ModelViewer>
     </div>
 }
-    <div class="container-wfull mb-5">
+   
+
+<div class="container-wfull mb-5">
         <Carousel IsRTL="true"
                   Items="_carouselItems"
                   ShowNavigationButtons="true"
@@ -77,13 +79,13 @@
 
 
 @code {
-    private List<CarouselItem> _carouselItems { get; set; } = new List<CarouselItem>();
+    private List<Domain.Entities.CarouselItem> _carouselItems { get; set; } = new List<Domain.Entities.CarouselItem>();
     private List<SellableContainer> _containers { get; set; } = new List<SellableContainer>();
     private List<SellableItem> _sellableItems { get; set; } = new List<SellableItem>();
     private string _username { get; set; }
     private int _userId { get; set; }
     private string _userRole { get; set; }
-    bool ShowModel { get; set; } = true;
+    bool ShowModel { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -111,9 +113,9 @@
         //CarouselItems = await DbContext.CarouselItems.ToListAsync();
         if (!_carouselItems.Any())
         {
-            _carouselItems = new List<CarouselItem>
+            _carouselItems = new List<Domain.Entities.CarouselItem>
             {
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/1.jpg",
                     ClickTarget = "#",
@@ -123,7 +125,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/2.jpg",
                     ClickTarget = "#",
@@ -133,7 +135,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/3.jpg",
                     ClickTarget = "#",
@@ -143,7 +145,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/4.jpg",
                     ClickTarget = "#",
@@ -153,7 +155,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/5.jpg",
                     ClickTarget = "#",
@@ -163,7 +165,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/6.jpg",
                     ClickTarget = "#",
@@ -173,7 +175,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/7.jpg",
                     ClickTarget = "#",
@@ -183,7 +185,7 @@
                     ButtonTarget = "#",
                     DisplayDuration = 5000
                 },
-                new CarouselItem
+                new Domain.Entities.CarouselItem
                 {
                     ImageUrl = "./_content/SharedUI/img/home/carousel/8.jpg",
                     ClickTarget = "#",
@@ -285,13 +287,14 @@
                                             </p>
     
                                             <p class="original-price me-auto mt-0 fw-light fs-6 text-body-tertiary">@context.OriginalPrice.ToString("N0") تومان</p>
-                                        </a>,
+                                        </a>
+    ,
                 Items = _sellableItems.Where(s => s.TemplateType == "Product").ToList()
             }
         };
     }
 
-    private void OnCarouselItemChange(CarouselItem item)
+    private void OnCarouselItemChange(Domain.Entities.CarouselItem item)
     {
         //System.Console.WriteLine($"Carousel item changed to: {item.Title}");
     }

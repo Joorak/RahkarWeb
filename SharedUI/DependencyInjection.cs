@@ -23,7 +23,9 @@ namespace SharedUI
             services.AddScoped<IAccessTokenService, AccessTokenService>();
             services.AddScoped<IHomeService, HomeService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<NavigationManager>(sp => sp.GetRequiredService<HttpContextAccessor>().HttpContext!.RequestServices.GetRequiredService<NavigationManager>());
+            //services.AddScoped<NavigationManager>(sp => sp.GetRequiredService<HttpContextAccessor>().HttpContext!.RequestServices.GetRequiredService<NavigationManager>());
+            services.AddBootstrapBlazor();
+            services.AddBootstrapBlazorTotpService();
             return services;
         }
     }

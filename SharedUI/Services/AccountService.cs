@@ -16,7 +16,7 @@ namespace SharedUI.Services
         private readonly IConfiguration _configuration;
         private readonly ILogger<AccountService> _logger;
         private readonly JsonSerializerOptions _jsonOptions;
-        private readonly string _baseApiUrl;
+        //private readonly string _baseApiUrl;
 
         public AccountService(
             HttpClient httpClient,
@@ -26,7 +26,7 @@ namespace SharedUI.Services
             _httpClient = httpClient;
             _configuration = configuration;
             _logger = logger;
-            _baseApiUrl = _configuration["ApiSettings:BaseUrl"] ?? throw new ArgumentNullException("ApiSettings:BaseUrl");
+            //_baseApiUrl = _configuration["BaseAddress"] ?? throw new ArgumentNullException("BaseAddress");
 
             _jsonOptions = new JsonSerializerOptions
             {
@@ -41,7 +41,7 @@ namespace SharedUI.Services
             {
                 _logger.LogInformation("Attempting to reset password for user: {Email}", resetPassword.Email);
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ResetPassword);
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ResetPassword);
 
                 var response = await _httpClient.PostAsJsonAsync(apiUrl, resetPassword, _jsonOptions);
 
@@ -88,7 +88,7 @@ namespace SharedUI.Services
             {
                 _logger.LogInformation("Attempting to change password for user: {UserId}", changePassword.UserId);
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ChangePassword);
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ChangePassword);
 
                 var response = await _httpClient.PostAsJsonAsync(apiUrl, changePassword, _jsonOptions);
 
@@ -134,8 +134,8 @@ namespace SharedUI.Services
             {
                 //_logger.LogInformation("Generating token for account: {AccountId}, Type: {TokenType}", jwtTokenRequest.AccountId, jwtTokenRequest.TokenType);
 
-                // فعلاً endpoint مخصوص GenerateToken وجود ندارد، از Login استفاده می‌کنیم
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Login);
+                
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Login);
 
                 var response = await _httpClient.PostAsJsonAsync(apiUrl, jwtTokenRequest, _jsonOptions);
 
@@ -195,7 +195,7 @@ namespace SharedUI.Services
                     };
                 }
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ValidateToken);
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.ValidateToken);
 
                 // Add token to Authorization header
                 SetAuthorizationHeader(token);
@@ -250,7 +250,7 @@ namespace SharedUI.Services
             {
                 _logger.LogInformation("Attempting login for account: {AccountId}", login.AccountId);
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Login);
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Login);
 
                 var response = await _httpClient.PostAsJsonAsync(apiUrl, login, _jsonOptions);
 
@@ -305,7 +305,7 @@ namespace SharedUI.Services
                 _logger.LogInformation("Attempting registration for account: {AccountId}", register.AccountId);
 
                 // Register endpoint در ApiEndpoint موجود نیست، پس از Base استفاده می‌کنیم
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Base + "/register");
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Base + "/register");
 
                 var response = await _httpClient.PostAsJsonAsync(apiUrl, register, _jsonOptions);
 
@@ -356,7 +356,7 @@ namespace SharedUI.Services
             {
                 _logger.LogInformation("Checking password for user: {UserId}", user.Id);
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Base + "/check-password");
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.Base + "/check-password");
 
                 var request = new
                 {
@@ -399,7 +399,7 @@ namespace SharedUI.Services
             {
                 //_logger.LogInformation("Sending SMS code to: {MobileNumber}", mobileNumber);
 
-                var apiUrl = _baseApiUrl + ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.SendSmsPassKey);
+                var apiUrl = ApiEndpoint.Account.GetVersionedEndpoint(ApiEndpoint.Account.SendSmsPassKey);
 
                 var smsSendRequest = new SmsSendRequest()
                 {
